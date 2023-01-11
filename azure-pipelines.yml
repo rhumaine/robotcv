@@ -10,9 +10,20 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: qetza.replacetokens.replacetokens-task.replacetokens@3
+- task: qetza.replacetokens.replacetokens-task.replacetokens@5
   displayName: 'Replace tokens in Dockerfile'
   inputs:
     rootDirectory: ./
     targetFiles: |
       Dockerfile
+
+- task: CopyFiles@2
+  displayName: 'Copy Files'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: symfony_skeleton'
+  inputs:
+    ArtifactName: symfony_skeleton
