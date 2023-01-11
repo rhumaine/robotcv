@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-22.04
+  vmImage: ubuntu-latest
 
 steps:
 - task: qetza.replacetokens.replacetokens-task.replacetokens@5
