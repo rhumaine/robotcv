@@ -1,4 +1,4 @@
-FROM #{azure.registry.url}#/php74-fpm:1.0.0
+FROM #{azure.registry.url}#/php80-fpm:1.0.0
 
 ENV COMPOSER_ALLOW_SUPERUSER=1 
 
