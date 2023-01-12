@@ -11,7 +11,7 @@ class LuckyController
         $number = random_int(0, 100);
 
         return new Response(
-            '<html><body>Random number for training: '.$number.'</body></html>'
+            '<html><body>Nombre random: '.$number.'</body></html>'
         );
     }
 }
