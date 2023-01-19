@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-expand-md fixed-bottom bg-dark navbar-dark">
+	<div id="NavbarSupportedContent" class="collapse navbar-collapse nav-head">
+		<ul class="navbar-nav mx-auto">
+			<li class="nav-item"><a class="nav-link" href="#">Mentions Légales</a></li>
+			<li class="nav-item"><a class="nav-link" href="#">Politique de confidentialité</a></li>
+			<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+
+<script type="text/javascript">
+	$('#inputSubmitFormCreateProfil').on('click', function(){
+		$.ajax({
+			url: "ajax/ajax_check_profil.php",
+			method: "POST",
+        	dataType : "json",
+			data: { 
+				'email': $('#email').val()
+    		},
+		})
+		.done(function(response){
+			let data = JSON.stringify(response);
+			if(data == "false"){
+				$("#formCreateProfil").submit();
+			}else{
+				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
+				$("#messageProfilExistant").show();
+				$('html, body').animate({ 
+                     scrollTop: '0px' 
+                });
+
+				setInterval(function(){
+					$("#messageProfilExistant").fadeOut(1000 );
+				}, 10000);
+			}
+		});
+	});
+
+	$('#inputSubmitLogin').on('click', function(){
+		$.ajax({
+			url: "ajax/ajax_check_user.php",
+			method: "POST",
+        	dataType : "json",
+			data: { 
+				'email': $('#email').val(),
+				'password': $('#password').val()
+    		},
+		})
+		.done(function(response){
+			let data = JSON.stringify(response);
+			console.log(data);
+			if(data == "false"){
+
+				$("#messageUserInexistant").html('L\'utilisateur "'+ $('#email').val() + '" n\'existe pas');
+				$("#messageUserInexistant").show();
+
+			}else{
+				$("#messageUserInexistant").html('');
+				$("#messageUserInexistant").hide();
+				$("#formLogin").submit();
+			}
+		});
+	});
+</script>

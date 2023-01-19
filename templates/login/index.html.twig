@@ -1,0 +1,59 @@
+<html lang="FR-fr">
+	<!-- En-tête de la page -->
+	<head>
+		<!-- Titre de la page -->
+		<title>RobotCV - Consulter un profil</title>
+		<!-- Titre de la page -->
+
+		<meta charset="utf-8">
+
+		<!-- Framework Bootstrap -->
+		<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
+		<script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
+		<!-- Framework Bootstrap -->
+
+		<!-- Script JQuery -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+		<!-- Script JQuery -->
+
+		<!-- Feuilles de style CSS -->
+		<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+		<!-- Feuilles de style CSS -->
+	</head>
+	<!-- En-tête de la page -->
+
+
+	<!-- Corps de la page -->
+    <body>
+		<!-- Header -->
+		{% include 'header.html.twig' %}
+		<!-- Header -->
+{% block body %}
+    <div class="page-title-login">
+        <div class="panel-heading custom-header-panel">
+            <h3 class="panel-title">Connexion</h3>
+        </div>
+        <div class="panel-body">
+            <form id="formLogin" action="" method="POST">
+                <div class="txt_field">
+                    <input type="email" name="email" placeholder="Email" id="email" required>
+                    <span></span>                            
+                </div>
+                <div class="txt_field">
+                    <input type="password" name="password" placeholder="Password" id="password" required>
+                    <span></span>
+                </div>
+
+                <div id="messageUserInexistant" class="hidden text-danger row justify-content-center mb-3"></div>
+
+                <input name="submit" type="submit" id="inputSubmitLogin" value="Login">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- Footer -->
+		{% include 'footer.html.twig' %}
+		<!-- Footer -->
+	</body>
+	<!-- Corps de la page -->
