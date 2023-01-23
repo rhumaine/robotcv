@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Formation
  *
  * @ORM\Table(name="formation", uniqueConstraints={@ORM\UniqueConstraint(name="Formation", columns={"Formation"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\FormationRepository")
  */
 class Formation
 {

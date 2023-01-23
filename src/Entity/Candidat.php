@@ -6,11 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * Candidat
  *
  * @ORM\Table(name="candidat", uniqueConstraints={@ORM\UniqueConstraint(name="Email", columns={"Email"})}, indexes={@ORM\Index(name="ID_Recherche", columns={"ID_Recherche"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CandidatRepository")
  */
 class Candidat
 {

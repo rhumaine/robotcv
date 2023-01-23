@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Statut
  *
  * @ORM\Table(name="statut", uniqueConstraints={@ORM\UniqueConstraint(name="Statut", columns={"Statut"}), @ORM\UniqueConstraint(name="Statut_2", columns={"Statut"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\StatutRepository")
  */
 class Statut
 {

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Certification
  *
  * @ORM\Table(name="certification", uniqueConstraints={@ORM\UniqueConstraint(name="Certification", columns={"Certification"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CertificationRepository")
  */
 class Certification
 {

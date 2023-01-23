@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Niveau
  *
  * @ORM\Table(name="niveau", uniqueConstraints={@ORM\UniqueConstraint(name="Niveau", columns={"Niveau"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\NiveauRepository")
  */
 class Niveau
 {
