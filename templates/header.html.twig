@@ -22,8 +22,11 @@
 			</li>
 		</ul>
 		<div class="navbar-collapse collapse my-2 my-sm-0" style="padding-right: 10px;">	
-			<a class="btn btn-outline-danger ms-auto my-2 my-sm-0" href="logout.php" role="button">Déconnexion</a>
+		{% if app.session.get('email') %}
+			<a class="btn btn-outline-danger ms-auto my-2 my-sm-0" href="{{ path("app_logout") }}" role="button">Déconnexion</a>
+		{% else %}
 			<a class="btn btn-outline-success ms-auto my-2 my-sm-0" href="{{ path("app_login") }}" role="button">Connexion</a>
+		{% endif %}
 		</div>
 	</div>
 </nav>

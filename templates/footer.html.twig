@@ -37,7 +37,6 @@
 	});
 
 	$('#inputSubmitLogin').on('click', function(){
-		event.preventDefault();
 		$.ajax({
 			url: "{{ (path('ajax_check_user')) }}",
 			method: "POST",
@@ -49,15 +48,13 @@
 		})
 		.done(function(response){
 			let data = JSON.stringify(response);
-			console.log(data);
 			if(data == "false"){
-
-				$("#messageUserInexistant").html('L\'utilisateur "'+ $('#email').val() + '" n\'existe pas');
+				$("#messageUserInexistant").html('L\'utilisateur "'+ $('#email').val() + '" ou le mot de passe ne correspond pas');
 				$("#messageUserInexistant").show();
-
 			}else{
 				$("#messageUserInexistant").html('');
 				$("#messageUserInexistant").hide();
+				
 				$("#formLogin").submit();
 			}
 		});
