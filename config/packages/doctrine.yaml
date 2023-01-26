@@ -22,6 +22,7 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        default_entity_manager: default
 
 when@test:
     doctrine:

@@ -8,7 +8,6 @@
 	</div>
 </nav>
 
-
 <script type="text/javascript">
 	$('#inputSubmitFormCreateProfil').on('click', function(){
 		$.ajax({
@@ -38,14 +37,15 @@
 	});
 
 	$('#inputSubmitLogin').on('click', function(){
+		event.preventDefault();
 		$.ajax({
-			url: "ajax/ajax_check_user.php",
+			url: "{{ (path('ajax_check_user')) }}",
 			method: "POST",
         	dataType : "json",
 			data: { 
 				'email': $('#email').val(),
 				'password': $('#password').val()
-    		},
+    		}
 		})
 		.done(function(response){
 			let data = JSON.stringify(response);

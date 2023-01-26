@@ -39,6 +39,18 @@ class UtilisateurRepository extends ServiceEntityRepository
         }
     }
 
+    public function checkEmailExists($email, $password){
+        $resultat = $this->createQueryBuilder('u')
+                    ->andWhere('u.email = :valEmail')
+                    ->andWhere('u.password = :valPass')
+                    ->setParameter('valEmail', $email)
+                    ->setParameter('valPass', $password)
+                    ->getQuery()
+                    ->getScalarResult();
+                    
+        return $resultat;
+    }
+
 //    /**
 //     * @return Utilisateur[] Returns an array of Utilisateur objects
 //     */

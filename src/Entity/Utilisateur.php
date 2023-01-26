@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Utilisateur
  *
- * @ORM\Table(name="utilisateur", uniqueConstraints={@ORM\UniqueConstraint(name="Email", columns={"Email"}), @ORM\UniqueConstraint(name="Email_2", columns={"Email"})}, indexes={@ORM\Index(name="ID_Statut", columns={"ID_Statut"})})
+ * @ORM\Table(name="utilisateur", uniqueConstraints={@ORM\UniqueConstraint(name="Email", columns={"email"}), @ORM\UniqueConstraint(name="Email_2", columns={"email"})}, indexes={@ORM\Index(name="ID_Statut", columns={"ID_Statut"})})
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
  */
 class Utilisateur
@@ -25,30 +25,30 @@ class Utilisateur
     /**
      * @var string
      *
-     * @ORM\Column(name="Prenom", type="string", length=100, nullable=false, options={"comment"="Prénom de l'utilisateur"})
+     * @ORM\Column(name="prenom", type="string", length=100, nullable=false, options={"comment"="Prénom de l'utilisateur"})
      */
     private $prenom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Nom", type="string", length=100, nullable=false, options={"comment"="Nom de l'utilisateur"})
+     * @ORM\Column(name="nom", type="string", length=100, nullable=false, options={"comment"="Nom de l'utilisateur"})
      */
     private $nom;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Email", type="string", length=200, nullable=false, options={"comment"="Adresse email de l'utilisateur"})
+     * @ORM\Column(name="email", type="string", length=200, nullable=false, options={"comment"="Adresse email de l'utilisateur"})
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="MotDePasse", type="text", length=65535, nullable=false, options={"comment"="Mot de passe de l'utilisateur"})
+     * @ORM\Column(name="password", type="string", length=65535, nullable=false, options={"comment"="Mot de passe de l'utilisateur"})
      */
-    private $motdepasse;
+    private $password;
 
     /**
      * @var \Statut
@@ -101,14 +101,14 @@ class Utilisateur
         return $this;
     }
 
-    public function getMotdepasse(): ?string
+    public function getPassword(): ?string
     {
-        return $this->motdepasse;
+        return $this->password;
     }
 
-    public function setMotdepasse(string $motdepasse): self
+    public function setPassword(string $password): self
     {
-        $this->motdepasse = $motdepasse;
+        $this->password = $password;
 
         return $this;
     }
@@ -125,5 +125,8 @@ class Utilisateur
         return $this;
     }
 
+    public function __toString() {
+        return $this->email;
+    }
 
 }
