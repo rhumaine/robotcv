@@ -26,7 +26,7 @@
 			document.getElementById('nb_input_connaissances').value = nb_connaissances;
 
 			/*-- On ajoute le nouvel input de connaissance --*/
-			$("#form-connaissances").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="domaine_'+nb_connaissances+'" class="form-select form-select-sm form-control" id="domaine_'+nb_connaissances+'" placeholder="domaine"><option selected disabled>Domaine</option><?php $REQ = $DB->query("SELECT * FROM domaine"); while ($RES = $REQ->fetch()) { echo "<option value=".$RES['ID_Domaine'].":".$RES["Domaine"].">";echo $RES["Domaine"];echo "</option>";}?></select><label class="col-md-3" for="domaine_'+nb_connaissances+'">Domaine</label></div><div class="form-floating col"><input type="text" name="connaissance_'+nb_connaissances+'" class="form-control" id="connaissance_'+nb_connaissances+'" placeholder="connaissance"><label class="col-md-3" for="connaissance_'+nb_connaissances+'">Connaissance</label></div></div>');
+			$("#form-connaissances").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="domaine_'+nb_connaissances+'" class="form-select form-select-sm form-control" id="domaine_'+nb_connaissances+'" placeholder="domaine"><option selected disabled>Domaine</option>{% for domaine in domaines %}<option value="{{ domaine.idDomaine }}:{{ domaine.idDomaine }}">{{ domaine.domaine }}</option>{% endfor %}</select><label class="col-md-3" for="domaine_'+nb_connaissances+'">Domaine</label></div><div class="form-floating col"><input type="text" name="connaissance_'+nb_connaissances+'" class="form-control" id="connaissance_'+nb_connaissances+'" placeholder="connaissance"><label class="col-md-3" for="connaissance_'+nb_connaissances+'">Connaissance</label></div></div>');
 		}
 		/*----------------------------------------------------*/
 
@@ -71,7 +71,7 @@
 			document.getElementById('nb_input_langues').value = nb_langues;
 
 			/*-- On ajoute le nouvel input de langues --*/
-			$("#form-langues").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="langue_'+nb_langues+'" class="form-select form-select-sm form-control" id="langue_'+nb_langues+'" placeholder="langue"><option selected disabled>Langue</option><?php $REQ = $DB->query("SELECT * FROM langue"); while ($RES = $REQ->fetch()) { echo "<option value=".$RES['ID_Langue'].":".$RES["Langue"].">";echo $RES["Langue"];echo "</option>";}?></select><label class="col-md-3" for="langue_'+nb_langues+'">Langue</label></div><div class="form-floating col"><select name="niveau_'+nb_langues+'" class="form-select form-select-sm form-control" id="niveau_'+nb_langues+'" placeholder="niveau"><option selected disabled>Niveau</option><?php $REQ = $DB->query("SELECT * FROM niveau"); while ($RES = $REQ->fetch()) { echo "<option>";echo utf8_encode($RES["Niveau"]);echo "</option>";}?></select><label class="col-md-3" for="niveau_'+nb_langues+'">Niveau</label></div></div>');
+			$("#form-langues").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="langue_'+nb_langues+'" class="form-select form-select-sm form-control" id="langue_'+nb_langues+'" placeholder="langue"><option selected disabled>Langue</option>{% for langue in langues %}<option value="{{ langue.idLangue }}:{{ langue.idLangue }}">{{ langue.langue }}</option>{% endfor %}</select><label class="col-md-3" for="langue_'+nb_langues+'">Langue</label></div><div class="form-floating col"><select name="niveau_'+nb_langues+'" class="form-select form-select-sm form-control" id="niveau_'+nb_langues+'" placeholder="niveau"><option selected disabled>Niveau</option>{% for niveau in niveaux %}<option value="{{ niveau.idNiveau }}:{{ niveau.idNiveau }}">{{ niveau.niveau }}</option>{% endfor %}</select><label class="col-md-3" for="niveau_'+nb_langues+'">Niveau</label></div></div>');
 		}
 		/*-----------------------------------------------*/
 
@@ -109,11 +109,7 @@
 	</script>
 	<!-- Script pour gérer le formulaire d'ajout de nouveaux candidat -->
 
-    <!-- Header -->
-    {% include 'header.html.twig' %}
-    <!-- Header -->
-
-
+  
     <!-- Contenu de la page -->
 		<div class="body">
 			<!-- Titre -->
@@ -267,22 +263,11 @@
 								<div class="form-floating col">
 									<select name="domaine_1" class="form-floating form-select-sm form-control" id="domaine_1" placeholder="domaine">
 										<option selected disabled>Domaine</option>
-										<?php
-											/*-- Récupération de la liste des domaines --*/
-											/*-------------------------------------------*/
-											$REQ = $DB->prepare("CALL get_domaines");
-											$REQ->execute();
-											/*-------------------------------------------*/
-
-											/*-- Ajout d'une nouvelle option pour chaque domaine --*/
-											/*-----------------------------------------------------*/
-											while ($RES = $REQ->fetch()) {
-												echo "<option value=".$RES['ID_Domaine'].":".$RES["Domaine"].">";
-												echo $RES["Domaine"];
-												echo "</option>";
-											}
-											/*-----------------------------------------------------*/
-										?>
+										{% for domaine in domaines %}
+											<option value="{{ domaine.idDomaine }}:{{ domaine.idDomaine }}">
+											{{ domaine.domaine }}
+											</option>
+										{% endfor %}
 									</select>
 									<label class="col-md-3" for="domaine_1">Domaine</label>
 								</div>
@@ -377,22 +362,11 @@
 								<div class="form-floating col">
 									<select name="langue_1" class="form-select form-select-sm form-control" id="langue_1" placeholder="langue">
 										<option selected disabled>Langue</option>
-										<?php
-											/*-- Récupération de la liste des langues --*/
-											/*------------------------------------------*/
-											$REQ = $DB->prepare("CALL get_langues");
-											$REQ->execute();
-											/*------------------------------------------*/
-
-											/*-- Ajout d'une nouvelle option pour chaque langue --*/
-											/*----------------------------------------------------*/
-											while ($RES = $REQ->fetch()) {
-												echo "<option value=".$RES['ID_Langue'].":".$RES["Langue"].">";
-												echo $RES['Langue'];
-												echo "</option>";
-											}
-											/*----------------------------------------------------*/
-										?>
+										{% for langue in langues %}
+											<option value="{{ langue.idLangue }}:{{ langue.idLangue }}">
+											{{ langue.langue }}
+											</option>
+										{% endfor %}
 									</select>
 									<label class="col-md-3" for="langue_1">Langue</label>
 								</div>
@@ -400,22 +374,11 @@
 								<div class="form-floating col">
 									<select name="niveau_1" class="form-select form-select-sm form-control" id="niveau_1" placeholder="niveau">
 										<option selected disabled>Niveau</option>
-										<?php
-											/*-- Récupération de la liste des niveaux de pratique --*/
-											/*------------------------------------------------------*/
-											$REQ = $DB->prepare("CALL get_niveaux");
-											$REQ->execute();
-											/*------------------------------------------------------*/ 
-
-											/*-- Ajout d'une nouvelle option pour chaque niveau --*/
-											/*----------------------------------------------------*/
-											while ($RES = $REQ->fetch()) {
-												echo "<option>";
-												echo $RES['Niveau'];
-												echo "</option>";
-											}
-											/*----------------------------------------------------*/
-										?>
+										{% for niveau in niveaux %}
+											<option value="{{ niveau.idNiveau }}:{{ niveau.idNiveau }}">
+											{{ niveau.niveau }}
+											</option>
+										{% endfor %}
 									</select>
 									<label class="col-md-3" for="domaine_1">Niveau</label>
 								</div>
@@ -518,9 +481,4 @@
 			<!-- Formulaire pour ajouter un candidat -->
 		</div>
 		<!-- Contenu de la page -->
-
-    
-    <!-- Footer -->
-    {% include 'footer.html.twig' %}
-    <!-- Footer -->
 {% endblock %}

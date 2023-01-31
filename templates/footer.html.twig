@@ -11,7 +11,7 @@
 <script type="text/javascript">
 	$('#inputSubmitFormCreateProfil').on('click', function(){
 		$.ajax({
-			url: "ajax/ajax_check_profil.php",
+			url: "{{ (path('ajax_check_profil')) }}",
 			method: "POST",
         	dataType : "json",
 			data: { 

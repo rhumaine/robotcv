@@ -39,6 +39,16 @@ class CandidatRepository extends ServiceEntityRepository
         }
     }
 
+    public function checkEmailExists($email){
+        $resultat = $this->createQueryBuilder('c')
+                    ->andWhere('c.email = :valEmail')
+                    ->setParameter('valEmail', $email)
+                    ->getQuery()
+                    ->getScalarResult();
+                    
+        return $resultat;
+    }
+
 //    /**
 //     * @return Candidat[] Returns an array of Candidat objects
 //     */

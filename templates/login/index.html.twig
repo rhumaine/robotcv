@@ -1,33 +1,8 @@
-<html lang="FR-fr">
-	<!-- En-tête de la page -->
-	<head>
-		<!-- Titre de la page -->
-		<title>RobotCV - Consulter un profil</title>
-		<!-- Titre de la page -->
+{% extends 'base.html.twig' %}
 
-		<meta charset="utf-8">
-
-		<!-- Framework Bootstrap -->
-		<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
-		<script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
-		<!-- Framework Bootstrap -->
-
-		<!-- Script JQuery -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
-		<!-- Script JQuery -->
-
-		<!-- Feuilles de style CSS -->
-		<link rel="stylesheet" href="{{ asset('css/main.css') }}">
-		<!-- Feuilles de style CSS -->
-	</head>
-	<!-- En-tête de la page -->
+{% block title %}Connexion{% endblock %}
 
 
-	<!-- Corps de la page -->
-    <body>
-		<!-- Header -->
-		{% include 'header.html.twig' %}
-		<!-- Header -->
 {% block body %}
     <div class="page-title-login">
         <div class="panel-heading custom-header-panel">
@@ -53,9 +28,3 @@
         </div>
     </div>
 {% endblock %}
-
-<!-- Footer -->
-		{% include 'footer.html.twig' %}
-		<!-- Footer -->
-	</body>
-	<!-- Corps de la page -->

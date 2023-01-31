@@ -17,7 +17,19 @@
 		    <script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
         {% endblock %}
     </head>
+
+  
+
     <body>
+        <!-- Header -->
+        {% include 'header.html.twig' %}
+        <!-- Header -->
+
         {% block body %}{% endblock %}
+
+        <!-- Footer -->
+        {% include 'footer.html.twig' %}
+        <!-- Footer -->
     </body>
 </html>
+    
