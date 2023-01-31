@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Domaine;
 use App\Entity\Langue;
 use App\Entity\Niveau;
+use App\Service\PDF;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,4 +33,24 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }    
     }
+
+    #[Route('/genererpdf', name: 'app_profil_genererpdf')]
+    public function genererPdf(SessionInterface $session): Response
+    {
+        if($session->get('email') != null){
+            
+            
+          
+            $pdf = new PDF();
+
+              
+
+            return $pdf->Output();
+
+           // return null;
+        }else{
+            return $this->redirectToRoute('app_login');
+        }    
+    }
+
 }
