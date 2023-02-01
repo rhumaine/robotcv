@@ -226,7 +226,8 @@ class ProfilController extends AbstractController
                         if (isset($_POST['langue_' . $i]) && $_POST['langue_' . $i] != NULL) {
                             if (isset($_POST['niveau_' . $i]) && $_POST['niveau_' . $i] != NULL) {
                                 $arr = explode(':', $_POST['langue_' . $i]);
-                                $LANGUES[] = array("ID" => $arr[0],"Langue" => htmlspecialchars($_POST['langue_' . $i]), "Niveau" => htmlspecialchars($_POST['niveau_' . $i]));
+                                $arrN = explode(':', $_POST['niveau_' . $i]);
+                                $LANGUES[] = array("ID" => $arr[0],"Langue" => htmlspecialchars($arr[1]), "Niveau" => htmlspecialchars($arrN[1]));
                             }
                         }
                         $i++;
