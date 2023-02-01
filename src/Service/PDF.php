@@ -175,7 +175,7 @@ class PDF extends FPDF{
     /*--------------------------------------------------------*/
     function write_CV() {
         $this->AddPage();
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/premiere_page.jpeg", 17.2, 3.8, 2.7);
+        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/premiere_page.jpeg", 17.2, 3.8, 2.7);
         $this->write_profil();
         $this->write_poste();
         $this->write_comp_cles();
@@ -190,7 +190,7 @@ class PDF extends FPDF{
 
 
     function write_profil() {
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil.png", 14.5, 1.5, 6);
+        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil.png", 14.5, 1.5, 6);
 
         if (isset($this->PROFIL) && $this->PROFIL != NULL) {
             $this->SetFont("Verdana", "B", 12);
@@ -323,7 +323,7 @@ class PDF extends FPDF{
             $this->SetY($this->WIDTH);
             $this->SetX(2.5);
             $this->MultiCell(0, 0, utf8_decode("CONNAISSANCES TECHNIQUES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
             $this->WIDTH = $this->WIDTH + 1;
 
@@ -395,7 +395,7 @@ class PDF extends FPDF{
             $this->SetY($this->WIDTH);
             $this->SetX(2.5);
             $this->MultiCell(0, 0, utf8_decode("CERTIFICATIONS"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
 
             $this->WIDTH = $this->WIDTH + 1;
@@ -468,7 +468,7 @@ class PDF extends FPDF{
             $this->SetY($this->WIDTH);
             $this->SetX(2.5);
             $this->MultiCell(0, 0, utf8_decode("FORMATIONS"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
             $this->WIDTH = $this->WIDTH + 1;
 
@@ -536,7 +536,7 @@ class PDF extends FPDF{
             $this->SetY($this->WIDTH);
             $this->SetX(2.5);
             $this->MultiCell(0, 0, utf8_decode("LANGUES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
             $this->WIDTH = $this->WIDTH + 1;
 
@@ -569,7 +569,7 @@ class PDF extends FPDF{
              $this->SetY($this->WIDTH);
             $this->SetX(2.5);
             $this->MultiCell(0, 0, utf8_decode("EXPERIENCES PROFESIONNELLES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/robotcv/public/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
             $this->WIDTH = $this->WIDTH + 0.5;
             $index = 0;
