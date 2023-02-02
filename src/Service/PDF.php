@@ -19,6 +19,7 @@ class PDF extends FPDF{
     protected $EXPERIENCES;		/*-- La liste des expériences professionnelles du candidat --*/
     protected $CERTIFICATIONS;
     protected $WIDTH;			/*-- Position de la hauteur actuelle dans la page --*/
+    protected $WIDTH_BEFORE_LANGUE;			/*-- Position de la hauteur actuelle dans la page --*/
     /*-----------------------------*/
 
     /*-- Constructeur de la classe --*/
@@ -181,10 +182,10 @@ class PDF extends FPDF{
         $this->write_annees_exp();
         $this->write_date_entree();
         $this->write_comp_cles();
-        //$this->write_connaissances();
+        $this->write_langues();
+        $this->write_connaissances();
+        $this->write_formations();
        // $this->write_certifications();
-       // $this->write_formations();
-       // $this->write_langues();
        // $this->write_experiences();
     }
     /*--------------------------------------------------------*/
@@ -315,15 +316,64 @@ class PDF extends FPDF{
         }
     }
 
+    function write_langues() {
+        $this->WIDTH_BEFORE_LANGUE =  $this->WIDTH + 1;
+        if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+            $this->SetFillColor(73, 101, 109);
+
+            $this->WIDTH = $this->WIDTH + 1;
+
+            $this->SetY($this->WIDTH);
+            $this->SetX(1.2);
+            $this->MultiCell(4.5, 1, utf8_decode("Langues Etrangère:"), 0, 1, "C", TRUE);
+            
+            $this->WIDTH = $this->WIDTH + 0.5;
+
+            $WIDTH = $this->WIDTH;
+
+
+            if ($WIDTH > 27) {
+                $this->AddPage();
+                $this->WIDTH = 3.5;
+            }
+
+
+            $this->WIDTH = $this->WIDTH + 1;
+
+            foreach ($this->LANGUES AS $LANG) {
+                $this->SetFont("Verdana", "B" , 8);
+                $this->SetTextColor(0, 0, 0);
+
+                $this->SetY($this->WIDTH);
+                $this->SetX(1.2);
+                $this->MultiCell(0, 0, utf8_decode($LANG["Langue"]." : "));
+
+                $this->SetFont("Verdana", "" , 8);
+                $this->SetY($this->WIDTH);
+                $this->SetX(3.5);
+                $this->MultiCell(0, 0, utf8_decode($LANG["Niveau"]), 0, "L");
+
+                $this->WIDTH = $this->WIDTH + 0.5;
+            }
+        }
+    }
+
     function write_connaissances() {
         if (isset($this->CONNAISSANCES) && $this->CONNAISSANCES != NULL) {
             
-            $this->SetFont("Verdana", "", 14);
-            $this->SetTextColor(235, 106, 10);
-            $this->WIDTH = $this->WIDTH + 1.5;
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+            $this->SetFillColor(73, 101, 109);
 
-            $WIDTH = $this->WIDTH;
-            $WIDTH = $this->WIDTH + 1;
+            
+            $this->SetY($this->WIDTH_BEFORE_LANGUE);
+            $this->SetX(6.2);            
+            $this->MultiCell(4.5, 1, utf8_decode("Autres Compétences:"), 0, 1, "C", TRUE);
+
+
+            $WIDTH = $this->WIDTH_BEFORE_LANGUE;
 
             foreach ($this->CONNAISSANCES AS $CONN) {
                 if ($this->GetStringWidth($CONN["Connaissances"]) > 12.5) {
@@ -335,26 +385,93 @@ class PDF extends FPDF{
 
             if ($WIDTH > 27) {
                 $this->AddPage();
-                $this->WIDTH = 3.5;
+                $this->WIDTH = 7.2;
             }
 
-            $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("CONNAISSANCES TECHNIQUES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
 
-            $this->WIDTH = $this->WIDTH + 1;
+            $this->WIDTH = $this->WIDTH_BEFORE_LANGUE + 1.5;
 
             foreach ($this->CONNAISSANCES AS $CONN) {
-                $this->SetFont("Verdana", "", 10);
+                $this->SetFont("Verdana", "B", 8);
                 $this->SetTextColor(0, 0, 0);
 
-                $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(2.5);
-                $this->MultiCell(3, 0.5, utf8_decode($CONN["Domaine"]));
+                $this->SetY($this->WIDTH);
+                $this->SetX(6.2);
+                $this->MultiCell(0, 0, utf8_decode($CONN["Domaine"]));
 
                 $TEXT_ARRAY = explode(' ', $CONN["Connaissances"]);
                 $TEXT = "";
+
+                for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
+                        if (($i + 1) < count($TEXT_ARRAY) ) {
+                            $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
+                        } else {
+                            $TEXT = $TEXT . $TEXT_ARRAY[$i];
+                        }
+                    } else {
+                        $this->SetY($this->WIDTH);
+                        $this->SetX(8.5);
+                        $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
+
+                        if (($i + 1) < count($TEXT_ARRAY) ) {
+                            $TEXT = $TEXT_ARRAY[$i] . " ";
+                        } else {
+                            $TEXT = $TEXT_ARRAY[$i];
+                        }
+
+                        $this->WIDTH = $this->WIDTH + 0.5;
+                    }
+                }
+                $this->SetFont("Verdana", "", 8);
+                $this->SetY($this->WIDTH);
+                $this->SetX(8.5);
+                $this->MultiCell(0, 0, utf8_decode($TEXT), 0, "L");
+
+                $this->WIDTH = $this->WIDTH + 0.5;
+            }
+        }
+    }
+
+    function write_formations() {
+        if (isset($this->FORMATIONS)  && ($this->FORMATIONS != NULL)) {
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+            $this->SetFillColor(73, 101, 109);
+
+            
+            $this->SetY($this->WIDTH);
+            $this->SetX(6.2);            
+            $this->MultiCell(2.5, 1, utf8_decode("Formation:"), 0, 1, "C", TRUE);
+
+            $WIDTH = $this->WIDTH;
+            $WIDTH = $WIDTH + 1;
+
+            foreach ($this->FORMATIONS AS $FORM) {
+                if ($this->GetStringWidth($FORM["Formation"]) > 12.5) {
+                    $WIDTH = $WIDTH + (0.5 * (intval($this->GetStringWidth($FORM["Formation"]) / 12.5) + 1));
+                } else {
+                    $WIDTH = $WIDTH + 0.5;
+                }
+            }
+
+            if ($WIDTH > 27) {
+                $this->AddPage();
+                $this->WIDTH = 3.5;
+            }
+
+            $this->WIDTH = $this->WIDTH + 1.5;
+
+            foreach ($this->FORMATIONS AS $FORM) {
+                $this->SetFont("Verdana", "B", 8);
+                $this->SetTextColor(0, 0, 0);
+
+                $this->SetY($this->WIDTH - 0.25);
+                $this->SetX(6.2);
+                $this->MultiCell(3, 0.5, utf8_decode(date_format(date_create($FORM["Date"]), 'Y')));
+
+                $TEXT_ARRAY = explode(' ', $FORM["Formation"]);
+                $TEXT = "";	
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
                     if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
@@ -378,8 +495,9 @@ class PDF extends FPDF{
                     }
                 }
 
+                $this->SetFont("Verdana", "", 8);
                 $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(5.5);
+                $this->SetX(7.3);
                 $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
                 $this->WIDTH = $this->WIDTH + 0.5;
@@ -454,121 +572,6 @@ class PDF extends FPDF{
                 $this->SetY($this->WIDTH - 0.25);
                 $this->SetX(5.5);
                 $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
-
-                $this->WIDTH = $this->WIDTH + 0.5;
-            }
-        }
-    }
-
-
-    function write_formations() {
-        if (isset($this->FORMATIONS)  && ($this->FORMATIONS != NULL)) {
-             $this->SetFont("Verdana", "", 14);
-            $this->SetTextColor(235, 106, 10);
-            $this->WIDTH = $this->WIDTH + 1;
-
-            $WIDTH = $this->WIDTH;
-            $WIDTH = $WIDTH + 1;
-
-            foreach ($this->FORMATIONS AS $FORM) {
-                if ($this->GetStringWidth($FORM["Formation"]) > 12.5) {
-                    $WIDTH = $WIDTH + (0.5 * (intval($this->GetStringWidth($FORM["Formation"]) / 12.5) + 1));
-                } else {
-                    $WIDTH = $WIDTH + 0.5;
-                }
-            }
-
-            if ($WIDTH > 27) {
-                $this->AddPage();
-                $this->WIDTH = 3.5;
-            }
-
-            $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("FORMATIONS"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
-
-            $this->WIDTH = $this->WIDTH + 1;
-
-            foreach ($this->FORMATIONS AS $FORM) {
-                $this->SetFont("Verdana", "", 10);
-                $this->SetTextColor(0, 0, 0);
-
-                $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(2.5);
-                $this->MultiCell(3, 0.5, utf8_decode($FORM["Date"]));
-
-                $TEXT_ARRAY = explode(' ', $FORM["Formation"]);
-                $TEXT = "";	
-
-                for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
-                        if (($i + 1) < count($TEXT_ARRAY) ) {
-                            $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
-                        } else {
-                            $TEXT = $TEXT . $TEXT_ARRAY[$i];
-                        }
-                    } else {
-                        $this->SetY($this->WIDTH - 0.25);
-                        $this->SetX(5.5);
-                        $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
-
-                        if (($i + 1) < count($TEXT_ARRAY) ) {
-                            $TEXT = $TEXT_ARRAY[$i] . " ";
-                        } else {
-                            $TEXT = $TEXT_ARRAY[$i];
-                        }
-
-                        $this->WIDTH = $this->WIDTH + 0.5;
-                    }
-                }
-
-                $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(5.5);
-                $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
-
-                $this->WIDTH = $this->WIDTH + 0.5;
-            }
-        }
-    }
-
-
-    function write_langues() {
-        if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
-             $this->SetFont("Verdana", "", 14);
-            $this->SetTextColor(235, 106, 10);
-            $this->WIDTH = $this->WIDTH + 1;
-
-            $WIDTH = $this->WIDTH;
-            $WIDTH = $WIDTH + 1;
-
-            foreach ($this->LANGUES AS $LANG) {
-                $WIDTH = $WIDTH + 0.5;
-            }
-
-            if ($WIDTH > 27) {
-                $this->AddPage();
-                $this->WIDTH = 3.5;
-            }
-
-            $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("LANGUES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
-
-            $this->WIDTH = $this->WIDTH + 1;
-
-            foreach ($this->LANGUES AS $LANG) {
-                $this->SetFont("Verdana", "" , 10);
-                $this->SetTextColor(0, 0, 0);
-
-                $this->SetY($this->WIDTH);
-                $this->SetX(2.5);
-                $this->MultiCell(0, 0, utf8_decode($LANG["Langue"]));
-
-                $this->SetY($this->WIDTH);
-                $this->SetX(5.5);
-                $this->MultiCell(0, 0, utf8_decode($LANG["Niveau"]), 0, "L");
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
