@@ -40,11 +40,13 @@ class ProfilController extends AbstractController
     {
         if($session->get('email') != null){
             $profil = $request->get('profil');
+            $poste = $request->get('poste');
             $nom = $request->get('nom');
             $prenom = $request->get('prenom');
             $email = $request->get('email');
             $telephone = $request->get('telephone');
             $annees_exp = $request->get('annees_exp');
+            $date_entree = $request->get('date_entree');
             $statut = $request->get('statut');
             $comp_cle = $request->get('comp_cle');
             $connaissance_1 = $request->get('connaissance_1');
@@ -123,6 +125,16 @@ class ProfilController extends AbstractController
                 $ANNEES_EXP = htmlspecialchars($annees_exp);
             } else {
                 $ANNEES_EXP = NULL;
+            }
+            /*--------------------------------------------------*/
+
+            
+            /*-- Récupération du nombre d'années d'expérience --*/
+            /*--------------------------------------------------*/
+            if (isset($date_entree) && $date_entree != NULL) {
+                $DATE_ENTREE = $date_entree;
+            } else {
+                $DATE_ENTREE = NULL;
             }
             /*--------------------------------------------------*/
 
@@ -295,7 +307,7 @@ class ProfilController extends AbstractController
 
 
 
-            $pdf = new PDF($PROFIL, $POSTE, $COMPETENCES, $ANNEES_EXP, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
+            $pdf = new PDF($PROFIL, $POSTE, $COMPETENCES, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
 
               
             $pdf->AliasNbPages();

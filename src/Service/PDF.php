@@ -12,6 +12,7 @@ class PDF extends FPDF{
     protected $POSTE;			/*-- Le poste auquel postule le candidat --*/
     protected $COMPETENCES;		/*-- La liste des compétences clés du candidat --*/
     protected $ANNEES_EXP;		/*-- Le nombre d'années d'expérience du candidat --*/
+    protected $DATE_ENTREE;		/*-- La date d'entre du candidat dans l'entreprise --*/
     protected $CONNAISSANCES;	/*-- La liste des connaissances techniques du candidat --*/
     protected $FORMATIONS;		/*-- La liste des formations suivies par le candidat --*/
     protected $LANGUES;			/*-- La liste des langues parlées par le candidat --*/
@@ -22,7 +23,7 @@ class PDF extends FPDF{
 
     /*-- Constructeur de la classe --*/
     /*-------------------------------*/
-    function __construct($PROFIL=NULL, $POSTE=NULL, $COMPETENCES=NULL, $ANNEES_EXP=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
+    function __construct($PROFIL=NULL, $POSTE=NULL, $COMPETENCES=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
         /*-- Appel constructeur classe FPDF --*/
         /*------------------------------------*/
         parent::__construct("P", "cm", "A4");
@@ -32,6 +33,7 @@ class PDF extends FPDF{
         /*------------------------------*/
         $this->PROFIL = htmlspecialchars_decode($PROFIL);
         $this->POSTE = htmlspecialchars_decode($POSTE);
+        $this->DATE_ENTREE = htmlspecialchars_decode($DATE_ENTREE);
 
         $this->COMPETENCES = array();
         if ($COMPETENCES != NULL) {
@@ -118,7 +120,7 @@ class PDF extends FPDF{
     /*-- Fonction pour construire l'en-tête de page --*/
     /*------------------------------------------------*/
     function header() {
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/logo_consort.png", 1, 1, 6);
+        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
     }
     /*------------------------------------------------*/
 
@@ -127,46 +129,45 @@ class PDF extends FPDF{
     /*---------------------------------------------*/
     function footer() {
         if (isset($this->PROFIL)  && ($this->PROFIL != NULL)) {
-            $this->SetFont("Verdana", "B" , 7.5);
+            $this->SetFont("Verdana", "" , 6.5);
             $this->SetTextColor(0, 0, 0);
 
-            $this->SetY(27.6);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("Profil détaillé " . $this->PROFIL));
+            $this->SetY(28.2);
+            $this->SetX(1.5);
+            $this->MultiCell(0, 0, utf8_decode("+ 33 0 xx xx xx xx"));
+
+            $this->SetY(28.5);
+            $this->SetX(1.5);
+            $this->MultiCell(0, 0, utf8_decode("Nom.prénom@consort-group.com"));
+
+            $this->SetY(28.9);
+            $this->SetX(1.5);
+            $this->MultiCell(0, 0, utf8_decode("Date de réalisation du dossier : MM.AAAA"));
         }
 
-        $this->SetFont("Verdana", "", 8);
+        $this->SetFont("Verdana", "", 6.5);
         $this->SetTextColor(0, 0, 0);
 
         $this->SetY(28.2);
-        $this->SetX(2.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort NT - Atlantica 1, BAT C - 75 rue des Français Libres - 44200 Nantes"));
+        $this->SetX(6.5);
+        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Atlantica 1 - Bat C - 75 rue des français libres - 44200 NANTES"));
 
-        $this->SetY(28.6);
-        $this->SetX(2.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort NT - ZAC des Champs Blancs - 13, rue Claude Chappe - Immeuble Oxygène"));
+        $this->SetY(28.5);
+        $this->SetX(6.5);
+        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Immeuble Oxygène - 13 rue Claude Chappe - 35510 CESSON SEVIGNE"));
 
-        $this->SetY(29);
-        $this->SetX(2.5);
-        $this->MultiCell(0, 0, utf8_decode("- Bat A - 35510 Cesson-Sévigné"));
+        $this->SetY(28.8);
+        $this->SetX(6.5);
+        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - La French Tech - 8 place Mgr Rumeau - 49100 ANGERS"));
 
-        $this->SetY(27.7);
-        $this->SetX(16);
-        $this->MultiCell(0, 2, "", "L");
+        $this->SetY(29.1);
+        $this->SetX(6.5);
+        $this->MultiCell(0, 0, utf8_decode("Consort Group : Immeuble Cap Etoile - 58, Boulevard Gouvion-Saint-Cyr - 75858 PARIS Cedex 17"));
 
-        /*-- Affichage de la date --*/
-        /*--------------------------*/
-        $this->SetY(28.6);
-        $this->SetX(16.6);
-        $this->MultiCell(0 , 0, utf8_decode(date("j/m/Y")));
-        /*--------------------------*/
+        $this->SetY(29.4);
+        $this->SetX(6.5);
+        $this->MultiCell(0, 0, utf8_decode("Tél. : +33 1 40 88 05 05 - Fax : 33 1 40 88 19 90 - www.consort-group.com"));
 
-        /*-- Affichage du numéro de page --*/
-        /*---------------------------------*/
-        $this->SetY(29);
-        $this->SetX(16.4);
-        $this->MultiCell(0, 0, utf8_decode("Page " . $this->PageNo() . " sur {nb}"));
-        /*---------------------------------*/
     }
     /*---------------------------------------------*/
 
@@ -175,29 +176,27 @@ class PDF extends FPDF{
     /*--------------------------------------------------------*/
     function write_CV() {
         $this->AddPage();
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/premiere_page.jpeg", 17.2, 3.8, 2.7);
         $this->write_profil();
         $this->write_poste();
-        $this->write_comp_cles();
         $this->write_annees_exp();
-        $this->write_connaissances();
-        $this->write_certifications();
-        $this->write_formations();
-        $this->write_langues();
-        $this->write_experiences();
+        $this->write_date_entree();
+        $this->write_comp_cles();
+        //$this->write_connaissances();
+       // $this->write_certifications();
+       // $this->write_formations();
+       // $this->write_langues();
+       // $this->write_experiences();
     }
     /*--------------------------------------------------------*/
 
 
     function write_profil() {
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil.png", 14.5, 1.5, 6);
-
         if (isset($this->PROFIL) && $this->PROFIL != NULL) {
-            $this->SetFont("Verdana", "B", 12);
-            $this->SetTextColor(128, 128, 128);
+            $this->SetFont("Verdana", "", 11);
+            $this->SetTextColor(0, 0, 0);
 
-            $this->SetY(2.4);
-            $this->SetX(15.5);
+            $this->SetY(3.4);
+            $this->SetX(14.7);
             $this->MultiCell(0, 0, utf8_decode("Fiche Profil " . $this->PROFIL));
         }
     }
@@ -205,12 +204,12 @@ class PDF extends FPDF{
 
     function write_poste() {
         if (isset($this->POSTE) && $this->POSTE != NULL) {
-            $this->SetFont("Verdana", "", 28);
+            $this->SetFont("Verdana", "", 11);
             $this->SetTextColor(0, 0, 0);
 
-            $this->SetY(3.5);
-            $this->SetX(2);
-            $this->MultiCell(16, 1, utf8_decode($this->POSTE), 0, "C");
+            $this->SetY(3.9);
+            $this->SetX(14.7);
+            $this->MultiCell(0, 0, utf8_decode($this->POSTE));
 
             if ($this->GetStringWidth($this->POSTE) >= 16) {
                 $this->WIDTH = $this->WIDTH + (1 * intval($this->GetStringWidth($this->POSTE) / 18));
@@ -218,25 +217,66 @@ class PDF extends FPDF{
 
             $this->WIDTH = $this->WIDTH + 5;
         }
-     }
+    }
 
 
-     function write_comp_cles() {
-         if (isset($this->COMPETENCES) && $this->COMPETENCES != NULL) {
-             $this->SetFont("Verdana", "U", 10);
+    function write_annees_exp() {
+        if (isset($this->ANNEES_EXP) && $this->ANNEES_EXP != NULL) {    
+            $this->SetFont("Verdana", "B", 10);
+            $this->SetTextColor(0, 0, 0);
+
+            $this->SetY(7.2);
+            $this->SetX(1.2);
+            $this->MultiCell(0, 0, utf8_decode("Expérience : "));  
+
+            $this->SetFont("Verdana", "", 10);
+            $this->SetTextColor(0, 0, 0);
+            $this->SetY(7.2);
+            $this->SetX(4);
+            if($this->ANNEES_EXP >= 2) {
+                $this->MultiCell(0, 0, utf8_decode($this->ANNEES_EXP . " ans"));
+            }else{
+                $this->MultiCell(0, 0, utf8_decode($this->ANNEES_EXP . " an"));
+            }
+        }
+    }
+
+    function write_date_entree() {
+        if (isset($this->DATE_ENTREE) && $this->DATE_ENTREE != NULL) {    
+            $this->SetFont("Verdana", "B", 10);
+            $this->SetTextColor(0, 0, 0);
+
+            $this->SetY(7.2);
+            $this->SetX(8.8);
+            $this->MultiCell(0, 0, utf8_decode("Date d'entrée dans l'entreprise - "));  
+
+            $this->SetFont("Verdana", "", 10);
+            $this->SetTextColor(0, 0, 0);
+            $this->SetY(7.2);
+            $this->SetX(15.5);
+            $this->MultiCell(0, 0, utf8_decode(date_format(date_create($this->DATE_ENTREE), 'm.Y')));
+            
+        }
+    }
+
+
+    function write_comp_cles() {
+        if (isset($this->COMPETENCES) && $this->COMPETENCES != NULL) {
+            $this->WIDTH = 8;
+            $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(0, 134, 141);
+            $this->SetFillColor(73, 101, 109);
 
-            $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(14.5, 1, utf8_decode("Compétences clés :"), 0, 1, "C", TRUE);
+            $this->SetY(8);
+            $this->SetX(1.2);
+            $this->MultiCell(4.2, 1, utf8_decode("Compétences Clés :"), 0, 1, "C", TRUE);
 
-            $this->WIDTH = $this->WIDTH + 0.85;
+            $this->WIDTH = $this->WIDTH + 1.2;
 
             foreach($this->COMPETENCES AS $COMP) {
                 $this->SetFont("Verdana", "", 10);
-                $this->SetTextColor(255, 255, 255);
-                $this->SetFillColor(0, 134, 141);
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFillColor(255, 255, 255);
 
                 $this->SetY($this->WIDTH);
                 $this->SetX(2.5);
@@ -272,35 +312,13 @@ class PDF extends FPDF{
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
-         }
-     }
+        }
+    }
 
-
-     function write_annees_exp() {
-         if (isset($this->ANNEES_EXP) && $this->ANNEES_EXP != NULL) {
-             if($this->ANNEES_EXP >= 2) {
-                 $this->SetFont("Verdana", "", 10);
-                $this->SetTextColor(235, 106, 10);
-                 $this->WIDTH = $this->WIDTH + 0.6;
-
-                $this->SetY($this->WIDTH);
-                $this->SetX(2.5);
-                $this->MultiCell(0, 0, utf8_decode("Années d'expérience : "));
-
-                 $this->SetFont("Verdana", "", 10);
-                $this->SetTextColor(0, 0, 0);
-
-                $this->SetY($this->WIDTH);
-                $this->SetX(6.5);
-                $this->MultiCell(0, 0, utf8_decode($this->ANNEES_EXP . " ans"));
-             }
-         }
-     }
-
-
-     function write_connaissances() {
-         if (isset($this->CONNAISSANCES) && $this->CONNAISSANCES != NULL) {
-             $this->SetFont("Verdana", "", 14);
+    function write_connaissances() {
+        if (isset($this->CONNAISSANCES) && $this->CONNAISSANCES != NULL) {
+            
+            $this->SetFont("Verdana", "", 14);
             $this->SetTextColor(235, 106, 10);
             $this->WIDTH = $this->WIDTH + 1.5;
 
@@ -366,12 +384,12 @@ class PDF extends FPDF{
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
-         }
-     }
+        }
+    }
 
 
-     function write_certifications() {
-         if (isset($this->CERTIFICATIONS) && $this->CERTIFICATIONS != NULL) {
+    function write_certifications() {
+        if (isset($this->CERTIFICATIONS) && $this->CERTIFICATIONS != NULL) {
             $this->SetFont("Verdana", "", 14);
             $this->SetTextColor(235, 106, 10);
             $this->WIDTH = $this->WIDTH + 1;
@@ -439,12 +457,12 @@ class PDF extends FPDF{
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
-         }
-     }
+        }
+    }
 
 
-     function write_formations() {
-         if (isset($this->FORMATIONS)  && ($this->FORMATIONS != NULL)) {
+    function write_formations() {
+        if (isset($this->FORMATIONS)  && ($this->FORMATIONS != NULL)) {
              $this->SetFont("Verdana", "", 14);
             $this->SetTextColor(235, 106, 10);
             $this->WIDTH = $this->WIDTH + 1;
@@ -511,12 +529,12 @@ class PDF extends FPDF{
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
-         }
-     }
+        }
+    }
 
 
-     function write_langues() {
-         if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
+    function write_langues() {
+        if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
              $this->SetFont("Verdana", "", 14);
             $this->SetTextColor(235, 106, 10);
             $this->WIDTH = $this->WIDTH + 1;
@@ -554,12 +572,12 @@ class PDF extends FPDF{
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
-         }
-     }
+        }
+    }
 
 
-     function write_experiences() {
-         if (isset($this->EXPERIENCES) && $this->EXPERIENCES != NULL) {
+    function write_experiences() {
+        if (isset($this->EXPERIENCES) && $this->EXPERIENCES != NULL) {
              $this->AddPage();
              $this->WIDTH = 3.5;
 
@@ -1128,5 +1146,5 @@ class PDF extends FPDF{
                 }
             }
         }
-     }
+    }
 }
