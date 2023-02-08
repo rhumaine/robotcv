@@ -9,6 +9,16 @@
 </nav>
 
 <script type="text/javascript">
+
+$('#submitBtn').click(function() {
+});
+
+$('#submit').click(function(){
+    alert('submitting');
+    $('#inputSubmitFormCreateProfil').submit();
+});
+
+
 	$('#inputSubmitFormCreateProfil').on('click', function(){
 		$.ajax({
 			url: "{{ (path('ajax_check_profil')) }}",
@@ -21,6 +31,35 @@
 		.done(function(response){
 			let data = JSON.stringify(response);
 			if(data == "false"){
+				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_create_profil')) }}";
+				$("#formCreateProfil").submit();
+			}else{
+				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
+				$("#messageProfilExistant").show();
+				$('html, body').animate({ 
+                     scrollTop: '0px' 
+                });
+
+				setInterval(function(){
+					$("#messageProfilExistant").fadeOut(1000 );
+				}, 10000);
+			}
+		});
+	});
+
+	$('#inputSubmitFormApercuPdf').on('click', function(){
+		$.ajax({
+			url: "{{ (path('ajax_check_profil')) }}",
+			method: "POST",
+        	dataType : "json",
+			data: { 
+				'email': $('#email').val()
+    		},
+		})
+		.done(function(response){
+			let data = JSON.stringify(response);
+			if(data == "false"){ 
+				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
 				$("#formCreateProfil").submit();
 			}else{
 				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');

@@ -87,7 +87,7 @@
 			document.getElementById('nb_input_experiences').value = nb_experiences;
 
 			/*-- On ajoute le nouvel input d'expériences professionnelles --*/
-			$("#form-experiences").append('<div class="row" id="panel-exp-'+experiences+'" style="padding-top: 20px;"><div class="form-floating col"><div class="panel"><div class="panel-heading custom-header-panel" style="height: 45px;"><h3 class="panel-title">expérience '+experiences+' <a class="btn" id="'+experiences+'" onclick="suppr_input_experiences(this.id)" style="background-color: rgb(180, 180, 180);">Supprimer</a></h3></div><div class="panel-body"><div class="form-group row justify-content-center" style="padding-bottom: 20px;"><div class="row"><div class="form-floating col"><input type="text" name="exp_ent_'+experiences+'" class="form-control" id="exp_ent_'+experiences+'" placeholder="Entreprise"><label class="col-md-3" for="exp_ent_'+experiences+'">Entreprise</label></div><div class="form-floating col"><input type="text" name="exp_ville_'+experiences+'" class="form-control" id="exp_ville_'+experiences+'" placeholder="Ville"><label class="col-md-3" for="exp_ville_'+experiences+'">Ville</label></div><div class="form-floating col"><input type="text" name="exp_poste_'+experiences+'" class="form-control" id="exp_poste_'+experiences+'" placeholder="Poste"><label class="col-md-3" for="exp_poste_'+experiences+'">Poste</label></div></div><div class="row" style="width: 90%;"><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_deb_'+experiences+'" class="form-control" id="exp_date_deb_'+experiences+'" placeholder="Date de début"><label class="col-md-3" for="exp_date_deb_'+experiences+'">Date début</label></div><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_fin_'+experiences+'" class="form-control" id="exp_date_fin_'+experiences+'" placeholder="Date de fin"><label class="col-md-3" for="exp_date_fin_'+experiences+'">Date fin</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_desc_'+experiences+'" class="form-control" id="exp_desc_'+experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_desc_'+experiences+'">Descriptif mission</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_env_'+experiences+'" class="form-control" id="exp_env_'+experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_env_'+experiences+'">Environnement mission</label></div></div></div></div></div></div></div></div>');
+			$("#form-experiences").append('<div class="row" id="panel-exp-'+experiences+'" style="padding-top: 20px;"><div class="form-floating col"><div class="panel"><div class="panel-heading custom-header-panel" style="height: 45px;"><h3 class="panel-title">expérience '+experiences+' <a class="btn" id="'+experiences+'" onclick="suppr_input_experiences(this.id)" style="background-color: rgb(180, 180, 180);">Supprimer</a></h3></div><div class="panel-body"><div class="form-group row justify-content-center" style="padding-bottom: 20px;"><div class="row"><div class="form-floating col"><input type="text" name="exp_ent_'+experiences+'" class="form-control" id="exp_ent_'+experiences+'" placeholder="Entreprise"><label class="col-md-3" for="exp_ent_'+experiences+'">Entreprise</label></div><div class="form-floating col"><input type="text" name="exp_ville_'+experiences+'" class="form-control" id="exp_ville_'+experiences+'" placeholder="Ville"><label class="col-md-3" for="exp_ville_'+experiences+'">Ville</label></div><div class="form-floating col"><input type="text" name="exp_poste_'+experiences+'" class="form-control" id="exp_poste_'+experiences+'" placeholder="Poste"><label class="col-md-3" for="exp_poste_'+experiences+'">Poste</label></div></div><div class="row" style="width: 90%;"><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_deb_'+experiences+'" class="form-control" id="exp_date_deb_'+experiences+'" placeholder="Date de début"><label class="col-md-3" for="exp_date_deb_'+experiences+'">Date début</label></div><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_fin_'+experiences+'" class="form-control" id="exp_date_fin_'+experiences+'" placeholder="Date de fin"><label class="col-md-3" for="exp_date_fin_'+experiences+'">Date fin</label></div></div><div class="row" style="width: 90%;"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><input type="text" name="exp_titre_'+experiences+'" class="form-control" id="exp_titre_'+experiences+'" placeholder="Titre de la mission"><label class="col-md-3" for="exp_titre_'+experiences+'">Titre mission</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_desc_'+experiences+'" class="form-control" id="exp_desc_'+experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_desc_'+experiences+'">Descriptif mission</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_env_'+experiences+'" class="form-control" id="exp_env_'+experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_env_'+experiences+'">Environnement mission</label></div></div></div></div></div></div></div></div>');
 		}
 		/*-----------------------------------------------------------------*/
 
@@ -117,7 +117,7 @@
 			<!-- Titre -->
 
 			<!-- Formulaire pour ajouter un candidat -->
-			<form id="formCreateProfil" action="{{ (path('app_profil_genererpdf')) }}" method="post" target="_blank" class="was-validated">
+			<form id="formCreateProfil" method="post" target="_blank" class="was-validated">
 				<!-- Saisie informations du candidat -->
 				<div class="panel">
 					<div class="panel-heading custom-header-panel">
@@ -172,7 +172,7 @@
 
 
 						<!-- Poste et Années d'expérience -->
-						<div class="form-group row justify-content-center">
+						<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
 							<div class="row" style="width: 70%; padding-top: 10px;">
 								<div class="form-floating col">
 									<input type="text" name="poste" class="form-control" id="poste" placeholder="poste" required>
@@ -192,39 +192,6 @@
 							</div>
 						</div>
 						<!-- Poste et Années d'expérience -->
-
-
-						<!-- Statut de l'utilisateur -->
-						<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
-							<div class="row" style="width: 70%; padding-top: 10px;">
-								<div class="row">
-									<div class="col" style="padding-left: 50px;">
-										<h6>Statut : </h6>
-									</div>
-
-									<div class="col" style="margin-left: -50px;">
-										<input type="radio" name="statut" class="form-check-input" id="statut_undefined" value="undefined" checked>
-										<label class="form-check-label" for="status_undefined">Non défini</label>
-									</div>
-
-									<div class="col" style="margin-left: 0px;">
-										<input type="radio" name="statut" class="form-check-input" id="statut_1" value="option_1">
-										<label class="form-check-label" for="statut_1">En recherche</label>
-									</div>
-
-									<div class="col" style="margin-left: 0px;">
-										<input type="radio" name="statut" class="form-check-input" id="statut_2" value="option_2">
-										<label class="form-check-label" for="statut_2">Push vers client</label>
-									</div>
-
-									<div class="col" style="margin-left: 0px;">
-										<input type="radio" name="statut" class="form-check-input" id="statut_3" value="option_3">
-										<label class="form-check-label" for="statut_3">En mission</label> 
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- Statut de l'utilisateur -->
 					</div>
 				</div>
 				<!-- Saisie informations du candidat -->
@@ -446,7 +413,12 @@
 														<label class="col-md-3" for="exp_date_fin_1">Date fin</label>
 													</div>
 												</div>
-
+												<div class="row" style="width: 90%;">
+													<div class="form-floating col" style="padding-top: 10px;">
+														<input type="text" name="exp_titre_1" class="form-control" id="exp_titre_1" placeholder="Titre de la mission">
+														<label class="col-md-3" for="exp_titre_1">Titre mission</label>
+													</div>
+												</div>
 												<div class="row" style="width: 90%;">
 													<div class="form-floating col" style="padding-top: 10px;">
 														<textarea name="exp_desc_1" class="form-control" id="exp_desc_1" style="height: 200px;"></textarea>
@@ -479,12 +451,34 @@
 				<input type="hidden" name="nb_input_experiences" id="nb_input_experiences" value="1">
 				<!-- Inputs nombre de champs -->
 
+				<div style="display:flex;justify-content:center">
+				<!-- Bouton de validation du formulaire -->
+				<input type="button" id="inputSubmitBtn" data-bs-toggle="modal" data-bs-target="#confirm-submit" class="form_create_profil_button" value="Créer le profil">
+				<!-- Bouton de validation du formulaire -->
 
-				<!-- Bouton de validation du formulaire -->
-				<input type="button" id="inputSubmitFormCreateProfil" class="form-button" value="Créer le profil">
-				<!-- Bouton de validation du formulaire -->
+				<input type="button" id="inputSubmitFormApercuPdf" class="form_create_profil_button" value="Voir le pdf">
+				
+				</div>
 			</form>
 			<!-- Formulaire pour ajouter un candidat -->
+
+
+			<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="confirm-submit" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							Confirmation du profil
+						</div>
+						<div class="modal-body">
+							Voulez-vous créer ce profil ?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-bs-dismiss="modal">Annuler</button>
+							<a href="#" id="inputSubmitFormCreateProfil" class="btn btn-success success">Créer</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<!-- Contenu de la page -->
 {% endblock %}

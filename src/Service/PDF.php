@@ -91,6 +91,7 @@ class PDF extends FPDF{
                 $EXP_POSTE = htmlspecialchars_decode($EXP["Poste"]);
                 $DATE_DEBUT = htmlspecialchars_decode($EXP["Date_debut"]);
                 $DATE_FIN = htmlspecialchars_decode($EXP["Date_fin"]);
+                $TITRE_EXP = htmlspecialchars_decode($EXP["Titre"]);
                 $ENV = htmlspecialchars_decode($EXP["Environnement"]);
 
                 if ($EXP["Descriptif"] != NULL) {
@@ -102,7 +103,7 @@ class PDF extends FPDF{
                     $DESC = NULL;
                 }
 
-                $this->EXPERIENCES[] = array("Entreprise" => $ENT, "Date_debut" => $DATE_DEBUT, "Date_fin" => $DATE_FIN, "Ville" => $VILLE, "Poste" => $EXP_POSTE, "Descriptif" => $DESC, "Environnement" => $ENV);
+                $this->EXPERIENCES[] = array("Entreprise" => $ENT, "Date_debut" => $DATE_DEBUT, "Date_fin" => $DATE_FIN, "Ville" => $VILLE, "Poste" => $EXP_POSTE, "Titre" =>$TITRE_EXP, "Descriptif" => $DESC, "Environnement" => $ENV);
             }
         } else {
             $this->EXPERIENCES = NULL;
@@ -129,44 +130,28 @@ class PDF extends FPDF{
     /*-- Fonction pour construire le bas de page --*/
     /*---------------------------------------------*/
     function footer() {
-        if (isset($this->PROFIL)  && ($this->PROFIL != NULL)) {
-            $this->SetFont("Verdana", "" , 6.5);
-            $this->SetTextColor(0, 0, 0);
-
-            $this->SetY(28.2);
-            $this->SetX(1.5);
-            $this->MultiCell(0, 0, utf8_decode("+ 33 0 xx xx xx xx"));
-
-            $this->SetY(28.5);
-            $this->SetX(1.5);
-            $this->MultiCell(0, 0, utf8_decode("Nom.prénom@consort-group.com"));
-
-            $this->SetY(28.9);
-            $this->SetX(1.5);
-            $this->MultiCell(0, 0, utf8_decode("Date de réalisation du dossier : MM.AAAA"));
-        }
-
+    
         $this->SetFont("Verdana", "", 6.5);
         $this->SetTextColor(0, 0, 0);
 
         $this->SetY(28.2);
-        $this->SetX(6.5);
+        $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Atlantica 1 - Bat C - 75 rue des français libres - 44200 NANTES"));
 
         $this->SetY(28.5);
-        $this->SetX(6.5);
+        $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Immeuble Oxygène - 13 rue Claude Chappe - 35510 CESSON SEVIGNE"));
 
         $this->SetY(28.8);
-        $this->SetX(6.5);
+        $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Consort Ouest - La French Tech - 8 place Mgr Rumeau - 49100 ANGERS"));
 
         $this->SetY(29.1);
-        $this->SetX(6.5);
+        $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Consort Group : Immeuble Cap Etoile - 58, Boulevard Gouvion-Saint-Cyr - 75858 PARIS Cedex 17"));
 
         $this->SetY(29.4);
-        $this->SetX(6.5);
+        $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Tél. : +33 1 40 88 05 05 - Fax : 33 1 40 88 19 90 - www.consort-group.com"));
 
     }
@@ -186,7 +171,7 @@ class PDF extends FPDF{
         $this->write_connaissances();
         $this->write_formations();
        // $this->write_certifications();
-       // $this->write_experiences();
+        $this->write_experiences();
     }
     /*--------------------------------------------------------*/
 
@@ -581,16 +566,8 @@ class PDF extends FPDF{
 
     function write_experiences() {
         if (isset($this->EXPERIENCES) && $this->EXPERIENCES != NULL) {
-             $this->AddPage();
-             $this->WIDTH = 3.5;
-
-             $this->SetFont("Verdana", "", 14);
-             $this->SetTextColor(0, 134, 141);
-
-             $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("EXPERIENCES PROFESIONNELLES"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->AddPage();
+            $this->WIDTH = 7.2;
 
             $this->WIDTH = $this->WIDTH + 0.5;
             $index = 0;
@@ -792,10 +769,11 @@ class PDF extends FPDF{
                 $WIDTH = $this->WIDTH;
                 if ($EXP["Date_debut"] != "") {
                     $this->SetFont("Verdana", "B", 10);
-                    $this->SetTextColor(0 , 134, 141);
+                    $this->SetTextColor(255, 255, 255);
+                    $this->SetFillColor(73, 101, 109);
 
                     if ($EXP["Date_fin"] != "") {
-                        $DATE = "De " . $EXP["Date_debut"] . " à " . $EXP["Date_fin"];
+                        $DATE = "De " . date_format(date_create($EXP["Date_debut"]), 'm/Y') . " à " . date_format(date_create($EXP["Date_fin"]), 'm/Y');
                         $TEXT_ARRAY = explode(' ', $DATE);
                         $TEXT = "";
 
@@ -809,7 +787,7 @@ class PDF extends FPDF{
                             } else {
                                 $this->SetY($this->WIDTH - 0.25);
                                 $this->SetX(2.5);
-                                $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L");
+                                $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L", true);
 
                                 $TEXT = "";
                                 if (($i + 1) < count($TEXT_ARRAY) ) {
@@ -824,10 +802,10 @@ class PDF extends FPDF{
 
                         $this->SetY($this->WIDTH - 0.25);
                         $this->SetX(2.5);
-                        $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L");
+                        $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L", true);
                         $this->WIDTH = $this->WIDTH + 0.5;
                     } else {
-                        $DATE = "Depuis " . $EXP["Date_debut"];
+                        $DATE = "Depuis " . date_format(date_create($EXP["Date_debut"]), 'm.Y'). "        ";
                         $TEXT_ARRAY = explode(' ', $DATE);
                         $TEXT = "";
 
@@ -841,7 +819,7 @@ class PDF extends FPDF{
                             } else {
                                 $this->SetY($this->WIDTH - 0.25);
                                 $this->SetX(2.5);
-                                $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L");
+                                $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L", true);
 
                                 $TEXT = "";
                                 if (($i + 1) < count($TEXT_ARRAY) ) {
@@ -856,14 +834,14 @@ class PDF extends FPDF{
 
                         $this->SetY($this->WIDTH - 0.25);
                         $this->SetX(2.5);
-                        $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L");
+                        $this->MultiCell(4.5, 0.5, utf8_decode($TEXT), 0, "L", true);
                         $this->WIDTH = $this->WIDTH + 0.5;
                     }
                 }
 
                 if ($EXP["Entreprise"] != "") {
-                    $this->SetFillColor(0, 134, 141);
-                    $this->SetTextColor(0, 0, 0);
+                    $this->SetTextColor(255, 255, 255);
+                    $this->SetFillColor(73, 101, 109);
                     $this->WIDTH = $WIDTH;
 
                     if ($EXP["Ville"] != "") {
@@ -982,6 +960,22 @@ class PDF extends FPDF{
                         $this->SetX(6.5);
                         $this->MultiCell(13, 0.5, utf8_decode($TEXT), 0, 1, "C", True);
                         $this->WIDTH = $this->WIDTH + 0.5;
+                    }
+
+                    if ($EXP["Titre"] != "") {
+                        $this->SetFont("Verdana", "B", 10);
+                        $this->SetTextColor(0, 0, 0);
+                        $this->WIDTH = $this->WIDTH + 0.75;
+
+                        if ($this->WIDTH > 27) {
+                            $this->AddPage();
+                            $this->WIDTH = 3.5;
+                        }
+
+                        $this->SetY($this->WIDTH);
+                        $this->SetX(2.5);
+                        $this->MultiCell(0, 0, utf8_decode($EXP["Titre"]));
+
                     }
 
                     if ($EXP["Descriptif"] != "") {

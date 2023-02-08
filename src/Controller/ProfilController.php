@@ -34,11 +34,18 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }    
     }
-
-    #[Route('/genererpdf', name: 'app_profil_genererpdf')]
+    #[Route('/createprofil', name: 'app_profil_create_profil')]
     public function genererPdf(Request $request, SessionInterface $session): Response
     {
+        var_dump('create');
+        exit;
+    }
+
+    #[Route('/genererpdf', name: 'app_profil_genererpdf')]
+    public function genererPdfTest(Request $request, SessionInterface $session): Response
+    {
         if($session->get('email') != null){
+
             $profil = $request->get('profil');
             $poste = $request->get('poste');
             $nom = $request->get('nom');
@@ -47,7 +54,6 @@ class ProfilController extends AbstractController
             $telephone = $request->get('telephone');
             $annees_exp = $request->get('annees_exp');
             $date_entree = $request->get('date_entree');
-            $statut = $request->get('statut');
             $comp_cle = $request->get('comp_cle');
             $connaissance_1 = $request->get('connaissance_1');
             $domaine_1 = $request->get('domaine_1');
@@ -135,16 +141,6 @@ class ProfilController extends AbstractController
                 $DATE_ENTREE = $date_entree;
             } else {
                 $DATE_ENTREE = NULL;
-            }
-            /*--------------------------------------------------*/
-
-
-            /*-- Récupération du nombre d'années d'expérience --*/
-            /*--------------------------------------------------*/
-            if (isset($statut) && $statut != NULL) {
-                $STATUT = htmlspecialchars($statut);
-            } else {
-                $STATUT = NULL;
             }
             /*--------------------------------------------------*/
 
@@ -265,6 +261,7 @@ class ProfilController extends AbstractController
                     $EXP_POSTE = "";
                     $DATE_DEBUT = "";
                     $DATE_FIN = "";
+                    $TITRE_EXP = "";
                     $DESC = "";
                     $ENV = "";
 
@@ -288,6 +285,10 @@ class ProfilController extends AbstractController
                         $DATE_FIN = htmlspecialchars(str_replace("’", "'", $_POST['exp_date_fin_' . $i]));
                     }
 
+                    if (isset($_POST['exp_titre_' . $i]) && $_POST['exp_titre_' . $i] != NULL) {
+                        $TITRE_EXP = htmlspecialchars(str_replace("’", "'", $_POST['exp_titre_' . $i]));
+                    }
+
                     if (isset($_POST['exp_desc_' . $i]) && $_POST['exp_desc_' . $i] != NULL) {
                         $DESC = explode("\n", htmlspecialchars(str_replace("’", "'", $_POST['exp_desc_' . $i])));
                     }
@@ -298,7 +299,7 @@ class ProfilController extends AbstractController
                         $ENV = str_replace("\n", ", ", $ENV);
                     }
 
-                    $EXPERIENCES[] = array("Entreprise" => $ENT, "Date_debut" => $DATE_DEBUT, "Date_fin" => $DATE_FIN, "Ville" => $VILLE, "Poste" => $EXP_POSTE,"Descriptif" => $DESC, "Environnement" => $ENV);
+                    $EXPERIENCES[] = array("Entreprise" => $ENT, "Date_debut" => $DATE_DEBUT, "Date_fin" => $DATE_FIN, "Ville" => $VILLE, "Poste" => $EXP_POSTE,"Titre" => $TITRE_EXP,"Descriptif" => $DESC, "Environnement" => $ENV);
                     $i++;
                 endwhile;
             } else {
