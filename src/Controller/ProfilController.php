@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Domaine;
 use App\Entity\Langue;
 use App\Entity\Niveau;
+use App\Entity\Site;
 use App\Service\PDF;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,12 +21,14 @@ class ProfilController extends AbstractController
     {
         if($session->get('email') != null){
         
+            $sites = $doctrine->getRepository(Site::class)->findAll();
             $domaines = $doctrine->getRepository(Domaine::class)->findAll();
             $langues = $doctrine->getRepository(Langue::class)->findAll();
             $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
 
             return $this->render('profil/create.html.twig', [
                 'controller_name' => 'ProfilController',
+                'sites' => $sites,
                 'domaines' => $domaines,
                 'langues' => $langues,
                 'niveaux' => $niveaux

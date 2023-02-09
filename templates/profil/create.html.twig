@@ -126,15 +126,26 @@
 					<div class="panel-body">
 						<!-- Profil -->
 						<div class="form-group row justify-content-center">
-							<div class="row" style="width: 30%;">
-								<div class="form-floating">
+							<div class="row" style="width: 70%;">
+								<div class="form-floating col">
 									<input type="text" name="profil" class="form-control" id="profil" placeholder="profil" minlength="3" maxlength="3" required>
 									<label class="col-md-3" for="profil">Profil</label>
+								</div>
+
+								<div class="form-floating col">
+									<select name="site" class="form-select form-select-sm form-control" id="site" placeholder="site" required>
+										<option selected disabled>Sites</option>
+										{% for site in sites %}
+											<option value="{{ site.id }}:{{ site.localisation }}">
+											{{ site.localisation }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="site">Sites</label>
 								</div>
 							</div>
 						</div>
 						<!-- Profil -->
-
 
 						<div id="messageProfilExistant" class="hidden text-danger row justify-content-center"></div>
 						<!-- Prénom et Nom -->
