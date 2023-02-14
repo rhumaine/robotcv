@@ -9,6 +9,8 @@ class PDF extends FPDF{
     /*-- Paramètres de la classe --*/
     /*-----------------------------*/
     protected $PROFIL;			/*-- Le nom de profil du candidat --*/
+    protected $SITE;			/*-- Le site --*/
+    protected $GROUPE;			/*-- Le GROUPE --*/
     protected $POSTE;			/*-- Le poste auquel postule le candidat --*/
     protected $COMPETENCES;		/*-- La liste des compétences clés du candidat --*/
     protected $ANNEES_EXP;		/*-- Le nombre d'années d'expérience du candidat --*/
@@ -24,7 +26,7 @@ class PDF extends FPDF{
 
     /*-- Constructeur de la classe --*/
     /*-------------------------------*/
-    function __construct($PROFIL=NULL, $POSTE=NULL, $COMPETENCES=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
+    function __construct($PROFIL=NULL, $SITE=NULL, $GROUPE=NULL, $POSTE=NULL, $COMPETENCES=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
         /*-- Appel constructeur classe FPDF --*/
         /*------------------------------------*/
         parent::__construct("P", "cm", "A4");
@@ -33,6 +35,8 @@ class PDF extends FPDF{
         /*-- Initialisation variables --*/
         /*------------------------------*/
         $this->PROFIL = htmlspecialchars_decode($PROFIL);
+        $this->SITE = htmlspecialchars_decode($SITE);
+        $this->GROUPE = htmlspecialchars_decode($GROUPE);
         $this->POSTE = htmlspecialchars_decode($POSTE);
         $this->DATE_ENTREE = htmlspecialchars_decode($DATE_ENTREE);
 
@@ -122,7 +126,15 @@ class PDF extends FPDF{
     /*-- Fonction pour construire l'en-tête de page --*/
     /*------------------------------------------------*/
     function header() {
-        $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
+        switch ($this->GROUPE) {
+            case 1:
+                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
+                break;
+            case 2:
+                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
+                break;
+        }
+        
     }
     /*------------------------------------------------*/
 
@@ -134,22 +146,25 @@ class PDF extends FPDF{
         $this->SetFont("Verdana", "", 6.5);
         $this->SetTextColor(0, 0, 0);
 
-        $this->SetY(28.2);
-        $this->SetX(3.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Atlantica 1 - Bat C - 75 rue des français libres - 44200 NANTES"));
-
-        $this->SetY(28.5);
-        $this->SetX(3.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Immeuble Oxygène - 13 rue Claude Chappe - 35510 CESSON SEVIGNE"));
 
         $this->SetY(28.8);
         $this->SetX(3.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort Ouest - La French Tech - 8 place Mgr Rumeau - 49100 ANGERS"));
-
-        $this->SetY(29.1);
-        $this->SetX(3.5);
-        $this->MultiCell(0, 0, utf8_decode("Consort Group : Immeuble Cap Etoile - 58, Boulevard Gouvion-Saint-Cyr - 75858 PARIS Cedex 17"));
-
+      
+       switch ($this->SITE) {
+            case 1:
+                $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Atlantica 1 - Bat C - 75 rue des français libres - 44200 NANTES"));
+                break;
+            case 2:
+                $this->MultiCell(0, 0, utf8_decode("Consort Ouest - Immeuble Oxygène - 13 rue Claude Chappe - 35510 CESSON SEVIGNE"));
+                break;
+            case 3:
+                $this->MultiCell(0, 0, utf8_decode("Consort Ouest - La French Tech - 8 place Mgr Rumeau - 49100 ANGERS"));
+                break;
+            case 4:
+                $this->MultiCell(0, 0, utf8_decode("Consort Group : Immeuble Cap Etoile - 58, Boulevard Gouvion-Saint-Cyr - 75858 PARIS Cedex 17"));
+                break;
+        }
+        
         $this->SetY(29.4);
         $this->SetX(3.5);
         $this->MultiCell(0, 0, utf8_decode("Tél. : +33 1 40 88 05 05 - Fax : 33 1 40 88 19 90 - www.consort-group.com"));

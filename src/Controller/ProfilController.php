@@ -50,6 +50,8 @@ class ProfilController extends AbstractController
         if($session->get('email') != null){
 
             $profil = $request->get('profil');
+            $site = $request->get('site');
+            $groupe = $request->get('groupe');
             $poste = $request->get('poste');
             $nom = $request->get('nom');
             $prenom = $request->get('prenom');
@@ -79,6 +81,22 @@ class ProfilController extends AbstractController
                 $PROFIL = htmlspecialchars($profil);
             } else {
                 $PROFIL = NULL;
+            }
+
+            /*-- Récupération du site --*/
+            /*----------------------------*/
+            if (isset($site) && $site  != NULL) {
+                $SITE = htmlspecialchars($site);
+            } else {
+                $SITE = NULL;
+            }
+
+            /*-- Récupération du site --*/
+            /*----------------------------*/
+            if (isset($groupe) && $groupe  != NULL) {
+                $GROUPE = htmlspecialchars($groupe);
+            } else {
+                $GROUPE = NULL;
             }
 
             /*-- Récupération du nom --*/
@@ -311,7 +329,7 @@ class ProfilController extends AbstractController
 
 
 
-            $pdf = new PDF($PROFIL, $POSTE, $COMPETENCES, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
+            $pdf = new PDF($PROFIL,$SITE,$GROUPE, $POSTE, $COMPETENCES, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
 
               
             $pdf->AliasNbPages();
