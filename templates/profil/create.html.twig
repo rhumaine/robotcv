@@ -136,12 +136,21 @@
 									<select name="site" class="form-select form-select-sm form-control" id="site" placeholder="site" required>
 										<option selected disabled>Sites</option>
 										{% for site in sites %}
-											<option value="{{ site.id }}:{{ site.localisation }}">
+											<option value="{{ site.id }}">
 											{{ site.localisation }}
 											</option>
 										{% endfor %}
 									</select>
 									<label class="col-md-3" for="site">Sites</label>
+								</div>
+
+								<div class="form-floating col">
+									<select name="groupe" class="form-select form-select-sm form-control" id="groupe" placeholder="groupe" required>
+										<option selected disabled>Groupe</option>
+										<option value="1">Consortia</option>
+										<option value="2">Consortis</option>
+									</select>
+									<label class="col-md-3" for="site">Groupe</label>
 								</div>
 							</div>
 						</div>
