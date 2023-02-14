@@ -10,15 +10,6 @@
 
 <script type="text/javascript">
 
-$('#submitBtn').click(function() {
-});
-
-$('#submit').click(function(){
-    alert('submitting');
-    $('#inputSubmitFormCreateProfil').submit();
-});
-
-
 	$('#inputSubmitFormCreateProfil').on('click', function(){
 		$.ajax({
 			url: "{{ (path('ajax_check_profil')) }}",
