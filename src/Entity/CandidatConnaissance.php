@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CandidatLangueRepository;
+use App\Repository\CandidatConnaissanceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CandidatLangueRepository::class)]
-class CandidatLangue
+#[ORM\Entity(repositoryClass: CandidatConnaissanceRepository::class)]
+class CandidatConnaissance
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,10 +14,10 @@ class CandidatLangue
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $id_langue = null;
+    private ?int $id_domaine = null;
 
-    #[ORM\Column]
-    private ?int $niveau = null;
+    #[ORM\Column(length: 255)]
+    private ?string $connaissance = null;
 
     #[ORM\Column]
     private ?int $id_candidat = null;
@@ -27,26 +27,26 @@ class CandidatLangue
         return $this->id;
     }
 
-    public function getIdLangue(): ?int
+    public function getIdDomaine(): ?int
     {
-        return $this->id_langue;
+        return $this->id_domaine;
     }
 
-    public function setIdLangue(int $id_langue): self
+    public function setIdDomaine(int $id_domaine): self
     {
-        $this->id_langue = $id_langue;
+        $this->id_domaine = $id_domaine;
 
         return $this;
     }
 
-    public function getNiveau(): ?int
+    public function getConnaissance(): ?string
     {
-        return $this->niveau;
+        return $this->connaissance;
     }
 
-    public function setNiveau(int $niveau): self
+    public function setConnaissance(string $connaissance): self
     {
-        $this->niveau = $niveau;
+        $this->connaissance = $connaissance;
 
         return $this;
     }

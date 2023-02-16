@@ -5,43 +5,21 @@ namespace App\Entity;
 use App\Repository\SiteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Site
- *
- * @ORM\Table(name="site")
- * @ORM\Entity(repositoryClass="App\Repository\SiteRepository")
- */
+#[ORM\Entity(repositoryClass: SiteRepository::class)]
 class Site
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="Id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Localisation", type="string", length=255, nullable=false)
-     */
-    private ?string $Localisation = null;
+    #[ORM\Column(length: 255)]
+    private ?string $localisation = null;
 
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="Adresse", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="Code_postal", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column]
     private ?int $code_postal = null;
 
     public function getId(): ?int
@@ -51,12 +29,12 @@ class Site
 
     public function getLocalisation(): ?string
     {
-        return $this->Localisation;
+        return $this->localisation;
     }
 
-    public function setLocalisation(string $Localisation): self
+    public function setLocalisation(string $localisation): self
     {
-        $this->Localisation = $Localisation;
+        $this->localisation = $localisation;
 
         return $this;
     }

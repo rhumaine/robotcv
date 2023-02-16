@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Certification;
+use App\Entity\CandidatExperience;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Certification>
+ * @extends ServiceEntityRepository<CandidatExperience>
  *
- * @method Certification|null find($id, $lockMode = null, $lockVersion = null)
- * @method Certification|null findOneBy(array $criteria, array $orderBy = null)
- * @method Certification[]    findAll()
- * @method Certification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CandidatExperience|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CandidatExperience|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CandidatExperience[]    findAll()
+ * @method CandidatExperience[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CertificationRepository extends ServiceEntityRepository
+class CandidatExperienceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Certification::class);
+        parent::__construct($registry, CandidatExperience::class);
     }
 
-    public function save(Certification $entity, bool $flush = false): void
+    public function save(CandidatExperience $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CertificationRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Certification $entity, bool $flush = false): void
+    public function remove(CandidatExperience $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CertificationRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Certification[] Returns an array of Certification objects
+//     * @return CandidatExperience[] Returns an array of CandidatExperience objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CertificationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Certification
+//    public function findOneBySomeField($value): ?CandidatExperience
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

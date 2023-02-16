@@ -2,35 +2,23 @@
 
 namespace App\Entity;
 
+use App\Repository\DomaineRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Domaine
- *
- * @ORM\Table(name="domaine", uniqueConstraints={@ORM\UniqueConstraint(name="Domaine", columns={"Domaine"})})
- * @ORM\Entity(repositoryClass="App\Repository\DomaineRepository")
- */
+#[ORM\Entity(repositoryClass: DomaineRepository::class)]
 class Domaine
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ID_Domaine", type="integer", nullable=false, options={"comment"="Identifiant du domaine"})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idDomaine;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Domaine", type="string", length=100, nullable=false, options={"comment"="Domaine technique"})
-     */
-    private $domaine;
+    #[ORM\Column(length: 255)]
+    private ?string $domaine = null;
 
-    public function getIdDomaine(): ?int
+    public function getId(): ?int
     {
-        return $this->idDomaine;
+        return $this->id;
     }
 
     public function getDomaine(): ?string
@@ -44,6 +32,4 @@ class Domaine
 
         return $this;
     }
-
-
 }

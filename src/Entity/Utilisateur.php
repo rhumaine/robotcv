@@ -2,67 +2,35 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Utilisateur
- *
- * @ORM\Table(name="utilisateur", uniqueConstraints={@ORM\UniqueConstraint(name="Email", columns={"email"}), @ORM\UniqueConstraint(name="Email_2", columns={"email"})}, indexes={@ORM\Index(name="ID_Statut", columns={"ID_Statut"})})
- * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
- */
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ID_Utilisateur", type="integer", nullable=false, options={"comment"="Identifiant de l'utilisateur"})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idUtilisateur;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom", type="string", length=100, nullable=false, options={"comment"="Prénom de l'utilisateur"})
-     */
-    private $prenom;
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=100, nullable=false, options={"comment"="Nom de l'utilisateur"})
-     */
-    private $nom;
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=200, nullable=false, options={"comment"="Adresse email de l'utilisateur"})
-     */
-    private $email;
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=65535, nullable=false, options={"comment"="Mot de passe de l'utilisateur"})
-     */
-    private $password;
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
-    /**
-     * @var \Statut
-     *
-     * @ORM\ManyToOne(targetEntity="Statut")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ID_Statut", referencedColumnName="ID_Statut")
-     * })
-     */
-    private $idStatut;
+    #[ORM\Column]
+    private ?int $id_statut = null;
 
-    public function getIdUtilisateur(): ?int
+    public function getId(): ?int
     {
-        return $this->idUtilisateur;
+        return $this->id;
     }
 
     public function getPrenom(): ?string
@@ -113,20 +81,15 @@ class Utilisateur
         return $this;
     }
 
-    public function getIdStatut(): ?Statut
+    public function getIdStatut(): ?int
     {
-        return $this->idStatut;
+        return $this->id_statut;
     }
 
-    public function setIdStatut(?Statut $idStatut): self
+    public function setIdStatut(int $id_statut): self
     {
-        $this->idStatut = $idStatut;
+        $this->id_statut = $id_statut;
 
         return $this;
     }
-
-    public function __toString() {
-        return $this->email;
-    }
-
 }

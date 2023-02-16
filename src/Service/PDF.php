@@ -138,10 +138,10 @@ class PDF extends FPDF{
     function header() {
         switch ($this->GROUPE) {
             case 1:
-                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
+                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete_consortia.png", 0, 0,21);
                 break;
             case 2:
-                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete.png", 0, 0,21);
+                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete_consortis.png", 0, 0,21);
                 break;
         }
         

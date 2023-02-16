@@ -2,35 +2,23 @@
 
 namespace App\Entity;
 
+use App\Repository\LangueRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Langue
- *
- * @ORM\Table(name="langue", uniqueConstraints={@ORM\UniqueConstraint(name="Langue", columns={"Langue"})})
- * @ORM\Entity(repositoryClass="App\Repository\LangueRepository")
- */
+#[ORM\Entity(repositoryClass: LangueRepository::class)]
 class Langue
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ID_Langue", type="integer", nullable=false, options={"comment"="Identifiant de la langue"})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idLangue;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Langue", type="string", length=50, nullable=false, options={"comment"="Langue"})
-     */
-    private $langue;
+    #[ORM\Column(length: 255)]
+    private ?string $langue = null;
 
-    public function getIdLangue(): ?int
+    public function getId(): ?int
     {
-        return $this->idLangue;
+        return $this->id;
     }
 
     public function getLangue(): ?string
@@ -44,6 +32,4 @@ class Langue
 
         return $this;
     }
-
-
 }

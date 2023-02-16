@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Candidat;
+use App\Entity\CandidatConnaissance;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Candidat>
+ * @extends ServiceEntityRepository<CandidatConnaissance>
  *
- * @method Candidat|null find($id, $lockMode = null, $lockVersion = null)
- * @method Candidat|null findOneBy(array $criteria, array $orderBy = null)
- * @method Candidat[]    findAll()
- * @method Candidat[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CandidatConnaissance|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CandidatConnaissance|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CandidatConnaissance[]    findAll()
+ * @method CandidatConnaissance[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CandidatRepository extends ServiceEntityRepository
+class CandidatConnaissanceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Candidat::class);
+        parent::__construct($registry, CandidatConnaissance::class);
     }
 
-    public function save(Candidat $entity, bool $flush = false): void
+    public function save(CandidatConnaissance $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CandidatRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Candidat $entity, bool $flush = false): void
+    public function remove(CandidatConnaissance $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -39,18 +39,8 @@ class CandidatRepository extends ServiceEntityRepository
         }
     }
 
-    public function checkEmailExists($email){
-        $resultat = $this->createQueryBuilder('c')
-                    ->andWhere('c.Email = :valEmail')
-                    ->setParameter('valEmail', $email)
-                    ->getQuery()
-                    ->getScalarResult();
-                    
-        return $resultat;
-    }
-
 //    /**
-//     * @return Candidat[] Returns an array of Candidat objects
+//     * @return CandidatConnaissance[] Returns an array of CandidatConnaissance objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -64,7 +54,7 @@ class CandidatRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Candidat
+//    public function findOneBySomeField($value): ?CandidatConnaissance
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

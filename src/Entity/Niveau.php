@@ -2,35 +2,23 @@
 
 namespace App\Entity;
 
+use App\Repository\NiveauRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Niveau
- *
- * @ORM\Table(name="niveau", uniqueConstraints={@ORM\UniqueConstraint(name="Niveau", columns={"Niveau"})})
- * @ORM\Entity(repositoryClass="App\Repository\NiveauRepository")
- */
+#[ORM\Entity(repositoryClass: NiveauRepository::class)]
 class Niveau
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ID_Niveau", type="integer", nullable=false, options={"comment"="Identifiant du niveau"})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idNiveau;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Niveau", type="string", length=50, nullable=false, options={"comment"="Niveau de pratique"})
-     */
-    private $niveau;
+    #[ORM\Column(length: 255)]
+    private ?string $niveau = null;
 
-    public function getIdNiveau(): ?int
+    public function getId(): ?int
     {
-        return $this->idNiveau;
+        return $this->id;
     }
 
     public function getNiveau(): ?string
@@ -44,6 +32,4 @@ class Niveau
 
         return $this;
     }
-
-
 }

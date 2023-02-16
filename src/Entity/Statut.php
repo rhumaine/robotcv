@@ -2,35 +2,23 @@
 
 namespace App\Entity;
 
+use App\Repository\StatutRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Statut
- *
- * @ORM\Table(name="statut", uniqueConstraints={@ORM\UniqueConstraint(name="Statut", columns={"Statut"}), @ORM\UniqueConstraint(name="Statut_2", columns={"Statut"})})
- * @ORM\Entity(repositoryClass="App\Repository\StatutRepository")
- */
+#[ORM\Entity(repositoryClass: StatutRepository::class)]
 class Statut
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="ID_Statut", type="integer", nullable=false, options={"comment"="Identifiant du statut"})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $idStatut;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Statut", type="string", length=50, nullable=false, options={"comment"="Statut"})
-     */
-    private $statut;
+    #[ORM\Column(length: 255)]
+    private ?string $statut = null;
 
-    public function getIdStatut(): ?int
+    public function getId(): ?int
     {
-        return $this->idStatut;
+        return $this->id;
     }
 
     public function getStatut(): ?string
@@ -44,6 +32,4 @@ class Statut
 
         return $this;
     }
-
-
 }
