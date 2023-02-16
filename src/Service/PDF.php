@@ -18,6 +18,7 @@ class PDF extends FPDF{
     protected $CONNAISSANCES;	/*-- La liste des connaissances techniques du candidat --*/
     protected $FORMATIONS;		/*-- La liste des formations suivies par le candidat --*/
     protected $LANGUES;			/*-- La liste des langues parlées par le candidat --*/
+    protected $SAVOIR;          /*-- Savoir-etre du candidat --*/
     protected $EXPERIENCES;		/*-- La liste des expériences professionnelles du candidat --*/
     protected $CERTIFICATIONS;
     protected $WIDTH;			/*-- Position de la hauteur actuelle dans la page --*/
@@ -26,7 +27,7 @@ class PDF extends FPDF{
 
     /*-- Constructeur de la classe --*/
     /*-------------------------------*/
-    function __construct($PROFIL=NULL, $SITE=NULL, $GROUPE=NULL, $POSTE=NULL, $COMPETENCES=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
+    function __construct($PROFIL=NULL, $SITE=NULL, $GROUPE=NULL, $POSTE=NULL, $COMPETENCES=NULL,$SAVOIR=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
         /*-- Appel constructeur classe FPDF --*/
         /*------------------------------------*/
         parent::__construct("P", "cm", "A4");
@@ -47,6 +48,15 @@ class PDF extends FPDF{
             }
         } else {
             $COMPETENCES = NULL;
+        }
+
+        $this->SAVOIR = array();
+        if ($SAVOIR != NULL) {
+            foreach ($SAVOIR AS $SAV) {
+                $this->SAVOIR[] = htmlspecialchars_decode($SAV);
+            }
+        } else {
+            $SAVOIR = NULL;
         }
 
         $this->ANNEES_EXP = htmlspecialchars_decode($ANNEES_EXP);
@@ -183,9 +193,10 @@ class PDF extends FPDF{
         $this->write_date_entree();
         $this->write_comp_cles();
         $this->write_langues();
+        $this->write_savoir();
         $this->write_connaissances();
         $this->write_formations();
-       // $this->write_certifications();
+        $this->write_certifications();
         $this->write_experiences();
     }
     /*--------------------------------------------------------*/
@@ -260,7 +271,6 @@ class PDF extends FPDF{
         }
     }
 
-
     function write_comp_cles() {
         if (isset($this->COMPETENCES) && $this->COMPETENCES != NULL) {
             $this->WIDTH = 8;
@@ -309,6 +319,57 @@ class PDF extends FPDF{
 
                 $this->SetY($this->WIDTH);
                 $this->SetX(3.5);
+                $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+
+                $this->WIDTH = $this->WIDTH + 0.5;
+            }
+        }
+    }
+
+    function write_savoir() {
+        if (isset($this->SAVOIR) && $this->SAVOIR != NULL) {
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+            $this->SetFillColor(73, 101, 109);
+
+            $this->SetY($this->WIDTH);
+            $this->SetX(1.2);
+            $this->MultiCell(2.8, 1, utf8_decode("Savoir-être :"), 0, 1, "C", TRUE);
+
+            $this->WIDTH = $this->WIDTH + 1.2;
+
+            foreach($this->SAVOIR AS $SAV) {
+                $this->SetFont("Verdana", "" , 8);
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFillColor(255, 255, 255);
+
+
+                $TEXT_ARRAY = explode(' ', $SAV);
+                $TEXT = "";
+
+                for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 13.5) {
+                        $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
+                    } else {
+                        $this->SetY($this->WIDTH);
+                        $this->SetX(1.2);
+                        $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+
+                        $TEXT = $TEXT_ARRAY[$i];
+                        $this->WIDTH = $this->WIDTH + 0.5;
+                        if ($this->WIDTH > 27) {
+                            $this->AddPage();
+                            $this->WIDTH = 3;
+                        }
+
+                        $this->SetY($this->WIDTH);
+                        $this->SetX(1.2);
+                        $this->MultiCell(14.5, 0.6, "", 0, 1, "C", TRUE);
+                    }
+                }
+
+                $this->SetY($this->WIDTH);
+                $this->SetX(1.2);
                 $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
 
                 $this->WIDTH = $this->WIDTH + 0.5;
@@ -369,7 +430,7 @@ class PDF extends FPDF{
 
             
             $this->SetY($this->WIDTH_BEFORE_LANGUE);
-            $this->SetX(6.2);            
+            $this->SetX(8.2);            
             $this->MultiCell(4.5, 1, utf8_decode("Autres Compétences:"), 0, 1, "C", TRUE);
 
 
@@ -388,18 +449,31 @@ class PDF extends FPDF{
                 $this->WIDTH = 7.2;
             }
 
+            /*   Transformation du tableau des autres compétences pour fusionner les domaines en doublons  */
+            $donnees_fusionnees = array();
+            foreach($this->CONNAISSANCES AS $CONN){
+
+                $domaine = $CONN["Domaine"];
+                $connaissance = $CONN["Connaissances"];
+                if (isset($donnees_fusionnees[$domaine])) {
+                    $donnees_fusionnees[$domaine] .= ", " . $connaissance;
+                } else {
+                    $donnees_fusionnees[$domaine] = $connaissance;
+                }
+            }
+
 
             $this->WIDTH = $this->WIDTH_BEFORE_LANGUE + 1.5;
 
-            foreach ($this->CONNAISSANCES AS $CONN) {
+            foreach ($donnees_fusionnees as $domaine => $connaissances) {
                 $this->SetFont("Verdana", "B", 8);
                 $this->SetTextColor(0, 0, 0);
 
                 $this->SetY($this->WIDTH);
-                $this->SetX(6.2);
-                $this->MultiCell(0, 0, utf8_decode($CONN["Domaine"]));
+                $this->SetX(8.2);
+                $this->MultiCell(0, 0, utf8_decode($domaine));
 
-                $TEXT_ARRAY = explode(' ', $CONN["Connaissances"]);
+                $TEXT_ARRAY = explode(' ', $connaissances);
                 $TEXT = "";
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
@@ -411,7 +485,7 @@ class PDF extends FPDF{
                         }
                     } else {
                         $this->SetY($this->WIDTH);
-                        $this->SetX(8.5);
+                        $this->SetX(10.5);
                         $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
                         if (($i + 1) < count($TEXT_ARRAY) ) {
@@ -425,7 +499,7 @@ class PDF extends FPDF{
                 }
                 $this->SetFont("Verdana", "", 8);
                 $this->SetY($this->WIDTH);
-                $this->SetX(8.5);
+                $this->SetX(10.5);
                 $this->MultiCell(0, 0, utf8_decode($TEXT), 0, "L");
 
                 $this->WIDTH = $this->WIDTH + 0.5;
@@ -441,7 +515,7 @@ class PDF extends FPDF{
 
             
             $this->SetY($this->WIDTH);
-            $this->SetX(6.2);            
+            $this->SetX(8.2);            
             $this->MultiCell(2.5, 1, utf8_decode("Formation:"), 0, 1, "C", TRUE);
 
             $WIDTH = $this->WIDTH;
@@ -467,7 +541,7 @@ class PDF extends FPDF{
                 $this->SetTextColor(0, 0, 0);
 
                 $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(6.2);
+                $this->SetX(8.2);
                 $this->MultiCell(3, 0.5, utf8_decode(date_format(date_create($FORM["Date"]), 'Y')));
 
                 $TEXT_ARRAY = explode(' ', $FORM["Formation"]);
@@ -497,7 +571,7 @@ class PDF extends FPDF{
 
                 $this->SetFont("Verdana", "", 8);
                 $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(7.3);
+                $this->SetX(9.3);
                 $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
                 $this->WIDTH = $this->WIDTH + 0.5;
@@ -505,19 +579,17 @@ class PDF extends FPDF{
         }
     }
 
-
     function write_certifications() {
         if (isset($this->CERTIFICATIONS) && $this->CERTIFICATIONS != NULL) {
-            $this->SetFont("Verdana", "", 14);
-            $this->SetTextColor(235, 106, 10);
-            $this->WIDTH = $this->WIDTH + 1;
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+            $this->SetFillColor(73, 101, 109);
 
             $WIDTH = $this->WIDTH;
             $WIDTH = $WIDTH + 1;
-
             foreach ($this->CERTIFICATIONS AS $CERT) {
                 if ($this->GetStringWidth($CERT["Certification"]) > 12.5) {
-                    $WIDTH = $WIDTH + (0.5 * (intval($this->GetStringWidth($FORM["Certification"]) / 12.5) + 1));
+                    $WIDTH = $WIDTH + (0.5 * (intval($this->GetStringWidth($CERT["Certification"]) / 12.5) + 1));
                 } else {
                     $WIDTH = $WIDTH + 0.5;
                 }
@@ -529,26 +601,25 @@ class PDF extends FPDF{
             }
 
             $this->SetY($this->WIDTH);
-            $this->SetX(2.5);
-            $this->MultiCell(0, 0, utf8_decode("CERTIFICATIONS"));
-            $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/profil_2.png", 3, $this->WIDTH + 0.3, 15.5);
+            $this->SetX(8.2);
+            $this->MultiCell(3, 1, utf8_decode("Certifications:"), 0, 1, "C", TRUE);
 
 
-            $this->WIDTH = $this->WIDTH + 1;
+            $this->WIDTH = $this->WIDTH + 1.5;
 
             foreach ($this->CERTIFICATIONS AS $CERT) {
-                $this->SetFont("Verdana", "", 10);
+                $this->SetFont("Verdana", "B", 8);
                 $this->SetTextColor(0, 0, 0);
 
                 $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(2.5);
-                $this->MultiCell(3, 0.5, utf8_decode($CERT["Date"]));
+                $this->SetX(8.2);
+                $this->MultiCell(3, 0.5, utf8_decode(date_format(date_create($CERT["Date"]), 'Y')));
 
                 $TEXT_ARRAY = explode(' ', $CERT["Certification"]);
-                $TEXT = "";
+                $TEXT = "";	
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
                         if (($i + 1) < count($TEXT_ARRAY) ) {
                             $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
                         } else {
@@ -569,8 +640,9 @@ class PDF extends FPDF{
                     }
                 }
 
+                $this->SetFont("Verdana", "", 8);
                 $this->SetY($this->WIDTH - 0.25);
-                $this->SetX(5.5);
+                $this->SetX(9.3);
                 $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
                 $this->WIDTH = $this->WIDTH + 0.5;
@@ -578,13 +650,11 @@ class PDF extends FPDF{
         }
     }
 
-
     function write_experiences() {
         if (isset($this->EXPERIENCES) && $this->EXPERIENCES != NULL) {
             $this->AddPage();
-            $this->WIDTH = 7.2;
+            $this->WIDTH = 6.2;
 
-            $this->WIDTH = $this->WIDTH + 0.5;
             $index = 0;
             foreach ($this->EXPERIENCES AS $EXP) {
                 $this->WIDTH = $this->WIDTH + 1;
