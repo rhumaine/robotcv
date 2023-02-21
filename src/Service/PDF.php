@@ -846,12 +846,13 @@ class PDF extends FPDF{
 
                 if ($WIDTH + $this->WIDTH > 27 && $index != 0) {
                     $this->AddPage();
-                    $this->WIDTH = 3.5;
+                    $this->WIDTH = 7.2;
                 }
 
                 $index++;
 
                 $WIDTH = $this->WIDTH;
+
                 if ($EXP["Date_debut"] != "") {
                     $this->SetFont("Verdana", "B", 10);
                     $this->SetTextColor(255, 255, 255);
@@ -1059,14 +1060,14 @@ class PDF extends FPDF{
 
                         $this->SetY($this->WIDTH);
                         $this->SetX(2.5);
-                        $this->MultiCell(0, 0, utf8_decode($EXP["Titre"]));
+                        $this->MultiCell(13, 0.5, utf8_decode($EXP['Titre']), 0, 1);
 
                     }
 
                     if ($EXP["Descriptif"] != "") {
                         $this->SetTextColor(0, 0, 0);
                         $this->SetFont("Verdana", "", 10);
-                        $this->WIDTH = $this->WIDTH + 0.5;
+                        $this->WIDTH = $this->WIDTH + 1;
 
                         $j = 0;
 
@@ -1077,7 +1078,7 @@ class PDF extends FPDF{
                                 }
                                 if ($this->WIDTH > 27) {
                                     $this->AddPage();
-                                    $this->WIDTH = 3.5;
+                                    $this->WIDTH = 7.2;
                                 }
 
                                 $this->SetFont("Verdana", "B", 10);
@@ -1111,7 +1112,7 @@ class PDF extends FPDF{
                                         $this->WIDTH = $this->WIDTH + 0.5;
                                         if ($this->WIDTH > 27) {
                                             $this->AddPage();
-                                            $this->WIDTH = 3.5;
+                                            $this->WIDTH = 7.2;
                                         }
                                     }
                                 }
@@ -1123,7 +1124,7 @@ class PDF extends FPDF{
                                 $this->WIDTH = $this->WIDTH + 0.2;
                                 if ($this->WIDTH > 27) {
                                     $this->AddPage();
-                                    $this->WIDTH = 3.5;
+                                    $this->WIDTH = 7.2;
                                 }
                             } else {
                                 $this->SetFont("Verdana", "", 10);
@@ -1131,7 +1132,7 @@ class PDF extends FPDF{
                                 $this->WIDTH = $this->WIDTH + 0.5;
                                 if ($this->WIDTH > 27) {
                                     $this->AddPage();
-                                    $this->WIDTH = 3.5;
+                                    $this->WIDTH = 7.2;
                                 }
 
                                 $this->SetY($this->WIDTH - 0.25);
@@ -1174,6 +1175,8 @@ class PDF extends FPDF{
 
                             $j++;
                         }
+                    }else{
+                        $this->WIDTH = $this->WIDTH + 1;
                     }
 
                     if ($EXP["Environnement"] != "") {
@@ -1182,7 +1185,7 @@ class PDF extends FPDF{
                         $this->WIDTH = $this->WIDTH + 0.75;
                         if ($this->WIDTH > 27) {
                             $this->AddPage();
-                            $this->WIDTH = 3.5;
+                            $this->WIDTH = 7.2;
                         }
 
                         $this->SetY($this->WIDTH);

@@ -3,11 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Candidat;
+use App\Entity\CandidatCertification;
+use App\Entity\CandidatConnaissance;
+use App\Entity\CandidatExperience;
+use App\Entity\CandidatFormation;
+use App\Entity\CandidatLangue;
+use App\Entity\CandidatSavoirEtre;
+use App\Entity\CompetenceCle;
 use App\Entity\Domaine;
 use App\Entity\Langue;
 use App\Entity\Niveau;
 use App\Entity\Site;
 use App\Service\PDF;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,11 +47,10 @@ class ProfilController extends AbstractController
         }    
     }
     #[Route('/createprofil', name: 'app_profil_create_profil')]
-    public function genererPdf(ManagerRegistry $doctrine,Request $request, SessionInterface $session): Response
+    public function creerProfil(ManagerRegistry $doctrine,Request $request, SessionInterface $session): Response
     {
         if($session->get('email') != null){
-            var_dump('create');
-
+           
             $profil = $request->get('profil');
             $site = $request->get('site');
             $groupe = $request->get('groupe');
@@ -263,7 +270,7 @@ class ProfilController extends AbstractController
                             if (isset($_POST['niveau_' . $i]) && $_POST['niveau_' . $i] != NULL) {
                                 $arr = explode(':', $_POST['langue_' . $i]);
                                 $arrN = explode(':', $_POST['niveau_' . $i]);
-                                $LANGUES[] = array("ID" => $arr[0],"Langue" => htmlspecialchars($arr[1]), "Niveau" => htmlspecialchars($arrN[1]));
+                                $LANGUES[] = array("ID" => $arr[0],"Langue" => htmlspecialchars($arr[1]), "IDNIVEAU" => $arrN[0], "Niveau" => htmlspecialchars($arrN[1]));
                             }
                         }
                         $i++;
@@ -333,28 +340,144 @@ class ProfilController extends AbstractController
             } else {
                 $EXPERIENCES = NULL;
             }
-        /*---------------------------------------------------*/
+            /*---------------------------------------------------*/
 
-        $candidat = new Candidat();
-        $candidat->setProfil($PROFIL);
-        $candidat->setPrenom($PRENOM);
-        $candidat->setNom($NOM);
-        $candidat->setEmail($EMAIL);
-        $candidat->setTelephone($TELEPHONE);
-        $candidat->setPoste($POSTE);
-        $candidat->setAnneesExperience($ANNEES_EXP);
+            /*--------------  Candidat   --------------------*/
+            $candidat = new Candidat();
+            $candidat->setPrenom($PRENOM);
+            $candidat->setNom($NOM);
+            $candidat->setEmail($EMAIL);
+            $candidat->setTelephone($TELEPHONE);
+            $candidat->setPoste($POSTE);
+            $candidat->setAnneesExperience($ANNEES_EXP);
+            $candidat->setProfil($PROFIL);
 
-        $doct = $doctrine->getManager();
+            $doct = $doctrine->getManager();
 
-        $doct->persist($candidat);
-        $doct->flush(); 
-        return new Response('Saved new cand with id ' . $candidat->getId()); 
+            $doct->persist($candidat);
+            $doct->flush(); 
+            $idCandidat = $candidat->getId();
+
+            /*--------------  CompetenceCle   --------------------*/
+            $competenceCle = new CompetenceCle();
+            $competenceCle->setIdCandidat($idCandidat);
+
+            $COMPETENCESBDD = implode(',', $COMPETENCES);
+
+            $competenceCle->setCompetence($COMPETENCESBDD);
+            $doct->persist($competenceCle);
+
+            /*--------------  ConnaissanceTechnique   --------------------*/
+           
+            if ($CONNAISSANCES != null && ($idCandidat)){
+                foreach($CONNAISSANCES as $CONN){
+                    $connaissanceTech = new CandidatConnaissance();
+                    $connaissanceTech->setIdDomaine($CONN['ID']);
+                    $connaissanceTech->setConnaissance($CONN['Connaissances']);
+                    $connaissanceTech->setIdCandidat($idCandidat);
+                    $doct->persist($connaissanceTech);
+                }
+            }
+
+
+            /*--------------  Certification   --------------------*/
+
+            if ($CERTIFICATIONS != null && ($idCandidat)){
+                foreach($CERTIFICATIONS as $CERTIF){
+                    $certification = new CandidatCertification();
+                    $certification->setIdCandidat($idCandidat);
+                    $certification->setCertification($CERTIF['Certification']);
+        
+                    //$format_fr = $CERTIF['Date'];
+                    //$format_sql = implode('-',array_reverse  (explode('/',$format_fr)));
+            
+                    $certification->setDate($CERTIF['Date']);
+                    $doct->persist($connaissanceTech);
+                }
+            }
+            
+            
+            /*--------------  Formation   --------------------*/
+            if ($FORMATIONS != null && ($idCandidat)){
+                foreach($FORMATIONS as $FORMA){
+                    $formation = new CandidatFormation();
+                    $formation->setIdCandidat($idCandidat);
+                    $formation->setFormation($FORMA['Formation']);
+        
+                    $format_fr = $FORMA['Date'];
+                    $format_sql = implode('-',array_reverse  (explode('/',$format_fr)));
+
+                    $time = strtotime($FORMA['Date']);
+
+                    $newformat = date('Y-m-d',$time);
+                    $date = new DateTime($newformat);
+                    $formation->setDate($date);
+                    $doct->persist($formation);
+                }
+            }
+            /*--------------  Langue   --------------------*/
+            if ($LANGUES != null && ($idCandidat)){
+                foreach($LANGUES as $LANGUE){
+                    $langue = new CandidatLangue();
+                    $langue->setIdCandidat($idCandidat);
+                    $langue->setIdLangue($LANGUE['ID']);
+                    $langue->setNiveau($LANGUE['IDNIVEAU']);
+                    $doct->persist($langue);
+                }
+            }
+
+            /*--------------  Savoir-être   --------------------*/
+
+            $savoirfaire = new CandidatSavoirEtre();
+            $savoirfaire->setIdCandidat($idCandidat);
+
+            $savoirfairebdd = implode(',', $SAVOIR);
+
+            $savoirfaire->setSavoiretre($savoirfairebdd);
+            $doct->persist($savoirfaire);
+                        
+            /*--------------  Expérience pro   --------------------*/
+            
+            if ($EXPERIENCES != null && isset($idCandidat)){
+                foreach($EXPERIENCES as $EXPERIENCE){
+        
+                    $experience = new CandidatExperience();
+                    $experience->setIdCandidat($idCandidat);
+                    $experience->setEntreprise($EXPERIENCE['Entreprise']);
+
+                    
+                    $timeDebut = strtotime($EXPERIENCE['Date_debut']);
+                    $timeFin = strtotime($EXPERIENCE['Date_fin']);
+                    $newformatDebut = date('Y-m-d',$timeDebut);
+                    $newformatFin = date('Y-m-d',$timeFin);
+                    $dateDebut = new DateTime($newformatDebut);
+                    $dateFin = new DateTime($newformatFin);
+
+
+                    $experience->setDateDebut($dateDebut);
+                    $experience->setDateFin($dateFin);
+                    $experience->setPoste($EXPERIENCE['Poste']);
+                    $experience->setLieu($EXPERIENCE['Ville']);
+                    $experience->setTitreMission($EXPERIENCE['Titre']);
+
+                    if($EXPERIENCE['Descriptif'] ==! null){
+                        $EXPDESCRIPTIF = implode(',', $EXPERIENCE['Descriptif']);
+                        $experience->setDescription($EXPDESCRIPTIF);
+                    }
+                    
+                    $experience->setEnvironnement($EXPERIENCE['Environnement']);
+                    $doct->persist($experience);
+                }
+            }
+            
+            $doct->flush();
+            return new Response('Saved new cand with id ' . $candidat->getId());
            
         }
     }
 
     #[Route('/genererpdf', name: 'app_profil_genererpdf')]
-    public function genererPdfTest(Request $request, SessionInterface $session): Response
+    public function genererPdf(Request $request, SessionInterface $session): Response
     {
         if($session->get('email') != null){
 
