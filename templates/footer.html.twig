@@ -25,15 +25,16 @@
 				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_create_profil')) }}";
 				$("#formCreateProfil").submit();
 			}else{
+				$('#confirm-submit').modal('toggle');
 				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
 				$("#messageProfilExistant").show();
 				$('html, body').animate({ 
                      scrollTop: '0px' 
                 });
 
-				setInterval(function(){
+				/*setInterval(function(){
 					$("#messageProfilExistant").fadeOut(1000 );
-				}, 10000);
+				}, 10000);*/
 			}
 		});
 	});

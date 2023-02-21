@@ -359,17 +359,20 @@ class ProfilController extends AbstractController
             $idCandidat = $candidat->getId();
 
             /*--------------  CompetenceCle   --------------------*/
-            $competenceCle = new CompetenceCle();
-            $competenceCle->setIdCandidat($idCandidat);
 
-            $COMPETENCESBDD = implode(',', $COMPETENCES);
+            if ($COMPETENCES != null && isset($idCandidat)){
+                $competenceCle = new CompetenceCle();
+                $competenceCle->setIdCandidat($idCandidat);
 
-            $competenceCle->setCompetence($COMPETENCESBDD);
-            $doct->persist($competenceCle);
+                $COMPETENCESBDD = implode(',', $COMPETENCES);
+
+                $competenceCle->setCompetence($COMPETENCESBDD);
+                $doct->persist($competenceCle);
+            }
 
             /*--------------  ConnaissanceTechnique   --------------------*/
            
-            if ($CONNAISSANCES != null && ($idCandidat)){
+            if ($CONNAISSANCES != null && isset($idCandidat)){
                 foreach($CONNAISSANCES as $CONN){
                     $connaissanceTech = new CandidatConnaissance();
                     $connaissanceTech->setIdDomaine($CONN['ID']);
@@ -382,7 +385,7 @@ class ProfilController extends AbstractController
 
             /*--------------  Certification   --------------------*/
 
-            if ($CERTIFICATIONS != null && ($idCandidat)){
+            if ($CERTIFICATIONS != null && isset($idCandidat)){
                 foreach($CERTIFICATIONS as $CERTIF){
                     $certification = new CandidatCertification();
                     $certification->setIdCandidat($idCandidat);
@@ -398,7 +401,7 @@ class ProfilController extends AbstractController
             
             
             /*--------------  Formation   --------------------*/
-            if ($FORMATIONS != null && ($idCandidat)){
+            if ($FORMATIONS != null && isset($idCandidat)){
                 foreach($FORMATIONS as $FORMA){
                     $formation = new CandidatFormation();
                     $formation->setIdCandidat($idCandidat);
@@ -416,7 +419,7 @@ class ProfilController extends AbstractController
                 }
             }
             /*--------------  Langue   --------------------*/
-            if ($LANGUES != null && ($idCandidat)){
+            if ($LANGUES != null && isset($idCandidat)){
                 foreach($LANGUES as $LANGUE){
                     $langue = new CandidatLangue();
                     $langue->setIdCandidat($idCandidat);
@@ -427,15 +430,15 @@ class ProfilController extends AbstractController
             }
 
             /*--------------  Savoir-être   --------------------*/
+            if ($SAVOIR != null && isset($idCandidat)){
+                $savoirfaire = new CandidatSavoirEtre();
+                $savoirfaire->setIdCandidat($idCandidat);
 
-            $savoirfaire = new CandidatSavoirEtre();
-            $savoirfaire->setIdCandidat($idCandidat);
+                $savoirfairebdd = implode(',', $SAVOIR);
 
-            $savoirfairebdd = implode(',', $SAVOIR);
-
-            $savoirfaire->setSavoiretre($savoirfairebdd);
-            $doct->persist($savoirfaire);
-                        
+                $savoirfaire->setSavoiretre($savoirfairebdd);
+                $doct->persist($savoirfaire);
+            }          
             /*--------------  Expérience pro   --------------------*/
             
             if ($EXPERIENCES != null && isset($idCandidat)){
@@ -471,7 +474,8 @@ class ProfilController extends AbstractController
             }
             
             $doct->flush();
-            return new Response('Saved new cand with id ' . $candidat->getId());
+
+            return $this->redirectToRoute('home_page');
            
         }
     }
