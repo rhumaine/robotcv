@@ -24,6 +24,8 @@
 			let data = JSON.stringify(response);
 			if(data == "false"){
 				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_create_profil')) }}";
+				var formulaire = document.getElementById('formCreateProfil');
+				formulaire.setAttribute("target", "");
 				$("#formCreateProfil").submit();
 			}else{
 				$('#confirm-submit').modal('toggle');
@@ -53,6 +55,8 @@
 			let data = JSON.stringify(response);
 			if(data == "false"){ 
 				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
+				var formulaire = document.getElementById('formCreateProfil');
+				formulaire.setAttribute("target", "_blank");
 				$("#formCreateProfil").submit();
 			}else{
 				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');

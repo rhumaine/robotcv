@@ -25,6 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
 {
+    // Page de création de profil
     #[Route('/create', name: 'app_profil_create')]
     public function index(ManagerRegistry $doctrine,SessionInterface $session): Response
     {
@@ -46,6 +47,8 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }    
     }
+
+    // Fonction losqu'on clique sur créer le profil
     #[Route('/createprofil', name: 'app_profil_create_profil')]
     public function creerProfil(ManagerRegistry $doctrine,Request $request, SessionInterface $session): Response
     {
@@ -480,6 +483,7 @@ class ProfilController extends AbstractController
         }
     }
 
+    // Fonction lorsqu'on clique sur générer le pdf
     #[Route('/genererpdf', name: 'app_profil_genererpdf')]
     public function genererPdf(Request $request, SessionInterface $session): Response
     {
