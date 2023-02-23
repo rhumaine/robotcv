@@ -28,7 +28,7 @@
 									<td>{{ candidat.Profil }}</td>
 									<td>{{ candidat.Nom }}</td>
 									<td>{{ candidat.Prenom }}</td>
-									<td><a href=''>Voir</a></td>
+									<td><a href='{{ path('app_profil_edit', {id:  candidat.Id }) }}'>Voir</a></td>
 								</tr>
 							 {% endfor %}
 						</tbody>

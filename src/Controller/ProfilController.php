@@ -183,7 +183,7 @@ class ProfilController extends AbstractController
             }
             /*---------------------------------------*/
 
-               /*-- Récupération des compétences clés --*/
+               /*-- Récupération des savoir etre --*/
             /*---------------------------------------*/
             if (isset($savoir) && $savoir != NULL) {
                 $SAV = str_replace("’", "'", $savoir);
@@ -367,7 +367,7 @@ class ProfilController extends AbstractController
                 $competenceCle = new CompetenceCle();
                 $competenceCle->setIdCandidat($idCandidat);
 
-                $COMPETENCESBDD = implode(',', $COMPETENCES);
+                $COMPETENCESBDD = implode(';', $COMPETENCES);
 
                 $competenceCle->setCompetence($COMPETENCESBDD);
                 $doct->persist($competenceCle);
@@ -437,7 +437,7 @@ class ProfilController extends AbstractController
                 $savoirfaire = new CandidatSavoirEtre();
                 $savoirfaire->setIdCandidat($idCandidat);
 
-                $savoirfairebdd = implode(',', $SAVOIR);
+                $savoirfairebdd = implode(';', $SAVOIR);
 
                 $savoirfaire->setSavoiretre($savoirfairebdd);
                 $doct->persist($savoirfaire);
@@ -467,7 +467,7 @@ class ProfilController extends AbstractController
                     $experience->setTitreMission($EXPERIENCE['Titre']);
 
                     if($EXPERIENCE['Descriptif'] ==! null){
-                        $EXPDESCRIPTIF = implode(',', $EXPERIENCE['Descriptif']);
+                        $EXPDESCRIPTIF = implode(';', $EXPERIENCE['Descriptif']);
                         $experience->setDescription($EXPDESCRIPTIF);
                     }
                     
@@ -791,4 +791,45 @@ class ProfilController extends AbstractController
         }    
     }
 
+    //Fonction d'edition d'un profil (affichage de la page)
+    #[Route('profil/edit/{id}', name: 'app_profil_edit')]
+    public function showEditionProfil(int $id, ManagerRegistry $doctrine,SessionInterface $session)
+    {
+        if($session->get('email') != null){
+
+            // Données du candidat
+            $profil = $doctrine->getRepository(Candidat::class)->find($id);
+            $candidatCompetencesCles = $doctrine->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $id));
+            $candidatConnaissance = $doctrine->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $id));
+            $candidatCertification = $doctrine->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $id));
+            $candidatFormation = $doctrine->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $id));
+            $candidatLangue = $doctrine->getRepository(CandidatLangue::class)->findBy(array('id_candidat' => $id));
+            $candidatSavoirEtre = $doctrine->getRepository(CandidatSavoirEtre::class)->findOneBy(array('id_candidat' => $id));
+            $candidatExperience = $doctrine->getRepository(CandidatExperience::class)->findBy(array('id_candidat' => $id));
+            
+            //Données des listes déroulantes
+            $sites = $doctrine->getRepository(Site::class)->findAll();
+            $domaines = $doctrine->getRepository(Domaine::class)->findAll();
+            $langues = $doctrine->getRepository(Langue::class)->findAll();
+            $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+
+            return $this->render('profil/edit.html.twig', [
+                'controller_name' => 'ProfilController',
+                'sites' => $sites,
+                'domaines' => $domaines,
+                'langues' => $langues,
+                'niveaux' => $niveaux,
+                'candidat' => $profil,
+                'candidatCompetencesCles' => $candidatCompetencesCles,
+                'candidatConnaissances' => $candidatConnaissance,
+                'candidatCertifications' => $candidatCertification,
+                'candidatFormations' => $candidatFormation,
+                'candidatLangues' => $candidatLangue,
+                'candidatSavoirEtre' => $candidatSavoirEtre,
+                'candidatExperiences' => $candidatExperience
+            ]);
+        }else{
+            return $this->redirectToRoute('app_login');
+        }    
+    }
 }
