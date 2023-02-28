@@ -29,60 +29,93 @@ class ProfilController extends AbstractController
     // Page de création de profil
     #[Route('/create', name: 'app_profil_create')]
     #[IsGranted('ROLE_ADMIN')]
-    public function index(ManagerRegistry $doctrine,SessionInterface $session): Response
-    {
-        if($session->get('email') != null){
-        
-            $sites = $doctrine->getRepository(Site::class)->findAll();
-            $domaines = $doctrine->getRepository(Domaine::class)->findAll();
-            $langues = $doctrine->getRepository(Langue::class)->findAll();
-            $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+    public function index(ManagerRegistry $doctrine): Response
+    {  
+        $sites = $doctrine->getRepository(Site::class)->findAll();
+        $domaines = $doctrine->getRepository(Domaine::class)->findAll();
+        $langues = $doctrine->getRepository(Langue::class)->findAll();
+        $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
 
-            return $this->render('profil/create.html.twig', [
-                'controller_name' => 'ProfilController',
-                'sites' => $sites,
-                'domaines' => $domaines,
-                'langues' => $langues,
-                'niveaux' => $niveaux
-            ]);
-        }else{
-            return $this->redirectToRoute('security_login');
-        }    
+        return $this->render('profil/create.html.twig', [
+            'controller_name' => 'ProfilController',
+            'sites' => $sites,
+            'domaines' => $domaines,
+            'langues' => $langues,
+            'niveaux' => $niveaux
+        ]); 
     }
+
+    
+    //Fonction d'edition d'un profil (affichage de la page)
+    #[Route('profil/edit/{id}', name: 'app_profil_edit')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function showEditionProfil(int $id, ManagerRegistry $doctrine)
+    {
+        // Données du candidat
+        $profil = $doctrine->getRepository(Candidat::class)->find($id);
+        $candidatCompetencesCles = $doctrine->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $id));
+        $candidatConnaissance = $doctrine->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $id));
+        $candidatCertification = $doctrine->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $id));
+        $candidatFormation = $doctrine->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $id));
+        $candidatLangue = $doctrine->getRepository(CandidatLangue::class)->findBy(array('id_candidat' => $id));
+        $candidatSavoirEtre = $doctrine->getRepository(CandidatSavoirEtre::class)->findOneBy(array('id_candidat' => $id));
+        $candidatExperience = $doctrine->getRepository(CandidatExperience::class)->findBy(array('id_candidat' => $id));
+        
+        //Données des listes déroulantes
+        $sites = $doctrine->getRepository(Site::class)->findAll();
+        $domaines = $doctrine->getRepository(Domaine::class)->findAll();
+        $langues = $doctrine->getRepository(Langue::class)->findAll();
+        $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+
+        return $this->render('profil/edit.html.twig', [
+            'controller_name' => 'ProfilController',
+            'sites' => $sites,
+            'domaines' => $domaines,
+            'langues' => $langues,
+            'niveaux' => $niveaux,
+            'candidat' => $profil,
+            'candidatCompetencesCles' => $candidatCompetencesCles,
+            'candidatConnaissances' => $candidatConnaissance,
+            'candidatCertifications' => $candidatCertification,
+            'candidatFormations' => $candidatFormation,
+            'candidatLangues' => $candidatLangue,
+            'candidatSavoirEtre' => $candidatSavoirEtre,
+            'candidatExperiences' => $candidatExperience
+        ]); 
+    }
+
 
     // Fonction losqu'on clique sur créer le profil
     #[Route('/createprofil', name: 'app_profil_create_profil')]
     #[IsGranted('ROLE_ADMIN')]
-    public function creerProfil(ManagerRegistry $doctrine,Request $request, SessionInterface $session): Response
+    public function creerProfil(ManagerRegistry $doctrine,Request $request): Response
     {
-        if($session->get('email') != null){
-           
-            $profil = $request->get('profil');
-            $site = $request->get('site');
-            $groupe = $request->get('groupe');
-            $poste = $request->get('poste');
-            $nom = $request->get('nom');
-            $prenom = $request->get('prenom');
-            $email = $request->get('email');
-            $telephone = $request->get('telephone');
-            $annees_exp = $request->get('annees_exp');
-            $date_entree = $request->get('date_entree');
-            $comp_cle = $request->get('comp_cle');
-            $connaissance_1 = $request->get('connaissance_1');
-            $domaine_1 = $request->get('domaine_1');
-            $nb_input_connaissances = $request->get('nb_input_connaissances');
-            $certification_1 = $request->get('certification_1');
-            $date_cert_1 = $request->get('date_cert_1');
-            $nb_input_certifications = $request->get('nb_input_certifications');
-            $formation_1 = $request->get('formation_1');
-            $date_form_1 = $request->get('date_form_1');
-            $nb_input_formations = $request->get('nb_input_formations');
-            $langue_1 = $request->get('langue_1');
-            $niveau_1 = $request->get('niveau_1');
-            $nb_input_langues = $request->get('nb_input_langues');
-            $savoir = $request->get('savoir');
-            $exp_ent_1 = $request->get('exp_ent_1');
-            $nb_input_experiences = $request->get('nb_input_experiences');
+        $profil = $request->get('profil');
+        $site = $request->get('site');
+        $groupe = $request->get('groupe');
+        $poste = $request->get('poste');
+        $nom = $request->get('nom');
+        $prenom = $request->get('prenom');
+        $email = $request->get('email');
+        $telephone = $request->get('telephone');
+        $annees_exp = $request->get('annees_exp');
+        $date_entree = $request->get('date_entree');
+        $comp_cle = $request->get('comp_cle');
+        $connaissance_1 = $request->get('connaissance_1');
+        $domaine_1 = $request->get('domaine_1');
+        $nb_input_connaissances = $request->get('nb_input_connaissances');
+        $certification_1 = $request->get('certification_1');
+        $date_cert_1 = $request->get('date_cert_1');
+        $nb_input_certifications = $request->get('nb_input_certifications');
+        $formation_1 = $request->get('formation_1');
+        $date_form_1 = $request->get('date_form_1');
+        $nb_input_formations = $request->get('nb_input_formations');
+        $langue_1 = $request->get('langue_1');
+        $niveau_1 = $request->get('niveau_1');
+        $nb_input_langues = $request->get('nb_input_langues');
+        $savoir = $request->get('savoir');
+        $exp_ent_1 = $request->get('exp_ent_1');
+        $nb_input_experiences = $request->get('nb_input_experiences');
 
         /* données */
             /*-- Récupération du profil --*/
@@ -186,7 +219,7 @@ class ProfilController extends AbstractController
             }
             /*---------------------------------------*/
 
-               /*-- Récupération des savoir etre --*/
+                /*-- Récupération des savoir etre --*/
             /*---------------------------------------*/
             if (isset($savoir) && $savoir != NULL) {
                 $SAV = str_replace("’", "'", $savoir);
@@ -195,7 +228,7 @@ class ProfilController extends AbstractController
                 $SAVOIR = NULL;
             }
             /*---------------------------------------*/
-          
+            
             /*-- Récupération des connaissances techniques --*/
             /*-----------------------------------------------*/
             if (isset($connaissance_1) && $connaissance_1 != NULL) {
@@ -377,7 +410,7 @@ class ProfilController extends AbstractController
             }
 
             /*--------------  ConnaissanceTechnique   --------------------*/
-           
+            
             if ($CONNAISSANCES != null && isset($idCandidat)){
                 foreach($CONNAISSANCES as $CONN){
                     $connaissanceTech = new CandidatConnaissance();
@@ -478,18 +511,17 @@ class ProfilController extends AbstractController
                     $doct->persist($experience);
                 }
             }
-            
-            $doct->flush();
+        /* fin données */ 
+         
+        $doct->flush();
 
-            return $this->redirectToRoute('home_page');
-           
-        }
+        return $this->redirectToRoute('home_page'); 
     }
 
     // Fonction lorsqu'on clique sur générer le pdf
     #[Route('/genererpdf', name: 'app_profil_genererpdf')]
     #[IsGranted('ROLE_ADMIN')]
-    public function genererPdf(Request $request, SessionInterface $session): Response
+    public function genererPdf(Request $request): Response
     {
         $profil = $request->get('profil');
         $site = $request->get('site');
@@ -780,54 +812,19 @@ class ProfilController extends AbstractController
             $EXPERIENCES = NULL;
         }
 
-
-
         $pdf = new PDF($PROFIL,$SITE,$GROUPE, $POSTE, $COMPETENCES,$SAVOIR, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
 
             
         $pdf->AliasNbPages();
         $pdf->write_CV();
-        return $pdf->Output();    
+
+        //return $pdf->Output();   
+        // Output the PDF as a response
+        $response = new Response($pdf->Output(), Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="CV.pdf"',
+        ]); 
+        return $response;
     }
 
-    //Fonction d'edition d'un profil (affichage de la page)
-    #[Route('profil/edit/{id}', name: 'app_profil_edit')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function showEditionProfil(int $id, ManagerRegistry $doctrine,SessionInterface $session)
-    {
-        
-
-        // Données du candidat
-        $profil = $doctrine->getRepository(Candidat::class)->find($id);
-        $candidatCompetencesCles = $doctrine->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $id));
-        $candidatConnaissance = $doctrine->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $id));
-        $candidatCertification = $doctrine->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $id));
-        $candidatFormation = $doctrine->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $id));
-        $candidatLangue = $doctrine->getRepository(CandidatLangue::class)->findBy(array('id_candidat' => $id));
-        $candidatSavoirEtre = $doctrine->getRepository(CandidatSavoirEtre::class)->findOneBy(array('id_candidat' => $id));
-        $candidatExperience = $doctrine->getRepository(CandidatExperience::class)->findBy(array('id_candidat' => $id));
-        
-        //Données des listes déroulantes
-        $sites = $doctrine->getRepository(Site::class)->findAll();
-        $domaines = $doctrine->getRepository(Domaine::class)->findAll();
-        $langues = $doctrine->getRepository(Langue::class)->findAll();
-        $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
-
-        return $this->render('profil/edit.html.twig', [
-            'controller_name' => 'ProfilController',
-            'sites' => $sites,
-            'domaines' => $domaines,
-            'langues' => $langues,
-            'niveaux' => $niveaux,
-            'candidat' => $profil,
-            'candidatCompetencesCles' => $candidatCompetencesCles,
-            'candidatConnaissances' => $candidatConnaissance,
-            'candidatCertifications' => $candidatCertification,
-            'candidatFormations' => $candidatFormation,
-            'candidatLangues' => $candidatLangue,
-            'candidatSavoirEtre' => $candidatSavoirEtre,
-            'candidatExperiences' => $candidatExperience
-        ]);
-           
-    }
 }
