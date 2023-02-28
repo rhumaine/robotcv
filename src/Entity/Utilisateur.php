@@ -4,9 +4,10 @@ namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,10 +15,7 @@ class Utilisateur
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $prenom = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $username = null;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
@@ -25,34 +23,22 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column]
-    private ?int $id_statut = null;
+    #[ORM\Column(type: "json")]
+    private $roles = [];
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPrenom(): ?string
+    public function getUserName(): ?string
     {
-        return $this->prenom;
+        return $this->username;
     }
 
-    public function setPrenom(string $prenom): self
+    public function setUserName(string $username): self
     {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
+        $this->username = $username;
 
         return $this;
     }
@@ -80,16 +66,35 @@ class Utilisateur
 
         return $this;
     }
-
-    public function getIdStatut(): ?int
+    
+    public function getRoles(): array
     {
-        return $this->id_statut;
+        $roles = $this->roles;
+
+        // il est obligatoire d'avoir au moins un rôle si on est authentifié, par convention c'est ROLE_USER
+        if (empty($roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
     }
 
-    public function setIdStatut(int $id_statut): self
+    public function setRoles(array $roles): void
     {
-        $this->id_statut = $id_statut;
+        $this->roles = $roles;
+    }
 
-        return $this;
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier()
+    {
+        return $this->username;
     }
 }

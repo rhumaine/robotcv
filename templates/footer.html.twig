@@ -34,11 +34,13 @@
 				$('html, body').animate({ 
                      scrollTop: '0px' 
                 });
-
+		
 				/*setInterval(function(){
 					$("#messageProfilExistant").fadeOut(1000 );
 				}, 10000);*/
 			}
+			
+			
 		});
 	});
 
@@ -64,15 +66,12 @@
 				$('html, body').animate({ 
                      scrollTop: '0px' 
                 });
-
-				setInterval(function(){
-					$("#messageProfilExistant").fadeOut(1000 );
-				}, 10000);
 			}
 		});
 	});
 
-	$('#inputSubmitLogin').on('click', function(){
+	/*$('#inputSubmitLogin').on('click', function(){
+		event.preventDefault();
 		$.ajax({
 			url: "{{ (path('ajax_check_user')) }}",
 			method: "POST",
@@ -84,15 +83,15 @@
 		})
 		.done(function(response){
 			let data = JSON.stringify(response);
+			
 			if(data == "false"){
 				$("#messageUserInexistant").html('L\'utilisateur "'+ $('#email').val() + '" ou le mot de passe ne correspond pas');
 				$("#messageUserInexistant").show();
 			}else{
 				$("#messageUserInexistant").html('');
 				$("#messageUserInexistant").hide();
-				
 				$("#formLogin").submit();
 			}
 		});
-	});
+	});*/
 </script>
