@@ -28,11 +28,31 @@
 									<td>{{ candidat.Profil }}</td>
 									<td>{{ candidat.Nom }}</td>
 									<td>{{ candidat.Prenom }}</td>
-									<td><a href='{{ path('app_profil_edit', {id:  candidat.Id }) }}'>Voir</a></td>
+									<td>
+										<a href='{{ path('app_profil_edit', {id:  candidat.Id }) }}'>Voir</a>
+										<a href='#' data-bs-toggle="modal" data-bs-target="#confirm-delete" data-candidat-id="{{ candidat.Id }}">Supprimer</a>
+									</td>
 								</tr>
 							 {% endfor %}
 						</tbody>
 					</table>
+				</div>
+
+				<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirm-submit" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								Suppression du profil
+							</div>
+							<div class="modal-body">
+								
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-bs-dismiss="modal">Annuler</button>
+								<a href="{{ path('app_profil_delete_profil', {id:  1 }) }}" class="btn btn-danger delete-btn">Supprimer</a>
+							</div>
+						</div>
+					</div>
 				</div>
 		</div>
 		<!-- Contenu de la page -->
@@ -66,6 +86,16 @@
 					else {$('.no-result').hide();}
 						});
 				});
+
+				
+				$('#confirm-delete').on('show.bs.modal', function (event) {
+					var button = $(event.relatedTarget);
+					var candidatId = button.attr('data-candidat-id');
+					var modal = $('#confirm-delete');
+					var deleteUrl = "/profil/delete/"+candidatId;
+					modal.find('.modal-body').text("Voulez-vous supprimer ce profil ? ");
+					document.querySelector('.delete-btn').setAttribute('href', deleteUrl);
+				})
 		</script>
 		<!-- SCRIPT pour tableau -->
 

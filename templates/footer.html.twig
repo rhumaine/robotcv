@@ -10,6 +10,7 @@
 
 <script type="text/javascript">
 
+	// Création du profil avec vérification de l'adresse mail si il existe déjà
 	$('#inputSubmitFormCreateProfil').on('click', function(){
 		event.preventDefault();
 		$.ajax({
@@ -34,16 +35,20 @@
 				$('html, body').animate({ 
                      scrollTop: '0px' 
                 });
-		
-				/*setInterval(function(){
-					$("#messageProfilExistant").fadeOut(1000 );
-				}, 10000);*/
 			}
-			
-			
 		});
 	});
+
+	// Modification du profil
+	$('#inputSubmitFormEditProfil').on('click', function(){
+		event.preventDefault();	
+		document.getElementById('formEditProfil').action = "{{ (path('app_profil_edit_profil')) }}";
+		var formulaire = document.getElementById('formEditProfil');
+		formulaire.setAttribute("target", "");
+		$("#formEditProfil").submit();	
+	});
 	
+	// Apercu du PDF sur la page de création
 	$('#inputSubmitFormApercuPdf').on('click', function(){
 		$.ajax({
 			url: "{{ (path('ajax_check_profil')) }}",
@@ -70,13 +75,12 @@
 		});
 	});
 
-	$('#inputSubmitFormApercuPdfEdit').on('click', function(){
-			
-		document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
-		var formulaire = document.getElementById('formCreateProfil');
+	// Apercu du PDF sur la page de modification
+	$('#inputSubmitFormApercuPdfEdit').on('click', function(){		
+		document.getElementById('formEditProfil').action = "{{ (path('app_profil_genererpdf')) }}";
+		var formulaire = document.getElementById('formEditProfil');
 		formulaire.setAttribute("target", "_blank");
-		$("#formCreateProfil").submit();
-				
+		$("#formEditProfil").submit();			
 	});
 	
 </script>
