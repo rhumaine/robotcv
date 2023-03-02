@@ -527,10 +527,6 @@ class ProfilController extends AbstractController
         $site = $request->get('site');
         $groupe = $request->get('groupe');
         $poste = $request->get('poste');
-        $nom = $request->get('nom');
-        $prenom = $request->get('prenom');
-        $email = $request->get('email');
-        $telephone = $request->get('telephone');
         $annees_exp = $request->get('annees_exp');
         $date_entree = $request->get('date_entree');
         $comp_cle = $request->get('comp_cle');
@@ -573,43 +569,6 @@ class ProfilController extends AbstractController
         } else {
             $GROUPE = NULL;
         }
-
-        /*-- Récupération du nom --*/
-        /*----------------------------*/
-        if (isset($nom) && $nom != NULL) {
-            $NOM = htmlspecialchars($nom);
-        } else {
-            $NOM = NULL;
-        }
-        /*----------------------------*/
-
-        /*-- Récupération du prénom --*/
-        /*----------------------------*/
-        if (isset($prenom) && $prenom != NULL) {
-            $PRENOM = htmlspecialchars($prenom);
-        } else {
-            $PRENOM = NULL;
-        }
-        /*----------------------------*/
-
-        /*-- Récupération du email --*/
-        /*----------------------------*/
-        if (isset($email) && $email != NULL) {
-            $EMAIL = htmlspecialchars($email);
-        } else {
-            $EMAIL = NULL;
-        }
-        /*----------------------------*/
-
-        /*-- Récupération du téléphone --*/
-        /*----------------------------*/
-        if (isset($telephone) && $telephone != NULL) {
-            $TELEPHONE = htmlspecialchars($telephone);
-        } else {
-            $TELEPHONE = NULL;
-        }
-        /*----------------------------*/
-
 
         /*-- Récupération du poste --*/
         /*---------------------------*/
@@ -753,8 +712,6 @@ class ProfilController extends AbstractController
             $LANGUES = NULL;
         }
 
-
-
         /*-- Récupération des expériences professionnelles --*/
         /*---------------------------------------------------*/
         if (isset($exp_ent_1) && $exp_ent_1 != NULL) {
@@ -770,7 +727,7 @@ class ProfilController extends AbstractController
                 $TITRE_EXP = "";
                 $DESC = "";
                 $ENV = "";
-
+                
                 if (isset($_POST['exp_ent_' . $i]) && $_POST['exp_ent_' . $i] != NULL) {
                     $ENT = htmlspecialchars(str_replace("’", "'", $_POST['exp_ent_' . $i]));
                 }
@@ -808,13 +765,14 @@ class ProfilController extends AbstractController
                 $EXPERIENCES[] = array("Entreprise" => $ENT, "Date_debut" => $DATE_DEBUT, "Date_fin" => $DATE_FIN, "Ville" => $VILLE, "Poste" => $EXP_POSTE,"Titre" => $TITRE_EXP,"Descriptif" => $DESC, "Environnement" => $ENV);
                 $i++;
             endwhile;
+
         } else {
             $EXPERIENCES = NULL;
         }
 
+       
         $pdf = new PDF($PROFIL,$SITE,$GROUPE, $POSTE, $COMPETENCES,$SAVOIR, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
 
-            
         $pdf->AliasNbPages();
         $pdf->write_CV();
 

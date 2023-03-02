@@ -43,7 +43,7 @@
 			
 		});
 	});
-
+	
 	$('#inputSubmitFormApercuPdf').on('click', function(){
 		$.ajax({
 			url: "{{ (path('ajax_check_profil')) }}",
@@ -70,28 +70,13 @@
 		});
 	});
 
-	/*$('#inputSubmitLogin').on('click', function(){
-		event.preventDefault();
-		$.ajax({
-			url: "{{ (path('ajax_check_user')) }}",
-			method: "POST",
-        	dataType : "json",
-			data: { 
-				'email': $('#email').val(),
-				'password': $('#password').val()
-    		}
-		})
-		.done(function(response){
-			let data = JSON.stringify(response);
+	$('#inputSubmitFormApercuPdfEdit').on('click', function(){
 			
-			if(data == "false"){
-				$("#messageUserInexistant").html('L\'utilisateur "'+ $('#email').val() + '" ou le mot de passe ne correspond pas');
-				$("#messageUserInexistant").show();
-			}else{
-				$("#messageUserInexistant").html('');
-				$("#messageUserInexistant").hide();
-				$("#formLogin").submit();
-			}
-		});
-	});*/
+		document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
+		var formulaire = document.getElementById('formCreateProfil');
+		formulaire.setAttribute("target", "_blank");
+		$("#formCreateProfil").submit();
+				
+	});
+	
 </script>

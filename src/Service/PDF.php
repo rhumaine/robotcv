@@ -132,7 +132,6 @@ class PDF extends FPDF{
     }
     /*-------------------------------*/
 
-
     /*-- Fonction pour construire l'en-tête de page --*/
     /*------------------------------------------------*/
     function header() {
@@ -651,6 +650,7 @@ class PDF extends FPDF{
     }
 
     function write_experiences() {
+        
         if (isset($this->EXPERIENCES) && $this->EXPERIENCES != NULL) {
             $this->AddPage();
             $this->WIDTH = 6.2;

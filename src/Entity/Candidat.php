@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CandidatRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CandidatRepository::class)]
@@ -33,6 +34,15 @@ class Candidat
 
     #[ORM\Column(length: 10)]
     private ?string $profil = null;
+
+    #[ORM\Column]
+    private ?int $site = null;
+
+    #[ORM\Column]
+    private ?int $marque = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date_entree = null;
 
     public function getId(): ?int
     {
@@ -119,6 +129,42 @@ class Candidat
     public function setProfil(string $profil): self
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    public function getSite(): ?int
+    {
+        return $this->site;
+    }
+
+    public function setSite(int $site): self
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    public function getMarque(): ?int
+    {
+        return $this->marque;
+    }
+
+    public function setMarque(int $marque): self
+    {
+        $this->marque = $marque;
+
+        return $this;
+    }
+
+    public function getDateEntree(): ?\DateTimeInterface
+    {
+        return $this->date_entree;
+    }
+
+    public function setDateEntree(\DateTimeInterface $date_entree): self
+    {
+        $this->date_entree = $date_entree;
 
         return $this;
     }
