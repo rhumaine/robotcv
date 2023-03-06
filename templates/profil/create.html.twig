@@ -152,6 +152,20 @@
 									</select>
 									<label class="col-md-3" for="site">Marque</label>
 								</div>
+
+
+								<div id="divFamille" class="form-floating col d-none">
+									<select name="famille" class="form-select form-select-sm form-control" id="famille" placeholder="famille" required>
+										<option selected disabled>Famille</option>
+										{% for famille in familles %}
+											<option  value="{{ famille.id }}" data-marque="{{ famille.parent }}">
+											{{ famille.famille }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="site">Famille</label>
+								</div>
+
 							</div>
 						</div>
 						<!-- Profil -->
@@ -521,5 +535,6 @@
 				</div>
 			</div>
 		</div>
+
 		<!-- Contenu de la page -->
 {% endblock %}

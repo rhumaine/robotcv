@@ -44,6 +44,9 @@ class Candidat
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_entree = null;
 
+    #[ORM\Column]
+    private ?int $famille = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -165,6 +168,18 @@ class Candidat
     public function setDateEntree(\DateTimeInterface $date_entree): self
     {
         $this->date_entree = $date_entree;
+
+        return $this;
+    }
+
+    public function getFamille(): ?int
+    {
+        return $this->famille;
+    }
+
+    public function setFamille(int $famille): self
+    {
+        $this->famille = $famille;
 
         return $this;
     }

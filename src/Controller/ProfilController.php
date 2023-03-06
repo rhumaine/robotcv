@@ -11,6 +11,7 @@ use App\Entity\CandidatLangue;
 use App\Entity\CandidatSavoirEtre;
 use App\Entity\CompetenceCle;
 use App\Entity\Domaine;
+use App\Entity\Famille;
 use App\Entity\Langue;
 use App\Entity\Niveau;
 use App\Entity\Site;
@@ -22,7 +23,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -33,6 +33,7 @@ class ProfilController extends AbstractController
     public function index(ManagerRegistry $doctrine): Response
     {  
         $sites = $doctrine->getRepository(Site::class)->findAll();
+        $familles = $doctrine->getRepository(Famille::class)->findAll();
         $domaines = $doctrine->getRepository(Domaine::class)->findAll();
         $langues = $doctrine->getRepository(Langue::class)->findAll();
         $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
@@ -42,7 +43,8 @@ class ProfilController extends AbstractController
             'sites' => $sites,
             'domaines' => $domaines,
             'langues' => $langues,
-            'niveaux' => $niveaux
+            'niveaux' => $niveaux,
+            'familles' => $familles
         ]); 
     }
 
@@ -54,6 +56,7 @@ class ProfilController extends AbstractController
         $profil = $request->get('profil');
         $site = $request->get('site');
         $marque = $request->get('marque');
+        $famille = $request->get('famille');
         $poste = $request->get('poste');
         $nom = $request->get('nom');
         $prenom = $request->get('prenom');
@@ -354,6 +357,7 @@ class ProfilController extends AbstractController
             $candidat->setProfil($PROFIL);
             $candidat->setSite($site);
             $candidat->setMarque($marque);
+            $candidat->setFamille($famille);
 
             $date_entree = strtotime($date_entree);
             $newformat = date('Y-m-d',$date_entree);
@@ -580,6 +584,7 @@ class ProfilController extends AbstractController
         $profil = $request->get('profil');
         $site = $request->get('site');
         $marque = $request->get('marque');
+        $famille = $request->get('famille');
         $poste = $request->get('poste');
         $nom = $request->get('nom');
         $prenom = $request->get('prenom');
@@ -880,6 +885,7 @@ class ProfilController extends AbstractController
             $candidat->setProfil($PROFIL);
             $candidat->setSite($site);
             $candidat->setMarque($marque);
+            $candidat->setFamille($famille);
 
             $date_entree = strtotime($date_entree);
             $newformat = date('Y-m-d',$date_entree);
