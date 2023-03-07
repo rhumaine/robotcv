@@ -13,9 +13,11 @@
 					<table class="table table-hover table-bordered results">
 						<thead>
 							<tr>
-								<th class="col-md-5 col-xs-5">Profil</th>
-								<th class="col-md-4 col-xs-4">Nom</th>
-								<th class="col-md-3 col-xs-3">Prénom</th>
+								<th class="col-md-1 col-xs-1">Profil</th>
+								<th class="col-md-2 col-xs-2">Nom</th>
+								<th class="col-md-2 col-xs-2">Prénom</th>
+								<th class="col-md-2 col-xs-2">Poste</th>
+								<th class="col-md-5 col-xs-5">Compétences</th>
 								<th class="col-md-3 col-xs-3">Action</th>
 							</tr>
 								<tr class="warning no-result">
@@ -28,9 +30,11 @@
 									<td>{{ candidat.Profil }}</td>
 									<td>{{ candidat.Nom }}</td>
 									<td>{{ candidat.Prenom }}</td>
+									<td>{{ candidat.Poste }}</td>
+									<td>{{ candidat.competence }}</td>
 									<td>
-										<a href='{{ path('app_profil_edit', {id:  candidat.Id }) }}'>Voir</a>
-										<a href='#' data-bs-toggle="modal" data-bs-target="#confirm-delete" data-candidat-id="{{ candidat.Id }}">Supprimer</a>
+										<a href='{{ path('app_profil_edit', {id:  candidat.Id }) }}' title="Voir"><i class="fa-solid fa-eye" {% if candidat.marque == 1 %}style="color:#49656d" {% else %} style="color:#f9e958" {% endif %}></i></a>
+										<a href='#' data-bs-toggle="modal" data-bs-target="#confirm-delete" data-candidat-id="{{ candidat.Id }}" title="Supprimer"><i class="fa-solid fa-xmark" style="color:red"></i></a>
 									</td>
 								</tr>
 							 {% endfor %}

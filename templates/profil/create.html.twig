@@ -535,6 +535,30 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			const marqueSelect = document.getElementById('marque');
+			const familleSelect = document.getElementById('famille');
 
+		
+			marqueSelect.addEventListener('change', (event) => {
+				$('#divFamille').removeClass('d-none');
+				$('#divFamille').show();
+				
+				Array.from(familleSelect.options).forEach((option) => {
+					if (option.dataset.marque === event.target.value) {
+						option.disabled = false;
+					} else {
+						option.disabled = true;
+					}
+				});
+
+				// Recherche de la première option non désactivée
+				const optionNonDesactivee = Array.from(familleSelect.options).find(option => !option.disabled);
+
+				// Sélection de la première option non désactivée
+				familleSelect.value = optionNonDesactivee.value;
+
+			});
+		</script>
 		<!-- Contenu de la page -->
 {% endblock %}

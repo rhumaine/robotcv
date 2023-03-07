@@ -275,8 +275,16 @@ class PDF extends FPDF{
             $this->WIDTH = 8;
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
 
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
+           
             $this->SetY(8);
             $this->SetX(1.2);
             $this->MultiCell(4.2, 1, utf8_decode("Compétences Clés :"), 0, 1, "C", TRUE);
@@ -329,7 +337,14 @@ class PDF extends FPDF{
         if (isset($this->SAVOIR) && $this->SAVOIR != NULL) {
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
 
             $this->SetY($this->WIDTH);
             $this->SetX(1.2);
@@ -381,7 +396,14 @@ class PDF extends FPDF{
         if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
 
             $this->WIDTH = $this->WIDTH + 1;
 
@@ -425,7 +447,14 @@ class PDF extends FPDF{
             
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
 
             
             $this->SetY($this->WIDTH_BEFORE_LANGUE);
@@ -510,7 +539,14 @@ class PDF extends FPDF{
         if (isset($this->FORMATIONS)  && ($this->FORMATIONS != NULL)) {
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
 
             
             $this->SetY($this->WIDTH);
@@ -582,7 +618,14 @@ class PDF extends FPDF{
         if (isset($this->CERTIFICATIONS) && $this->CERTIFICATIONS != NULL) {
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
-            $this->SetFillColor(73, 101, 109);
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
 
             $WIDTH = $this->WIDTH;
             $WIDTH = $WIDTH + 1;
@@ -856,7 +899,14 @@ class PDF extends FPDF{
                 if ($EXP["Date_debut"] != "") {
                     $this->SetFont("Verdana", "B", 10);
                     $this->SetTextColor(255, 255, 255);
-                    $this->SetFillColor(73, 101, 109);
+                    switch ($this->GROUPE) {
+                        case 1:
+                            $this->SetFillColor(73, 101, 109);
+                            break;
+                        case 2:
+                            $this->SetFillColor(249,233,88);
+                            break;
+                    }
 
                     if ($EXP["Date_fin"] != "") {
                         $DATE = "De " . date_format(date_create($EXP["Date_debut"]), 'm/Y') . " à " . date_format(date_create($EXP["Date_fin"]), 'm/Y');
@@ -927,7 +977,14 @@ class PDF extends FPDF{
 
                 if ($EXP["Entreprise"] != "") {
                     $this->SetTextColor(255, 255, 255);
-                    $this->SetFillColor(73, 101, 109);
+                    switch ($this->GROUPE) {
+                        case 1:
+                            $this->SetFillColor(73, 101, 109);
+                            break;
+                        case 2:
+                            $this->SetFillColor(249,233,88);
+                            break;
+                    }
                     $this->WIDTH = $WIDTH;
 
                     if ($EXP["Ville"] != "") {

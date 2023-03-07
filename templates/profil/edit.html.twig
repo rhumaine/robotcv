@@ -149,7 +149,7 @@
 								<label class="col-md-3" for="site">Marque</label>
 							</div>
 
-							<div id="divFamille" class="form-floating col d-none">
+							<div id="divFamille" class="form-floating col">
 								<select name="famille" class="form-select form-select-sm form-control" id="famille" placeholder="famille" required>
 									<option selected disabled>Famille</option>
 									{% for famille in familles %}
@@ -417,7 +417,7 @@
 					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
 						<div class="row" style="width: 70%;">
 							<div class="form-floating col">
-								<textarea name="savoir" class="form-control textarea" id="savoir" style="height: 200px;">{{ candidatSavoirEtre.savoiretre|replace({';': ''})  }}</textarea>
+								<textarea name="savoir" class="form-control textarea" id="savoir" style="height: 200px;">{% if candidatSavoirEtre is not null %} {{ candidatSavoirEtre.savoiretre|replace({';': ''})  }} {% endif %}</textarea>
 								<label class="col-md-3" for="savoir">Savoir-être</label>
 							</div>
 						</div>
@@ -553,4 +553,29 @@
 		
 	</div>
 	<!-- Contenu de la page -->
+	<script>
+		const marqueSelect = document.getElementById('marque');
+		const familleSelect = document.getElementById('famille');
+
+	
+		marqueSelect.addEventListener('change', (event) => {
+			$('#divFamille').removeClass('d-none');
+			$('#divFamille').show();
+			
+			Array.from(familleSelect.options).forEach((option) => {
+				if (option.dataset.marque === event.target.value) {
+					option.disabled = false;
+				} else {
+					option.disabled = true;
+				}
+			});
+
+			// Recherche de la première option non désactivée
+			const optionNonDesactivee = Array.from(familleSelect.options).find(option => !option.disabled);
+
+			// Sélection de la première option non désactivée
+			familleSelect.value = optionNonDesactivee.value;
+
+		});
+	</script>
 {% endblock %}

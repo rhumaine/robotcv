@@ -478,6 +478,7 @@ class ProfilController extends AbstractController
             
             //Données des listes déroulantes
             $sites = $doctrine->getRepository(Site::class)->findAll();
+            $familles = $doctrine->getRepository(Famille::class)->findAll();
             $domaines = $doctrine->getRepository(Domaine::class)->findAll();
             $langues = $doctrine->getRepository(Langue::class)->findAll();
             $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
@@ -496,7 +497,8 @@ class ProfilController extends AbstractController
                 'candidatFormations' => $candidatFormation,
                 'candidatLangues' => $candidatLangue,
                 'candidatSavoirEtre' => $candidatSavoirEtre,
-                'candidatExperiences' => $candidatExperience
+                'candidatExperiences' => $candidatExperience,
+                'familles' => $familles
             ]); 
         }else{
             return $this->redirectToRoute('home_page');
