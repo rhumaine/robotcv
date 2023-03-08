@@ -1,24 +1,39 @@
-<nav class="navbar navbar-expand-lg navbar-expand-md fixed-top bg-dark navbar-dark">
-	<a class="navbar-brand" href="/">
-		<img src="{{ asset('images/logo_consort.png') }}" alt="Logo Consort" style="width: 180px; padding-left: 20px;">
-	</a>
-	<div id="NavbarSupportedContent" class="collapse navbar-collapse nav-head">
-		<ul class="navbar-nav ms-auto" style="margin-right : 20px; padding-left: 10px;">
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" id="NavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profils</a>
-				<ul class="dropdown-menu" aria-labelledby="NavbarDropdown">
-					<li><a class="dropdown-item" href="{{ path("home_page") }}">Consulter les profils</a></li>
-					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="{{ path("app_profil_create") }}">Créer un profil</a></li>
-				</ul>
-			</li>
-		</ul>
-		<div class="navbar-collapse collapse my-2 my-sm-0" style="padding-right: 10px;">	
-		{% if app.user %}
-			<a class="btn btn-outline-danger ms-auto my-2 my-sm-0" href="{{ path("security_logout") }}" role="button">Déconnexion</a>
-		{% else %}
-			<a class="btn btn-outline-success ms-auto my-2 my-sm-0" href="{{ path("security_login") }}" role="button">Connexion</a>
-		{% endif %}
+<header class="fixed-top navbarRobot">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="header-container">
+
+				<div class="site-branding site-branding-big">
+					<a href="/" rel="home" class="site-title">
+						<div class="logos_wrapper">
+							<img class="top-logo-home" src="https://consort-group.com/wp-content/themes/consort/assets/img/logos/header/logo_black-mini.svg" alt="Consort Group (aller à l’accueil)">
+						</div>
+					</a>
+				</div>
+
+				<div class="header_nav">
+					<nav class="main-navigation">
+						<div class="menu-wrap">
+							<ul>
+								<li>
+									<a href="{{ path("home_page") }}">Consulter les profils</a>
+								</li>
+								<li >
+									<a href="{{ path("app_profil_create") }}">Créer un profil</a>
+								</li>
+							</ul>
+						</div>                            
+					</nav>
+					<div class="menu-wrap">
+								{% if app.user %}
+									<a href="{{ path("security_logout") }}" role="button">Déconnexion</a>
+								{% else %}
+									<a class="cta dark" href="{{ path("security_login") }}" role="button">Connexion</a>
+								{% endif %}
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-</nav>
+</header>
