@@ -7,7 +7,7 @@ COPY . /app
 
 RUN apt-get update \
      && apt-get install -y libzip-dev \
-     && apt-get install -y php8.0-gd \
+     && apt-get install -y php-gd \
      && docker-php-ext-install zip
 
 # Install Composer
