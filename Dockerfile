@@ -7,8 +7,9 @@ COPY . /app
 
 RUN apt-get update \
      && apt-get install -y libzip-dev \
-     && apt-get install -y php-gd \
-     && docker-php-ext-install zip
+     && apt-get update -yqq \
+     && apt-get install libjpeg-dev libpng-dev -yqq \
+     && docker-php-ext-install zip gd
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
