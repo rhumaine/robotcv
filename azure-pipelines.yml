@@ -16,6 +16,7 @@ steps:
     rootDirectory: ./
     targetFiles: |
       Dockerfile
+      .env
 
 - task: CopyFiles@2
   displayName: 'Copy Files'
