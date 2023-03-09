@@ -16,6 +16,7 @@ use App\Entity\Langue;
 use App\Entity\Niveau;
 use App\Entity\Site;
 use App\Entity\Utilisateur;
+use App\Service\Mailer as ServiceMailer;
 use App\Service\PDF;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -1311,7 +1312,7 @@ class ProfilController extends AbstractController
 
     /* TEST */
 
-     // Page de création de profil
+     // Page de création de profil par un utilisateur externe
      #[Route('/create/{username}/{token}', name: 'app_profil_create_by_candidat')]
      //#[IsGranted('ROLE_USER','ROLE_ADMIN')]
     public function createprofilByCandidat(string $username, string $token, ManagerRegistry $doctrine): Response
@@ -1349,4 +1350,28 @@ class ProfilController extends AbstractController
             }
         }
     }
+
+ //
+    #[Route('/createUser', name: 'app_profil_create_user')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function createUserAndEmail(Request $request, ServiceMailer $mailer): Response
+    {  
+        
+
+        if ($_POST) {
+            $data = $request->get('username');
+
+            // Send email
+            $mailer->sendEmail('romain.demay56@gmail.com', 'New contact form submission', $data);
+
+            
+            // Redirect to thank you page
+            return $this->redirectToRoute('home_page');
+        }
+
+        return $this->render('login/create.html.twig', [
+            
+        ]);
+    }
+
 }
