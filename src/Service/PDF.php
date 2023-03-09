@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+$fontPath = realpath(__DIR__.'/../../public/fontPdf/');
+define('FPDF_FONTPATH', $fontPath);
+
 use FPDF;
 
 class PDF extends FPDF{
@@ -123,7 +126,7 @@ class PDF extends FPDF{
             $this->EXPERIENCES = NULL;
         }
         /*------------------------------*/
-
+        
         /*-- Création Font Verdana et Verdana Gras --*/
         /*-------------------------------------------*/
         $this->AddFont('Verdana', "");
