@@ -85,5 +85,26 @@
 		formulaire.setAttribute("target", "_blank");
 		$("#formEditProfil").submit();			
 	});
+
+
+	let element = document.getElementById('navbarRobot');
+
+	// Define a function that will be called when the user scrolls
+	function handleScroll() {
+	// Check how far the user has scrolled
+	const scrollPosition = window.scrollY;
+
+	// If the user has scrolled more than 100 pixels, apply the backdrop filter
+	if (scrollPosition > 80) {
+		element.style.backdropFilter = 'blur(0px) brightness(25%)';
+		element.style.backgroundColor = 'transparent';
+	} else {
+		element.style.backdropFilter = 'none'; 
+		element.style.backgroundColor = '#151a23';
+	}
+	}
+
+	// Add an event listener to the window to detect when the user scrolls
+	window.addEventListener('scroll', handleScroll);
 	
 </script>

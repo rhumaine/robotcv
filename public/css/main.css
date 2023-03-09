@@ -1,17 +1,22 @@
-body {
-	background-color: rgb(240, 240, 240);
-}
-
 .body {
 	margin-top: 100px;
+	/*background-color: #151a23!important;*/
+	background-color: white;
 }
+
+body {
+	/*background-color: #151a23!important;*/
+}
+
 
 
 
 
 /* navigation */
 .navbarRobot{
-	backdrop-filter: blur(30px) brightness(75%);
+	/*backdrop-filter: blur(30px) brightness(75%);*/
+	backdrop-filter: blur(0px) brightness(25%);
+	background-color: #151a23;
 }
 
 .header-container {
@@ -111,7 +116,7 @@ body {
 	text-align: center;
 	padding-bottom: 5px;
 	border: 3px solid #f9e859;
-	color: white;
+	color: black;
 	margin-left: 35%;
 	margin-right: 35%;
 	margin-bottom: 20px;
@@ -238,14 +243,6 @@ body {
 
 
 /******* Profil.css ****/
-
-body {
-	background-color: #151a23!important;
-}
-
-.body {
-	margin-top: 100px;
-}
 
 .profil-card {
 	width:  60%;
