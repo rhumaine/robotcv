@@ -15,6 +15,7 @@ use App\Entity\Famille;
 use App\Entity\Langue;
 use App\Entity\Niveau;
 use App\Entity\Site;
+use App\Entity\Utilisateur;
 use App\Service\PDF;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class ProfilController extends AbstractController
 {
@@ -50,7 +52,7 @@ class ProfilController extends AbstractController
 
     // Fonction losqu'on clique sur créer le profil
     #[Route('/createprofil', name: 'app_profil_create_profil')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_USER')]
     public function creerProfil(ManagerRegistry $doctrine,Request $request): Response
     {
         $profil = $request->get('profil');
@@ -457,7 +459,7 @@ class ProfilController extends AbstractController
          
         $doct->flush();
 
-        return $this->redirectToRoute('home_page'); 
+        return $this->redirectToRoute('home_page');
     }
     
     //Fonction d'edition d'un profil (affichage de la page)
@@ -1042,7 +1044,7 @@ class ProfilController extends AbstractController
 
     // Fonction lorsqu'on clique sur générer le pdf
     #[Route('/genererpdf', name: 'app_profil_genererpdf')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_USER')]
     public function genererPdf(Request $request): Response
     {
         $profil = $request->get('profil');
@@ -1303,4 +1305,48 @@ class ProfilController extends AbstractController
         return $response;
     }
 
+
+
+
+
+    /* TEST */
+
+     // Page de création de profil
+     #[Route('/create/{username}/{token}', name: 'app_profil_create_by_candidat')]
+     //#[IsGranted('ROLE_USER','ROLE_ADMIN')]
+    public function createprofilByCandidat(string $username, string $token, ManagerRegistry $doctrine): Response
+    {  
+        $utilisateurExterne = $doctrine->getRepository(Utilisateur::class)->findOneBy(array('username' => $username));
+
+        if($utilisateurExterne){
+            $tokenUser = $utilisateurExterne->getToken();
+            
+            if($token === $tokenUser){
+
+                // Création du token d'authentification
+                $token = new UsernamePasswordToken($utilisateurExterne, null, 'main', $utilisateurExterne->getRoles());
+
+                // Authentification de l'utilisateur
+                $this->get('security.token_storage')->setToken($token);
+                
+                $sites = $doctrine->getRepository(Site::class)->findAll();
+                $familles = $doctrine->getRepository(Famille::class)->findAll();
+                $domaines = $doctrine->getRepository(Domaine::class)->findAll();
+                $langues = $doctrine->getRepository(Langue::class)->findAll();
+                $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+        
+                return $this->render('profil/create.html.twig', [
+                    'controller_name' => 'ProfilController',
+                    'sites' => $sites,
+                    'domaines' => $domaines,
+                    'langues' => $langues,
+                    'niveaux' => $niveaux,
+                    'familles' => $familles,
+                    'candidat' => $utilisateurExterne
+                ]); 
+            }else{
+                return $this->redirectToRoute('home_page');
+            }
+        }
+    }
 }
