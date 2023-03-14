@@ -193,7 +193,7 @@
 								<select name="statut" class="form-select form-select-sm form-control" id="statut" placeholder="Statut" required>
 									<option selected disabled>Statut</option>
 									{% for statut in statuts %}
-										<option  value="{{ statut.id }}" {% if statut.id == candidat.statut %} selected {% endif %}>
+										<option  value="{{ statut.id }}">
 										{{ statut.statut }}
 										</option>
 									{% endfor %}
