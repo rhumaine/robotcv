@@ -1046,10 +1046,28 @@ class ProfilController extends AbstractController
     // Fonction lorsqu'on clique sur générer le pdf
     #[Route('/genererpdf', name: 'app_profil_genererpdf')]
     #[IsGranted('ROLE_USER')]
-    public function genererPdf(Request $request): Response
+    public function genererPdf(Request $request)
     {
-        $profil = $request->get('profil');
+
+        $nom = $request->get('nom');
+        $prenom = $request->get('prenom');
         $site = $request->get('site');
+
+        $departement ="44";
+
+        switch ($site) {
+            case 1:
+                $departement ="44";
+                break;
+            case 2:
+                $departement ="35";
+                break;
+            case 2:
+                $departement ="49";
+                break;
+        }
+
+        $profil = $request->get('profil');
         $marque = $request->get('marque');
         $poste = $request->get('poste');
         $annees_exp = $request->get('annees_exp');
@@ -1297,11 +1315,11 @@ class ProfilController extends AbstractController
         $pdf->AliasNbPages();
         $pdf->write_CV();
 
-        //return $pdf->Output();   
+       // return $pdf->Output();   
         // Output the PDF as a response
-        $response = new Response($pdf->Output(), Response::HTTP_OK, [
+        $response = new Response($pdf->Output($nom.'_'. $prenom.'_'.$departement.'.pdf', 'I'), Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="CV.pdf"',
+            'Content-Disposition' => 'attachment; filename="test.pdf"',
         ]); 
         return $response;
     }

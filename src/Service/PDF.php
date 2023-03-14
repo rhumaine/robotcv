@@ -147,6 +147,9 @@ class PDF extends FPDF{
                 break;
         }
         
+        $this->write_profil();
+        $this->write_poste();
+        
     }
     /*------------------------------------------------*/
 
@@ -189,8 +192,6 @@ class PDF extends FPDF{
     /*--------------------------------------------------------*/
     function write_CV() {
         $this->AddPage();
-        $this->write_profil();
-        $this->write_poste();
         $this->write_annees_exp();
         $this->write_date_entree();
         $this->write_comp_cles();

@@ -236,7 +236,7 @@
 					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
 						<div class="row" style="width: 70%;">
 							<div class="form-floating col">
-								<textarea name="comp_cle" class="form-control textarea" id="comp_cle" style="height: 200px;">{{ candidatCompetencesCles.competence|replace({';': ''})  }} </textarea>
+								<textarea name="comp_cle" class="form-control textarea" id="comp_cle" style="height: 200px;">{% if candidatCompetencesCles is not null %} {{ candidatCompetencesCles.competence|replace({';': ''})  }} {% endif %} </textarea>
 								<label class="col-md-3" for="comp_cle">Compétences clés</label>
 							</div>
 						</div>
