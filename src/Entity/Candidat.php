@@ -47,6 +47,13 @@ class Candidat
     #[ORM\Column]
     private ?int $famille = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $localisation = null;
+
+    // 1 pour Collaborateur / 2 pour Candidat
+    #[ORM\Column]
+    private ?int $statut = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +187,30 @@ class Candidat
     public function setFamille(int $famille): self
     {
         $this->famille = $famille;
+
+        return $this;
+    }
+
+    public function getLocalisation(): ?string
+    {
+        return $this->localisation;
+    }
+
+    public function setLocalisation(?string $localisation): self
+    {
+        $this->localisation = $localisation;
+
+        return $this;
+    }
+
+    public function getStatut(): ?int
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(int $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

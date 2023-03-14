@@ -15,6 +15,7 @@ use App\Entity\Famille;
 use App\Entity\Langue;
 use App\Entity\Niveau;
 use App\Entity\Site;
+use App\Entity\Statut;
 use App\Entity\Utilisateur;
 use App\Service\Mailer as ServiceMailer;
 use App\Service\PDF;
@@ -40,6 +41,7 @@ class ProfilController extends AbstractController
         $domaines = $doctrine->getRepository(Domaine::class)->findAll();
         $langues = $doctrine->getRepository(Langue::class)->findAll();
         $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+        $statuts = $doctrine->getRepository(Statut::class)->findAll();
 
         return $this->render('profil/create.html.twig', [
             'controller_name' => 'ProfilController',
@@ -47,7 +49,8 @@ class ProfilController extends AbstractController
             'domaines' => $domaines,
             'langues' => $langues,
             'niveaux' => $niveaux,
-            'familles' => $familles
+            'familles' => $familles,
+            'statuts' => $statuts
         ]); 
     }
 
@@ -63,6 +66,8 @@ class ProfilController extends AbstractController
         $poste = $request->get('poste');
         $nom = $request->get('nom');
         $prenom = $request->get('prenom');
+        $localisation = $request->get('localisation');
+        $statut = $request->get('statut');
         $email = $request->get('email');
         $telephone = $request->get('telephone');
         $annees_exp = $request->get('annees_exp');
@@ -109,6 +114,14 @@ class ProfilController extends AbstractController
                 } else {
                     $PRENOM = NULL;
                 }
+            
+            /*-- Récupération du prénom --*/
+               
+            if (isset($localisation) && $localisation != NULL) {
+                $LOCALISATION = htmlspecialchars($localisation);
+            } else {
+                $LOCALISATION = NULL;
+            }
                 
 
             /*-- Récupération du email --*/
@@ -331,6 +344,8 @@ class ProfilController extends AbstractController
             $candidat->setSite($site);
             $candidat->setMarque($marque);
             $candidat->setFamille($famille);
+            $candidat->setLocalisation($LOCALISATION);
+            $candidat->setStatut($statut);
 
             $date_entree = strtotime($date_entree);
             $newformat = date('Y-m-d',$date_entree);
@@ -485,6 +500,7 @@ class ProfilController extends AbstractController
             $domaines = $doctrine->getRepository(Domaine::class)->findAll();
             $langues = $doctrine->getRepository(Langue::class)->findAll();
             $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+            $statuts = $doctrine->getRepository(Statut::class)->findAll();
 
             return $this->render('profil/edit.html.twig', [
                 'controller_name' => 'ProfilController',
@@ -492,6 +508,7 @@ class ProfilController extends AbstractController
                 'domaines' => $domaines,
                 'langues' => $langues,
                 'niveaux' => $niveaux,
+                'statuts' => $statuts,
                 'candidat' => $profil,
                 'candidatId' => $id,
                 'candidatCompetencesCles' => $candidatCompetencesCles,
@@ -563,6 +580,8 @@ class ProfilController extends AbstractController
         $poste = $request->get('poste');
         $nom = $request->get('nom');
         $prenom = $request->get('prenom');
+        $localisation = $request->get('localisation');
+        $statut = $request->get('statut');
         $email = $request->get('email');
         $telephone = $request->get('telephone');
         $annees_exp = $request->get('annees_exp');
@@ -616,6 +635,14 @@ class ProfilController extends AbstractController
                     $PRENOM = htmlspecialchars($prenom);
                 } else {
                     $PRENOM = NULL;
+                }
+
+            /*-- Récupération du prénom --*/
+               
+                if (isset($localisation) && $localisation != NULL) {
+                    $LOCALISATION = htmlspecialchars($localisation);
+                } else {
+                    $LOCALISATION = NULL;
                 }
 
             /*-- Récupération du email --*/
@@ -849,6 +876,8 @@ class ProfilController extends AbstractController
             $candidat->setSite($site);
             $candidat->setMarque($marque);
             $candidat->setFamille($famille);
+            $candidat->setLocalisation($LOCALISATION);
+            $candidat->setStatut($statut);
 
             $date_entree = strtotime($date_entree);
             $newformat = date('Y-m-d',$date_entree);
@@ -1353,6 +1382,7 @@ class ProfilController extends AbstractController
                 $domaines = $doctrine->getRepository(Domaine::class)->findAll();
                 $langues = $doctrine->getRepository(Langue::class)->findAll();
                 $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+                $statuts = $doctrine->getRepository(Statut::class)->findAll();
         
                 return $this->render('profil/create.html.twig', [
                     'controller_name' => 'ProfilController',
@@ -1361,7 +1391,8 @@ class ProfilController extends AbstractController
                     'langues' => $langues,
                     'niveaux' => $niveaux,
                     'familles' => $familles,
-                    'candidat' => $utilisateurExterne
+                    'candidat' => $utilisateurExterne,
+                    'statuts' => $statuts
                 ]); 
             }else{
                 return $this->redirectToRoute('home_page');

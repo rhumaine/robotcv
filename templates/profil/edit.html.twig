@@ -177,6 +177,23 @@
 								<input type="text" name="nom" class="form-control" id="nom" placeholder="nom" required value="{{ candidat.nom }}">
 								<label class="col-md-3" for="nom">Nom</label>
 							</div>
+
+							<div class="form-floating col">
+								<input type="text" name="localisation" class="form-control" id="localisation" placeholder="localisation" required value="{{ candidat.localisation }}">
+								<label class="col-md-3" for="localisation">Localisation</label>
+							</div>
+
+							<div class="form-floating col">
+								<select name="statut" class="form-select form-select-sm form-control" id="statut" placeholder="Statut" required>
+									<option selected disabled>Statut</option>
+									{% for statut in statuts %}
+										<option  value="{{ statut.id }}" {% if statut.id == candidat.statut %} selected {% endif %}>
+										{{ statut.statut }}
+										</option>
+									{% endfor %}
+								</select>
+								<label class="col-md-3" for="statut">Statut</label>
+							</div>
 						</div>
 					</div>
 					<!-- Prénom et Nom-->
