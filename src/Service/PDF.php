@@ -16,6 +16,7 @@ class PDF extends FPDF{
     protected $GROUPE;			/*-- Le GROUPE --*/
     protected $POSTE;			/*-- Le poste auquel postule le candidat --*/
     protected $COMPETENCES;		/*-- La liste des compétences clés du candidat --*/
+    protected $POINTSMARQUANTS;	/*-- La liste des points marquants du candidat --*/
     protected $ANNEES_EXP;		/*-- Le nombre d'années d'expérience du candidat --*/
     protected $DATE_ENTREE;		/*-- La date d'entre du candidat dans l'entreprise --*/
     protected $CONNAISSANCES;	/*-- La liste des connaissances techniques du candidat --*/
@@ -26,11 +27,13 @@ class PDF extends FPDF{
     protected $CERTIFICATIONS;
     protected $WIDTH;			/*-- Position de la hauteur actuelle dans la page --*/
     protected $WIDTH_BEFORE_LANGUE;			/*-- Position de la hauteur actuelle dans la page --*/
+    protected $hauteurCompt;
+    protected $hauteurPoints;
     /*-----------------------------*/
 
     /*-- Constructeur de la classe --*/
     /*-------------------------------*/
-    function __construct($PROFIL=NULL, $SITE=NULL, $GROUPE=NULL, $POSTE=NULL, $COMPETENCES=NULL,$SAVOIR=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
+    function __construct($PROFIL=NULL, $SITE=NULL, $GROUPE=NULL, $POSTE=NULL, $COMPETENCES=NULL, $POINTSMARQUANTS=NULL, $SAVOIR=NULL, $ANNEES_EXP=NULL, $DATE_ENTREE=NULL, $CONNAISSANCES=NULL, $CERTIFICATIONS=NULL, $FORMATIONS=NULL, $LANGUES=NULL, $EXPERIENCES=NULL) {
         /*-- Appel constructeur classe FPDF --*/
         /*------------------------------------*/
         parent::__construct("P", "cm", "A4");
@@ -51,6 +54,15 @@ class PDF extends FPDF{
             }
         } else {
             $COMPETENCES = NULL;
+        }
+
+        $this->POINTSMARQUANTS = array();
+        if ($POINTSMARQUANTS != NULL) {
+            foreach ($POINTSMARQUANTS AS $POINT) {
+                $this->POINTSMARQUANTS[] = htmlspecialchars_decode($POINT);
+            }
+        } else {
+            $POINTSMARQUANTS = NULL;
         }
 
         $this->SAVOIR = array();
@@ -144,6 +156,9 @@ class PDF extends FPDF{
                 break;
             case 2:
                 $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete_consortis.png", 0, 0,21);
+                break; 
+            case 3:
+                $this->Image($_SERVER['DOCUMENT_ROOT'] . "/images/pdf_entete_consortgroup.png", 0, 0,21);
                 break;
         }
         
@@ -195,6 +210,7 @@ class PDF extends FPDF{
         $this->write_annees_exp();
         $this->write_date_entree();
         $this->write_comp_cles();
+        $this->write_points_marquants();
         $this->write_langues();
         $this->write_savoir();
         $this->write_connaissances();
@@ -275,6 +291,7 @@ class PDF extends FPDF{
     }
 
     function write_comp_cles() {
+             
         if (isset($this->COMPETENCES) && $this->COMPETENCES != NULL) {
             $this->WIDTH = 8;
             $this->SetFont("Verdana", "BU", 10);
@@ -285,6 +302,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -296,24 +316,87 @@ class PDF extends FPDF{
             $this->WIDTH = $this->WIDTH + 1.2;
 
             foreach($this->COMPETENCES AS $COMP) {
-                $this->SetFont("Verdana", "", 10);
+                $this->SetFont("Verdana", "", 8);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFillColor(255, 255, 255);
 
                 $this->SetY($this->WIDTH);
-                $this->SetX(2.5);
-                $this->MultiCell(14.5, 0.6, "   " . chr(127), 0, 1, "C", TRUE);
+                $this->SetX(1.2);
+                $this->MultiCell(1.2, 0.5, "   " . chr(127), 0, 1, "C", TRUE);
 
                 $TEXT_ARRAY = explode(' ', $COMP);
                 $TEXT = "";
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 13.5) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 7.5) {
                         $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
                     } else {
                         $this->SetY($this->WIDTH);
-                        $this->SetX(3.5);
-                        $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+                        $this->SetX(1.8);
+                        $this->MultiCell(7.6, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+
+                        $TEXT = $TEXT_ARRAY[$i];
+                        $this->WIDTH = $this->WIDTH + 0.5;
+                        if ($this->WIDTH > 27) {
+                            $this->AddPage();
+                            $this->WIDTH = 3;
+                        }
+                    }
+
+                }
+                $this->SetY($this->WIDTH);
+                $this->SetX(2);
+                $this->MultiCell(6, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+
+                $this->WIDTH = $this->WIDTH + 0.5;
+            }
+            $this->hauteurCompt = $this->WIDTH;
+        }
+    }
+    
+    function write_points_marquants() {
+        if (isset($this->POINTSMARQUANTS) && $this->POINTSMARQUANTS != NULL) {
+            $this->WIDTH = 8;
+            $this->SetFont("Verdana", "BU", 10);
+            $this->SetTextColor(255, 255, 255);
+
+            switch ($this->GROUPE) {
+                case 1:
+                    $this->SetFillColor(73, 101, 109);
+                    break;
+                case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
+                    $this->SetFillColor(249,233,88);
+                    break;
+            }
+           
+            $this->SetY(8);
+            $this->SetX(8.2);
+            $this->MultiCell(4.5, 1, utf8_decode("Points marquants:"), 0, 1, "C", TRUE);
+
+            $this->WIDTH = $this->WIDTH + 1.2;
+
+            foreach($this->POINTSMARQUANTS AS $POINT) {
+                $this->SetFont("Verdana", "", 8);
+                $this->SetTextColor(0, 0, 0);
+                $this->SetFillColor(255, 255, 255);
+
+               /* $this->SetY($this->WIDTH);
+                $this->SetX(8.2);
+                $this->MultiCell(14.5, 0.6, "   " . chr(127), 0, 1, "C", TRUE);*/
+
+                $TEXT_ARRAY = explode(' ', $POINT);
+                $TEXT = "";
+
+                for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 7.5) {
+                        $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
+                    } else {
+                        $this->SetY($this->WIDTH);
+                        $this->SetX(8.2);
+                        $this->MultiCell(7.6, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
 
                         $TEXT = $TEXT_ARRAY[$i];
                         $this->WIDTH = $this->WIDTH + 0.5;
@@ -323,21 +406,23 @@ class PDF extends FPDF{
                         }
 
                         $this->SetY($this->WIDTH);
-                        $this->SetX(2.5);
+                        $this->SetX(8.2);
                         $this->MultiCell(14.5, 0.6, "", 0, 1, "C", TRUE);
                     }
                 }
 
                 $this->SetY($this->WIDTH);
-                $this->SetX(3.5);
+                $this->SetX(8.2);
                 $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
+            
+            $this->hauteurPoints = $this->WIDTH;
         }
     }
-
     function write_savoir() {
+
         if (isset($this->SAVOIR) && $this->SAVOIR != NULL) {
             $this->SetFont("Verdana", "BU", 10);
             $this->SetTextColor(255, 255, 255);
@@ -346,6 +431,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -366,12 +454,12 @@ class PDF extends FPDF{
                 $TEXT = "";
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 13.5) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 7.5) {
                         $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
                     } else {
                         $this->SetY($this->WIDTH);
                         $this->SetX(1.2);
-                        $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+                        $this->MultiCell(6, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
 
                         $TEXT = $TEXT_ARRAY[$i];
                         $this->WIDTH = $this->WIDTH + 0.5;
@@ -388,7 +476,7 @@ class PDF extends FPDF{
 
                 $this->SetY($this->WIDTH);
                 $this->SetX(1.2);
-                $this->MultiCell(13.5, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
+                $this->MultiCell(6, 0.5, utf8_decode($TEXT), 0, 1, "C", TRUE);
 
                 $this->WIDTH = $this->WIDTH + 0.5;
             }
@@ -396,6 +484,23 @@ class PDF extends FPDF{
     }
 
     function write_langues() {
+        if($this->hauteurCompt > $this->hauteurPoints){
+            $this->WIDTH = $this->hauteurCompt;
+        }else{
+            $this->WIDTH = $this->hauteurPoints;
+        }
+
+        // Position de départ du rectangle
+        $x = 1.2;
+        $y = 8;
+
+        // Largeur et hauteur du rectangle
+        $w = 18.2;
+        $h = $this->WIDTH-7.5;
+        // Dessiner le rectangle
+        $this->Rect($x, $y, $w, $h);
+
+
         $this->WIDTH_BEFORE_LANGUE =  $this->WIDTH + 1;
         if (isset($this->LANGUES)  && ($this->LANGUES != NULL)) {
             $this->SetFont("Verdana", "BU", 10);
@@ -405,6 +510,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -456,6 +564,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -548,6 +659,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -627,6 +741,9 @@ class PDF extends FPDF{
                     $this->SetFillColor(73, 101, 109);
                     break;
                 case 2:
+                    $this->SetFillColor(96,84,122,255);
+                    break;
+                case 3:
                     $this->SetFillColor(249,233,88);
                     break;
             }
@@ -908,6 +1025,9 @@ class PDF extends FPDF{
                             $this->SetFillColor(73, 101, 109);
                             break;
                         case 2:
+                            $this->SetFillColor(96,84,122,255);
+                            break;
+                        case 3:
                             $this->SetFillColor(249,233,88);
                             break;
                     }
@@ -986,6 +1106,9 @@ class PDF extends FPDF{
                             $this->SetFillColor(73, 101, 109);
                             break;
                         case 2:
+                            $this->SetFillColor(96,84,122,255);
+                            break;
+                        case 3:
                             $this->SetFillColor(249,233,88);
                             break;
                     }

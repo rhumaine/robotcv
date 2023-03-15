@@ -8,6 +8,7 @@ use App\Entity\CandidatConnaissance;
 use App\Entity\CandidatExperience;
 use App\Entity\CandidatFormation;
 use App\Entity\CandidatLangue;
+use App\Entity\CandidatPointsMarquants;
 use App\Entity\CandidatSavoirEtre;
 use App\Entity\CompetenceCle;
 use App\Entity\Domaine;
@@ -73,6 +74,7 @@ class ProfilController extends AbstractController
         $annees_exp = $request->get('annees_exp');
         $date_entree = $request->get('date_entree');
         $comp_cle = $request->get('comp_cle');
+        $pointmarquants = $request->get('pointmarquants');
         $connaissance_1 = $request->get('connaissance_1');
         $domaine_1 = $request->get('domaine_1');
         $nb_input_connaissances = $request->get('nb_input_connaissances');
@@ -117,11 +119,11 @@ class ProfilController extends AbstractController
             
             /*-- Récupération du prénom --*/
                
-            if (isset($localisation) && $localisation != NULL) {
-                $LOCALISATION = htmlspecialchars($localisation);
-            } else {
-                $LOCALISATION = NULL;
-            }
+                if (isset($localisation) && $localisation != NULL) {
+                    $LOCALISATION = htmlspecialchars($localisation);
+                } else {
+                    $LOCALISATION = NULL;
+                }
                 
 
             /*-- Récupération du email --*/
@@ -176,6 +178,15 @@ class ProfilController extends AbstractController
                     $COMPETENCES = explode("\n", htmlspecialchars($COMP));
                 } else {
                     $COMPETENCES = NULL;
+                }
+
+                
+            /*-- Récupération des points marquants --*/
+                if (isset($pointmarquants) && $comp_cle != NULL) {
+                    $POINT = str_replace("’", "'", $pointmarquants);
+                    $POINTSMARQUANTS = explode("\n", htmlspecialchars($POINT));
+                } else {
+                    $POINTSMARQUANTS = NULL;
                 }
 
             /*-- Récupération des savoir etre --*/
@@ -369,6 +380,18 @@ class ProfilController extends AbstractController
 
                 $competenceCle->setCompetence($COMPETENCESBDD);
                 $doct->persist($competenceCle);
+            } 
+        
+        /*--------------  Point marquant   --------------------*/
+
+            if ($POINTSMARQUANTS != null && isset($idCandidat)){
+                $pointsmarquant = new CandidatPointsMarquants();
+                $pointsmarquant->setIdCandidat($idCandidat);
+
+                $POINTSMARQUANTSBDD = implode(';', $POINTSMARQUANTS);
+
+                $pointsmarquant->setPointsMarquants($POINTSMARQUANTSBDD);
+                $doct->persist($pointsmarquant);
             }
 
         /*--------------  ConnaissanceTechnique   --------------------*/
@@ -487,6 +510,7 @@ class ProfilController extends AbstractController
         $profil = $doctrine->getRepository(Candidat::class)->find($id);
         if($profil){ 
             $candidatCompetencesCles = $doctrine->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $id));
+            $candidatPointsMarquants = $doctrine->getRepository(CandidatPointsMarquants::class)->findOneBy(array('id_candidat' => $id));
             $candidatConnaissance = $doctrine->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $id));
             $candidatCertification = $doctrine->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $id));
             $candidatFormation = $doctrine->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $id));
@@ -512,6 +536,7 @@ class ProfilController extends AbstractController
                 'candidat' => $profil,
                 'candidatId' => $id,
                 'candidatCompetencesCles' => $candidatCompetencesCles,
+                'candidatPointsMarquants' => $candidatPointsMarquants,
                 'candidatConnaissances' => $candidatConnaissance,
                 'candidatCertifications' => $candidatCertification,
                 'candidatFormations' => $candidatFormation,
@@ -538,6 +563,7 @@ class ProfilController extends AbstractController
 
         if($candidat){
             $candidatCompetencesCles = $entityManager->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $candidatId));
+            $candidatPointsMarquants = $doctrine->getRepository(CandidatPointsMarquants::class)->findOneBy(array('id_candidat' => $candidatId));
             $candidatConnaissance = $entityManager->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $candidatId));
             $candidatCertification = $entityManager->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $candidatId));
             $candidatFormation = $entityManager->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $candidatId));
@@ -545,28 +571,40 @@ class ProfilController extends AbstractController
             $candidatSavoirEtre = $entityManager->getRepository(CandidatSavoirEtre::class)->findOneBy(array('id_candidat' => $candidatId));
             $candidatExperience = $entityManager->getRepository(CandidatExperience::class)->findBy(array('id_candidat' => $candidatId));
             
-            $entityManager->remove($candidatCompetencesCles);
-
-            foreach ($candidatConnaissance as $cConnaissance) {
-                $entityManager->remove($cConnaissance);
+            if($candidatCompetencesCles){
+                $entityManager->remove($candidatCompetencesCles);
             }
-
-            foreach ($candidatCertification as $cCertif) {
-                $entityManager->remove($cCertif);
+            if($candidatPointsMarquants){
+                $entityManager->remove($candidatPointsMarquants);
             }
-
-            foreach ($candidatFormation  as $cForm ) {
-                $entityManager->remove($cForm);
+           
+            if($candidatConnaissance){
+                foreach ($candidatConnaissance as $cConnaissance) {
+                    $entityManager->remove($cConnaissance);
+                }
             }
-
-            foreach ($candidatLangue as $cLangue) {
-                $entityManager->remove($cLangue);
+            if($candidatCertification){
+                foreach ($candidatCertification as $cCertif) {
+                    $entityManager->remove($cCertif);
+                }
             }
-
-            $entityManager->remove($candidatSavoirEtre);
-
-            foreach ($candidatExperience as $cExp) {
-                $entityManager->remove($cExp);
+            if($candidatFormation){
+                foreach ($candidatFormation  as $cForm ) {
+                    $entityManager->remove($cForm);
+                }
+            }
+            if($candidatLangue){
+                foreach ($candidatLangue as $cLangue) {
+                    $entityManager->remove($cLangue);
+                }
+            }
+            if($candidatSavoirEtre){
+                $entityManager->remove($candidatSavoirEtre);
+            }
+            if($candidatExperience){
+                foreach ($candidatExperience as $cExp) {
+                    $entityManager->remove($cExp);
+                }
             }
 
             $entityManager->remove($candidat);
@@ -587,6 +625,7 @@ class ProfilController extends AbstractController
         $annees_exp = $request->get('annees_exp');
         $date_entree = $request->get('date_entree');
         $comp_cle = $request->get('comp_cle');
+        $pointmarquants = $request->get('pointmarquants');
         $connaissance_1 = $request->get('connaissance_1');
         $domaine_1 = $request->get('domaine_1');
         $nb_input_connaissances = $request->get('nb_input_connaissances');
@@ -698,6 +737,14 @@ class ProfilController extends AbstractController
                     $COMPETENCES = explode("\n", htmlspecialchars($COMP));
                 } else {
                     $COMPETENCES = NULL;
+                }
+
+            /*-- Récupération des points marquants --*/
+                if (isset($pointmarquants) && $comp_cle != NULL) {
+                    $POINT = str_replace("’", "'", $pointmarquants);
+                    $POINTSMARQUANTS = explode("\n", htmlspecialchars($POINT));
+                } else {
+                    $POINTSMARQUANTS = NULL;
                 }
                 
 
@@ -903,6 +950,19 @@ class ProfilController extends AbstractController
                 $doct->persist($competenceCle);
             }
 
+        /*--------------  Point marquant   --------------------*/
+
+            if ($POINTSMARQUANTS != null && isset($idCandidat)){
+                $pointsmarquant = new CandidatPointsMarquants();
+                $pointsmarquant->setIdCandidat($idCandidat);
+
+                $POINTSMARQUANTSBDD = implode(';', $POINTSMARQUANTS);
+
+                $pointsmarquant->setPointsMarquants($POINTSMARQUANTSBDD);
+                $doct->persist($pointsmarquant);
+            }
+
+
         /*--------------  ConnaissanceTechnique   --------------------*/
             
             if ($CONNAISSANCES != null && isset($idCandidat)){
@@ -1020,6 +1080,7 @@ class ProfilController extends AbstractController
 
         if($candidat){ 
             $candidatCompetencesCles = $entityManager->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $id));
+            $candidatPointsMarquants = $entityManager->getRepository(CandidatPointsMarquants::class)->findOneBy(array('id_candidat' => $id));
             $candidatConnaissance = $entityManager->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $id));
             $candidatCertification = $entityManager->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $id));
             $candidatFormation = $entityManager->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $id));
@@ -1029,6 +1090,10 @@ class ProfilController extends AbstractController
 
             if($candidatCompetencesCles){
                 $entityManager->remove($candidatCompetencesCles);
+            }
+
+            if($candidatPointsMarquants){
+                $entityManager->remove($candidatPointsMarquants);
             }
            
             if($candidatConnaissance){
@@ -1102,6 +1167,7 @@ class ProfilController extends AbstractController
         $annees_exp = $request->get('annees_exp');
         $date_entree = $request->get('date_entree');
         $comp_cle = $request->get('comp_cle');
+        $pointmarquants = $request->get('pointmarquants');
         $connaissance_1 = $request->get('connaissance_1');
         $domaine_1 = $request->get('domaine_1');
         $nb_input_connaissances = $request->get('nb_input_connaissances');
@@ -1178,8 +1244,15 @@ class ProfilController extends AbstractController
                 $COMPETENCES = NULL;
             }
             
-
-        /*-- Récupération des compétences clés --*/
+        /*-- Récupération des points marquants --*/
+            if (isset($pointmarquants) && $pointmarquants != NULL) {
+                $POINT = str_replace("’", "'", $pointmarquants);
+                $POINTSMARQUANTS = explode("\n", htmlspecialchars($POINT));
+            } else {
+                $POINTSMARQUANTS = NULL;
+            }
+        
+        /*-- Récupération des savoir --*/
         
             if (isset($savoir) && $savoir != NULL) {
                 $SAV = str_replace("’", "'", $savoir);
@@ -1339,7 +1412,7 @@ class ProfilController extends AbstractController
             }
 
        
-        $pdf = new PDF($PROFIL,$SITE,$MARQUE, $POSTE, $COMPETENCES,$SAVOIR, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
+        $pdf = new PDF($PROFIL,$SITE,$MARQUE, $POSTE, $COMPETENCES, $POINTSMARQUANTS,$SAVOIR, $ANNEES_EXP, $DATE_ENTREE, $CONNAISSANCES, $CERTIFICATIONS, $FORMATIONS, $LANGUES, $EXPERIENCES);
 
         $pdf->AliasNbPages();
         $pdf->write_CV();
