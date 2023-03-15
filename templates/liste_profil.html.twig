@@ -7,6 +7,7 @@
 		<div class="body">
 				<div class="container" style="margin-top: 175px;">
 				<select class="form-select float-start" style="width: 15%;" id="status-select">
+					<option value="tous" selected>Tous</option>
 					<option value="candidat">Candidat</option>
 					<option value="collaborateur">Collaborateur</option>
 				</select>
@@ -25,7 +26,7 @@
 								<th hidden class="col-md-5 col-xs-5">Statut</th>
 								<th class="col-md-3 col-xs-3">Action</th>
 							</tr>
-								<tr class="warning no-result">
+							<tr class="warning no-result">
 								<td colspan="4"><i class="fa fa-warning"></i> Pas de résultats</td>
 							</tr>
 						</thead>
@@ -129,8 +130,11 @@
 							row.style.display = "none";
 						}
 					});
-				}
-				
+				}else{
+					tableRows.forEach(function(row) {
+						row.style.display = "table-row";	
+					});
+				}	
 			});
 		</script>
 		<!-- SCRIPT pour tableau -->
