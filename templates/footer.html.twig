@@ -15,40 +15,112 @@
 
 	// Création du profil avec vérification de l'adresse mail si il existe déjà
 	$('#inputSubmitFormCreateProfil').on('click', function(){
-		event.preventDefault();
-		$.ajax({
-			url: "{{ (path('ajax_check_profil')) }}",
-			method: "POST",
-        	dataType : "json",
-			data: { 
-				'email': $('#email').val()
-    		},
-		})
-		.done(function(response){
-			let data = JSON.stringify(response);
-			if(data == "false"){
-				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_create_profil')) }}";
-				var formulaire = document.getElementById('formCreateProfil');
-				formulaire.setAttribute("target", "");
-				$("#formCreateProfil").submit();
+
+		var formFilled = true;
+		var emptyField = "";
+		$('.required').each(function() {
+			if ($(this).is('select')) {
+				 if ($(this).val() === null) {
+ 					formFilled = false;
+          			emptyField = $(this).attr('name');
+					return false;
+				 }
 			}else{
-				$('#confirm-submit').modal('toggle');
-				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
-				$("#messageProfilExistant").show();
-				$('html, body').animate({ 
-                     scrollTop: '0px' 
-                });
+				if ($(this).val().length === 0) {
+					formFilled = false;
+					emptyField = $(this).attr('name');
+					return false; // sortir de la boucle each si un champ est vide
+				}
 			}
 		});
+
+		if (!formFilled) {
+			$('#confirm-submit').modal('hide');
+			event.preventDefault();
+			var errorMsg = "Veuillez remplir le champ '" + emptyField + "'";
+			$('form').prepend('<div class="container"><div class="alert alert-danger">' + errorMsg + '</div></div>');
+			
+			$('html, body').animate({
+				scrollTop: top
+			}, 1000);
+
+			setTimeout(function() {
+				$('.alert-danger').fadeOut('slow', function() {
+				$(this).remove();
+				});
+			}, 5000);
+		}else{
+			event.preventDefault();
+			$.ajax({
+				url: "{{ (path('ajax_check_profil')) }}",
+				method: "POST",
+				dataType : "json",
+				data: { 
+					'email': $('#email').val()
+				},
+			})
+			.done(function(response){
+				let data = JSON.stringify(response);
+				if(data == "false"){
+					document.getElementById('formCreateProfil').action = "{{ (path('app_profil_create_profil')) }}";
+					var formulaire = document.getElementById('formCreateProfil');
+					formulaire.setAttribute("target", "");
+					$("#formCreateProfil").submit();
+				}else{
+					$('#confirm-submit').modal('toggle');
+					$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
+					$("#messageProfilExistant").show();
+					$('html, body').animate({ 
+						scrollTop: '0px' 
+					});
+				}
+			});
+			
+		}
 	});
 
 	// Modification du profil
 	$('#inputSubmitFormEditProfil').on('click', function(){
-		event.preventDefault();	
-		document.getElementById('formEditProfil').action = "{{ (path('app_profil_edit_profil')) }}";
-		var formulaire = document.getElementById('formEditProfil');
-		formulaire.setAttribute("target", "");
-		$("#formEditProfil").submit();	
+		var formFilled = true;
+		var emptyField = "";
+		$('.required').each(function() {
+			if ($(this).is('select')) {
+				 if ($(this).val() === null) {
+ 					formFilled = false;
+          			emptyField = $(this).attr('name');
+					return false;
+				 }
+			}else{
+				if ($(this).val().length === 0) {
+					formFilled = false;
+					emptyField = $(this).attr('name');
+					return false; // sortir de la boucle each si un champ est vide
+				}
+			}
+		});
+
+		if (!formFilled) {
+			$('#confirm-submit').modal('hide');
+			event.preventDefault();
+			var errorMsg = "Veuillez remplir le champ '" + emptyField + "'";
+			$('form').prepend('<div class="container"><div class="alert alert-danger">' + errorMsg + '</div></div>');
+			
+			$('html, body').animate({
+				scrollTop: top
+			}, 1000);
+
+			setTimeout(function() {
+				$('.alert-danger').fadeOut('slow', function() {
+				$(this).remove();
+				});
+			}, 5000);
+		}else{
+			event.preventDefault();	
+			document.getElementById('formEditProfil').action = "{{ (path('app_profil_edit_profil')) }}";
+			var formulaire = document.getElementById('formEditProfil');
+			formulaire.setAttribute("target", "");
+			$("#formEditProfil").submit();	
+		}
 	});
 	
 	// Apercu du PDF sur la page de création
