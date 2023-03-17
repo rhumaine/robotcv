@@ -124,12 +124,12 @@
 					<div class="form-group row justify-content-center">
 						<div class="row" style="width: 70%;">
 							<div class="form-floating col">
-								<input type="text" name="profil" class="form-control" id="profil" placeholder="profil" minlength="3" maxlength="3" required value ="{{ candidat.profil }}">
+								<input type="text" name="profil" class="form-control required" id="profil" placeholder="profil" minlength="3" maxlength="3" required value ="{{ candidat.profil }}">
 								<label class="col-md-3" for="profil">Profil</label>
 							</div>
 
 							<div class="form-floating col">
-								<select name="site" class="form-select form-select-sm form-control" id="site" placeholder="site" required>
+								<select name="site" class="form-select form-select-sm form-control required" id="site" placeholder="site" required>
 									<option selected disabled>Sites</option>
 									{% for site in sites %}
 										<option value="{{ site.id }}" {% if site.id == candidat.site %} selected {% endif %}>
@@ -141,7 +141,7 @@
 							</div>
 
 							<div class="form-floating col">
-								<select name="marque" class="form-select form-select-sm form-control" id="marque" placeholder="marque" required>
+								<select name="marque" class="form-select form-select-sm form-control required" id="marque" placeholder="marque" required>
 									<option selected disabled>Marque</option>
 									<option value="1" {% if 1 == candidat.marque %} selected {% endif %}>Consortia</option>
 									<option value="2" {% if 2 == candidat.marque %} selected {% endif %}>Consortis</option>
@@ -151,7 +151,7 @@
 							</div>
 
 							<div id="divFamille" class="form-floating col">
-								<select name="famille" class="form-select form-select-sm form-control" id="famille" placeholder="famille" required>
+								<select name="famille" class="form-select form-select-sm form-control required" id="famille" placeholder="famille" required>
 									<option selected disabled>Famille</option>
 									{% for famille in familles %}
 										<option  value="{{ famille.id }}" data-marque="{{ famille.parent }}"  {% if famille.id == candidat.famille %} selected {% endif %}>
@@ -170,12 +170,12 @@
 					<div class="form-group row justify-content-center">
 						<div class="row" style="width: 70%; padding-top: 10px;">
 							<div class="form-floating col">
-								<input type="text" name="prenom" class="form-control" id="prenom" placeholder="prenom" required value="{{ candidat.prenom }}">
+								<input type="text" name="prenom" class="form-control required" id="prenom" placeholder="prenom" required value="{{ candidat.prenom }}">
 								<label class="col-md-3" for="prenom">Prénom</label>
 							</div>
 
 							<div class="form-floating col">
-								<input type="text" name="nom" class="form-control" id="nom" placeholder="nom" required value="{{ candidat.nom }}">
+								<input type="text" name="nom" class="form-control required" id="nom" placeholder="nom" required value="{{ candidat.nom }}">
 								<label class="col-md-3" for="nom">Nom</label>
 							</div>
 
@@ -185,7 +185,7 @@
 							</div>
 
 							<div class="form-floating col">
-								<select name="statut" class="form-select form-select-sm form-control" id="statut" placeholder="Statut" required>
+								<select name="statut" class="form-select form-select-sm form-control required" id="statut" placeholder="Statut" required>
 									<option selected disabled>Statut</option>
 									{% for statut in statuts %}
 										<option  value="{{ statut.id }}" {% if statut.id == candidat.statut %} selected {% endif %}>
@@ -204,12 +204,12 @@
 					<div class="form-group row justify-content-center">
 						<div class="row" style="width: 70%; padding-top: 10px;">
 							<div class="form-floating col">
-								<input type="email" name="email" class="form-control" id="email" placeholder="adresse email" value="{{ candidat.email }}">
+								<input type="email" name="email" class="form-control required" id="email" placeholder="adresse email" value="{{ candidat.email }}">
 								<label class="col-md-3" for="email">Email</label>
 							</div>
 
 							<div class="form-floating col">
-								<input type="text" name="telephone" class="form-control" id="telephone" placeholder="téléphone" value="{{ candidat.telephone }}" maxlength="10">
+								<input type="text" name="telephone" class="form-control required" id="telephone" placeholder="téléphone" value="{{ candidat.telephone }}" maxlength="10">
 								<label class="col-md-3" for="telephone">Téléphone</label>
 							</div>
 						</div>
@@ -221,17 +221,17 @@
 					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
 						<div class="row" style="width: 70%; padding-top: 10px;">
 							<div class="form-floating col">
-								<input type="text" name="poste" class="form-control" id="poste" placeholder="poste" required value="{{ candidat.poste }}">
+								<input type="text" name="poste" class="form-control required" id="poste" placeholder="poste" required value="{{ candidat.poste }}">
 								<label class="col-md-3" for="poste">Poste</label>
 							</div>
 
 							<div class="form-floating col">
-								<input type="number" name="annees_exp" class="form-control" id="annees_exp" placeholder="années d'expérience" min="0" required value="{{ candidat.AnneesExperience }}">
+								<input type="number" name="annees_exp" class="form-control required" id="annees_exp" placeholder="années d'expérience" min="0" required value="{{ candidat.AnneesExperience }}">
 								<label class="col-md-3" for="annees_exp">Expérience</label>
 							</div>
 
 							<div class="form-floating col">
-								<input type="date" name="date_entree" class="form-control" id="date_entree" placeholder="date" value="{{ candidat.dateEntree|date('Y-m-d') }}">
+								<input type="date" name="date_entree" class="form-control required" id="date_entree" placeholder="date" value="{{ candidat.dateEntree|date('Y-m-d') }}">
 								<label class="col-md-6" for="date_entree">Date entrée</label>
 							</div>
 

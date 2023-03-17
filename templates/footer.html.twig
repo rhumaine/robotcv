@@ -125,29 +125,63 @@
 	
 	// Apercu du PDF sur la page de création
 	$('#inputSubmitFormApercuPdf').on('click', function(){
-		$.ajax({
-			url: "{{ (path('ajax_check_profil')) }}",
-			method: "POST",
-        	dataType : "json",
-			data: { 
-				'email': $('#email').val()
-    		},
-		})
-		.done(function(response){
-			let data = JSON.stringify(response);
-			if(data == "false"){ 
-				document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
-				var formulaire = document.getElementById('formCreateProfil');
-				formulaire.setAttribute("target", "_blank");
-				$("#formCreateProfil").submit();
+		var formFilled = true;
+		var emptyField = "";
+		$('.required').each(function() {
+			if ($(this).is('select')) {
+				 if ($(this).val() === null) {
+ 					formFilled = false;
+          			emptyField = $(this).attr('name');
+					return false;
+				 }
 			}else{
-				$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
-				$("#messageProfilExistant").show();
-				$('html, body').animate({ 
-                     scrollTop: '0px' 
-                });
+				if ($(this).val().length === 0) {
+					formFilled = false;
+					emptyField = $(this).attr('name');
+					return false; // sortir de la boucle each si un champ est vide
+				}
 			}
 		});
+
+		if (!formFilled) {
+			event.preventDefault();
+			var errorMsg = "Veuillez remplir le champ '" + emptyField + "'";
+			$('form').prepend('<div class="container"><div class="alert alert-danger">' + errorMsg + '</div></div>');
+			
+			$('html, body').animate({
+				scrollTop: top
+			}, 1000);
+
+			setTimeout(function() {
+				$('.alert-danger').fadeOut('slow', function() {
+					$(this).remove();
+				});
+			}, 5000);
+		}else{
+			$.ajax({
+				url: "{{ (path('ajax_check_profil')) }}",
+				method: "POST",
+				dataType : "json",
+				data: { 
+					'email': $('#email').val()
+				},
+			})
+			.done(function(response){
+				let data = JSON.stringify(response);
+				if(data == "false"){ 
+					document.getElementById('formCreateProfil').action = "{{ (path('app_profil_genererpdf')) }}";
+					var formulaire = document.getElementById('formCreateProfil');
+					formulaire.setAttribute("target", "_blank");
+					$("#formCreateProfil").submit();
+				}else{
+					$("#messageProfilExistant").html('Le profil "'+ $('#email').val() + '" existe déjà');
+					$("#messageProfilExistant").show();
+					$('html, body').animate({ 
+						scrollTop: '0px' 
+					});
+				}
+			});
+		}
 	});
 
 	// Apercu du PDF sur la page de modification
