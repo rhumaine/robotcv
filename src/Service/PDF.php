@@ -484,21 +484,23 @@ class PDF extends FPDF{
     }
 
     function write_langues() {
-        if($this->hauteurCompt > $this->hauteurPoints){
-            $this->WIDTH = $this->hauteurCompt;
-        }else{
-            $this->WIDTH = $this->hauteurPoints;
+        if (isset($this->COMPETENCES) && $this->COMPETENCES != NULL) {
+            if($this->hauteurCompt > $this->hauteurPoints){
+                $this->WIDTH = $this->hauteurCompt;
+            }else{
+                $this->WIDTH = $this->hauteurPoints;
+            }
+
+            // Position de départ du rectangle
+            $x = 1.2;
+            $y = 8;
+
+            // Largeur et hauteur du rectangle
+            $w = 18.2;
+            $h = $this->WIDTH-7.5;
+            // Dessiner le rectangle
+            $this->Rect($x, $y, $w, $h);
         }
-
-        // Position de départ du rectangle
-        $x = 1.2;
-        $y = 8;
-
-        // Largeur et hauteur du rectangle
-        $w = 18.2;
-        $h = $this->WIDTH-7.5;
-        // Dessiner le rectangle
-        $this->Rect($x, $y, $w, $h);
 
 
         $this->WIDTH_BEFORE_LANGUE =  $this->WIDTH + 1;
