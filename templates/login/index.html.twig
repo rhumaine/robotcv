@@ -11,11 +11,11 @@
         <div class="panel-body">
             <form id="formLogin" action="{{ path('security_login') }}" method="POST">
                 <div class="txt_field">
-                    <input type="text" name="username" placeholder="Nom d'utilisateur" id="username" value="{{ last_username }}" required>
+                    <input type="text" name="username" placeholder="Nom d'utilisateur" id="username" value="{{ last_username }}" required style="border: 1px solid #000">
                     <span></span>                            
                 </div>
                 <div class="txt_field">
-                   <input type="password" id="password" placeholder="Mot de passe" name="password" />
+                   <input type="password" id="password" placeholder="Mot de passe" name="password"  style="border: 1px solid #000"/>
                     <span></span>
                 </div>
 
