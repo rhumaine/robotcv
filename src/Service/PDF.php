@@ -622,14 +622,15 @@ class PDF extends FPDF{
                 $TEXT = "";
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 10) {
                         if (($i + 1) < count($TEXT_ARRAY) ) {
                             $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
                         } else {
                             $TEXT = $TEXT . $TEXT_ARRAY[$i];
                         }
                     } else {
-                        $this->SetY($this->WIDTH);
+                        $this->SetFont("Verdana", "", 8);
+                        $this->SetY($this->WIDTH - 0.25);
                         $this->SetX(10.5);
                         $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
@@ -703,15 +704,16 @@ class PDF extends FPDF{
                 $TEXT = "";	
 
                 for ($i = 0; $i < count($TEXT_ARRAY); $i++) {
-                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12.5) {
+                    if ($this->GetStringWidth($TEXT . $TEXT_ARRAY[$i]) < 12) {
                         if (($i + 1) < count($TEXT_ARRAY) ) {
                             $TEXT = $TEXT . $TEXT_ARRAY[$i] . " ";
                         } else {
                             $TEXT = $TEXT . $TEXT_ARRAY[$i];
                         }
                     } else {
+                        $this->SetFont("Verdana", "", 8);
                         $this->SetY($this->WIDTH - 0.25);
-                        $this->SetX(5.5);
+                        $this->SetX(9.3);
                         $this->MultiCell(12.5, 0.5, utf8_decode($TEXT), 0, "L");
 
                         if (($i + 1) < count($TEXT_ARRAY) ) {
@@ -1239,6 +1241,7 @@ class PDF extends FPDF{
                         $this->SetTextColor(0, 0, 0);
                         $this->WIDTH = $this->WIDTH + 0.75;
 
+                       
                         if ($this->WIDTH > 27) {
                             $this->AddPage();
                             $this->WIDTH = 3.5;
@@ -1246,7 +1249,14 @@ class PDF extends FPDF{
 
                         $this->SetY($this->WIDTH);
                         $this->SetX(2.5);
-                        $this->MultiCell(13, 0.5, utf8_decode($EXP['Titre']), 0, 1);
+                        $this->MultiCell(17, 0.5, utf8_decode($EXP['Titre']), 0, "L");
+
+                        if ($this->GetStringWidth($EXP["Titre"]) > 36){
+                            $this->WIDTH = $this->WIDTH + 1;
+                        }
+                        elseif($this->GetStringWidth($EXP["Titre"]) > 18){
+                            $this->WIDTH = $this->WIDTH + 0.5;
+                        }
 
                     }
 
