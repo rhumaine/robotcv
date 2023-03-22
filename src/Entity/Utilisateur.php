@@ -26,10 +26,6 @@ class Utilisateur implements UserInterface
     #[ORM\Column(type: "json")]
     private $roles = [];
 
-    
-    #[ORM\Column(length: 255)]
-    private ?string $token = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -102,15 +98,4 @@ class Utilisateur implements UserInterface
         return $this->username;
     }
 
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
-
-    public function setToken(string $token): self
-    {
-        $this->token = $token;
-
-        return $this;
-    }
 }

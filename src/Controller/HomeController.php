@@ -4,19 +4,34 @@ namespace App\Controller;
 
 use App\Entity\Candidat;
 use App\Entity\CompetenceCle;
+use App\Entity\Utilisateur;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home_page')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function index(ManagerRegistry $doctrine,SessionInterface $session): Response
+    #[IsGranted('ROLE_USER')]
+    public function index(ManagerRegistry $doctrine, AuthenticationUtils $authenticationUtils): Response
     { 
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $utilisateur = $doctrine->getRepository(Utilisateur::class)->findOneBy(array('username' => $lastUsername));
+        $rolesUser = $utilisateur->getRoles();
+        
+        foreach($rolesUser as $r){
+            if($r == "ROLE_ADMIN"){
+                $role = "ROLE_ADMIN";
+            }else{
+                $role = "ROLE_USER";
+            }
+        }
+        
+        if($role == "ROLE_ADMIN"){
             $title_page = 'Listes des profils';
 
             $candidats = $doctrine->getRepository(Candidat::class)->findAll();
@@ -38,5 +53,8 @@ class HomeController extends AbstractController
                 'title' => $title_page,
                 'candidats' => $candidats
             ]); 
+        }else{
+            return $this->redirectToRoute('candidat_edit_profil');
+        }
     }
 }

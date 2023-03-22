@@ -1,24 +1,195 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}Création d'un utilisateur{% endblock %}
 
 
 {% block body %}
-    <div class="page-title-login">
-        <div class="panel-heading custom-header-panel">
-            <h3 class="panel-title">Connexion</h3>
-        </div>
-        <div class="panel-body">
-            <form id="formLogin" action="{{ path('app_profil_create_user') }}" method="POST">
-                <div class="txt_field">
-                    <input type="text" name="username" placeholder="Nom d'utilisateur" id="username" required>
-                    <span></span>                            
-                </div>
-               
-                <div id="messageUserInexistant" class="hidden text-danger row justify-content-center mb-3"></div>
+    <div class="body">
+        <!-- Titre -->
+        <h3 class="page-title"><strong>Créer un utilisateur</strong></h3>
+        <!-- Titre -->
+        
+        <form id="formCreateUser" action="{{ path('app_profil_create_user_validation') }}" method="POST">
+            
+           <!-- Saisie informations du candidat -->
+				<div class="panel">
+					<div class="panel-heading custom-header-panel">
+						<h3 class="panel-title">Informations candidat</h3>
+					</div>
+					<div class="panel-body">
+						<!-- Profil -->
+						<div class="form-group row justify-content-center">
+							<div class="row" style="width: 70%;">
+								<div class="form-floating col">
+									<input type="text" name="profil" class="form-control required" id="profil" placeholder="profil" minlength="3" maxlength="3" required>
+									<label class="col-md-3" for="profil">Profil</label>
+								</div>
 
-                <input name="submit" type="submit" id="inputSubmitLogin" value="Créer" class="cta dark">
-            </form>
+								<div class="form-floating col">
+									<select name="site" class="form-select form-select-sm form-control required" id="site" placeholder="site" required>
+										<option selected disabled>Sites</option>
+										{% for site in sites %}
+											<option value="{{ site.id }}">
+											{{ site.localisation }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="site">Sites</label>
+								</div>
+
+								<div class="form-floating col">
+									<select name="marque" class="form-select form-select-sm form-control required" id="marque" placeholder="marque" required>
+										<option selected disabled>Marque</option>
+										<option value="1">Consortia</option>
+										<option value="2">Consortis</option>
+										<option value="3">Consort Group</option>
+									</select>
+									<label class="col-md-3" for="site">Marque</label>
+								</div>
+
+
+								<div id="divFamille" class="form-floating col d-none">
+									<select name="famille" class="form-select form-select-sm form-control required" id="famille" placeholder="famille" required>
+										<option selected disabled>Famille</option>
+										{% for famille in familles %}
+											<option  value="{{ famille.id }}" data-marque="{{ famille.parent }}">
+											{{ famille.famille }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="site">Famille</label>
+								</div>
+
+							</div>
+						</div>
+						<!-- Profil -->
+
+						<div id="messageProfilExistant" class="hidden text-danger row justify-content-center"></div>
+						<!-- Prénom et Nom -->
+						<div class="form-group row justify-content-center">
+							<div class="row" style="width: 70%; padding-top: 10px;">
+								<div class="form-floating col">
+									<input type="text" name="prenom" class="form-control required" id="prenom" placeholder="prenom" required>
+									<label class="col-md-3" for="prenom">Prénom</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="nom" class="form-control required" id="nom" placeholder="nom" required>
+									<label class="col-md-3" for="nom">Nom</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="localisation" class="form-control required" id="localisation" placeholder="localisation" required>
+									<label class="col-md-3" for="localisation">Localisation</label>
+								</div>
+
+								<div class="form-floating col">
+								<select name="statut" class="form-select form-select-sm form-control required" id="statut" placeholder="Statut" required>
+									<option selected disabled>Statut</option>
+									{% for statut in statuts %}
+										<option  value="{{ statut.id }}">
+										{{ statut.statut }}
+										</option>
+									{% endfor %}
+								</select>
+								<label class="col-md-3" for="statut">Statut</label>
+							</div>
+							</div>
+						</div>
+						<!-- Prénom et Nom-->
+
+
+						<!-- Email et Téléphone -->
+						<div class="form-group row justify-content-center">
+							<div class="row" style="width: 70%; padding-top: 10px;">
+								<div class="form-floating col">
+									<input type="email" name="email" class="form-control required" id="email" placeholder="adresse email" value="{% if candidat is defined %}{% if candidat.email %}{{ candidat.email }}{% endif %}{% endif %}">
+									<label class="col-md-3" for="email">Email</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="telephone" class="form-control required" id="telephone" placeholder="téléphone" maxlength="10" pattern="[0-9]{10}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+									<label class="col-md-3" for="telephone">Téléphone</label>
+								</div>
+							</div>
+						</div>
+						<!-- Email et Téléphone -->
+
+
+						<!-- Poste et Années d'expérience -->
+						<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+							<div class="row" style="width: 70%; padding-top: 10px;">
+								<div class="form-floating col">
+									<input type="text" name="poste" class="form-control required" id="poste" placeholder="poste" required>
+									<label class="col-md-3" for="poste">Poste</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="number" name="annees_exp" class="form-control required" id="annees_exp" placeholder="années d'expérience" min="0" required>
+									<label class="col-md-3" for="annees_exp">Expérience</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="date" name="date_entree" class="form-control required" id="date_entree" placeholder="date">
+									<label class="col-md-6" for="date_entree">Date entrée</label>
+								</div>
+
+							</div>
+						</div>
+						<!-- Poste et Années d'expérience -->
+					</div>
+				</div>
+				<!-- Saisie informations du candidat -->
+               
+            <div id="messageUserInexistant" class="hidden text-danger row justify-content-center mb-3"></div>
+
+            <div style="display:flex;justify-content:center">
+                <!-- Bouton de validation du formulaire -->
+                <input type="button" id="inputSubmitBtn" data-bs-toggle="modal" data-bs-target="#confirm-submit" class="form_create_profil_button cta dark" value="Créer le profil">
+                <!-- Bouton de validation du formulaire -->
+            </div>
+        </form>
+
+        <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="confirm-submit" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Confirmation de l'utilisateur
+                    </div>
+                    <div class="modal-body">
+                        Voulez-vous créer cet utilisateur et lui envoyer un email ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Annuler</button>
+                        <a href="#" id="inputSubmitFormCreateUser" class="btn btn-success success">Créer</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    <script>
+        const marqueSelect = document.getElementById('marque');
+        const familleSelect = document.getElementById('famille');
+
+    
+        marqueSelect.addEventListener('change', (event) => {
+            $('#divFamille').removeClass('d-none');
+            $('#divFamille').show();
+            
+            Array.from(familleSelect.options).forEach((option) => {
+                if (option.dataset.marque === event.target.value) {
+                    option.disabled = false;
+                } else {
+                    option.disabled = true;
+                }
+            });
+
+            // Recherche de la première option non désactivée
+            const optionNonDesactivee = Array.from(familleSelect.options).find(option => !option.disabled);
+
+            // Sélection de la première option non désactivée
+            familleSelect.value = optionNonDesactivee.value;
+
+        });
+		</script>
 {% endblock %}

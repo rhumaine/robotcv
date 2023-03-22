@@ -1,0 +1,619 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifie ton profil{% endblock %}
+
+{% block body %}
+	<!-- Script pour gérer le formulaire d'ajout de nouveaux candidat -->
+	<script type="text/javascript">
+		var nb_connaissances = {{ candidatConnaissances|length }};	/*-- Nombre de connaissances du formulaire --*/
+		
+		var nb_certifications = {{ candidatCertifications|length }};	/*-- Nombre de certifications du formulaire --*/
+		
+		var nb_formations = {{ candidatFormations|length }};		/*-- Nombre de formations du formulaire --*/
+		
+		var nb_langues = {{ candidatLangues|length }};			/*-- Nombre de langues du formulaire --*/
+	
+		var nb_experiences = {{ candidatExperiences|length }};		/*-- Nombre d'expériences profesionnelles du formulaire --*/
+
+		/*-- Fonction pour ajouter un input de connaissance --*/
+		/*----------------------------------------------------*/
+		function add_input_connaissances() {
+			/*-- On augmente le nombre de connaissances --*/
+			nb_connaissances++;
+
+			/*-- On met à jour l'input contenant le nombre de connaissances --*/
+			document.getElementById('nb_input_connaissances').value = nb_connaissances;
+
+			/*-- On ajoute le nouvel input de connaissance --*/
+			$("#form-connaissances").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="domaine_'+nb_connaissances+'" class="form-select form-select-sm form-control" id="domaine_'+nb_connaissances+'" placeholder="domaine"><option selected disabled>Domaine</option>{% for domaine in domaines %}<option value="{{ domaine.id }}:{{ domaine.domaine }}">{{ domaine.domaine }}</option>{% endfor %}</select><label class="col-md-3" for="domaine_'+nb_connaissances+'">Domaine</label></div><div class="form-floating col"><input type="text" name="connaissance_'+nb_connaissances+'" class="form-control" id="connaissance_'+nb_connaissances+'" placeholder="connaissance"><label class="col-md-3" for="connaissance_'+nb_connaissances+'">Connaissance</label></div></div>');
+		}
+		/*----------------------------------------------------*/
+
+
+		/*-- Fonction pour ajouter un input de certifications --*/
+		/*------------------------------------------------------*/
+		function add_input_certifications() {
+			/*-- On augmente le nombre de certifications --*/
+			nb_certifications++;
+
+			/*-- On met à jour l'input contenant le nombre de certifications --*/
+			document.getElementById('nb_input_certifications').value = nb_certifications;
+
+			/*-- On ajoute le nouvel input de certifications --*/
+			$("#form-certifications").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><input type="date" name="date_cert_'+nb_certifications+'" class="form-control" id="date_cert_'+nb_certifications+'" placeholder="date"><label class="col-md-3" for="date_cert_'+nb_certifications+'">Date</label></div><div class="form-floating col"><input type="text" name="certification_'+nb_certifications+'" class="form-control" id="certification_'+nb_certifications+'" placeholder="certification"><label class="col-md-3" for="certification'+nb_certifications+'">Certification</label></div></div>');
+		}
+		/*------------------------------------------------------*/
+
+
+		/*-- Fonction pour ajouter un input de formations --*/
+		/*--------------------------------------------------*/
+		function add_input_formations() {
+			/*-- On augmente le nombre de formations --*/
+			nb_formations++;
+
+			/*-- On met à jour l'input contenant le nombre de formations --*/
+			document.getElementById('nb_input_formations').value = nb_formations;
+
+			/*-- On ajoute le nouvel input de formations --*/
+			$("#form-formations").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><input type="date" name="date_form_'+nb_formations+'" class="form-control" id="date_form_'+nb_formations+'" placeholder="date"><label class="col-md-3" for="date_form_'+nb_formations+'">Date</label></div><div class="form-floating col"><input type="text" name="formation_'+nb_formations+'" class="form-control" id="formation_'+nb_formations+'" placeholder="formation"><label class="col-md-3" for="formation_'+nb_formations+'">Formation</label></div></div>');
+		}
+		/*--------------------------------------------------*/
+
+
+		/*-- Fonction pour ajouter un input de langues --*/
+		/*-----------------------------------------------*/
+		function add_input_langues() {
+			/*-- On augmente le nombre de langues --*/
+			nb_langues++;
+
+			/*-- On met à jour l'input contenant le nombre de langues --*/
+			document.getElementById('nb_input_langues').value = nb_langues;
+
+			/*-- On ajoute le nouvel input de langues --*/
+			$("#form-langues").append('<div class="row" style="padding-top: 10px; width: 70%;"><div class="form-floating col"><select name="langue_'+nb_langues+'" class="form-select form-select-sm form-control" id="langue_'+nb_langues+'" placeholder="langue"><option selected disabled>Langue</option>{% for langue in langues %}<option value="{{ langue.id }}:{{ langue.langue }}">{{ langue.langue }}</option>{% endfor %}</select><label class="col-md-3" for="langue_'+nb_langues+'">Langue</label></div><div class="form-floating col"><select name="niveau_'+nb_langues+'" class="form-select form-select-sm form-control" id="niveau_'+nb_langues+'" placeholder="niveau"><option selected disabled>Niveau</option>{% for niveau in niveaux %}<option value="{{ niveau.id }}:{{ niveau.niveau }}">{{ niveau.niveau }}</option>{% endfor %}</select><label class="col-md-3" for="niveau_'+nb_langues+'">Niveau</label></div></div>');
+		}
+		/*-----------------------------------------------*/
+
+
+		/*-- Fonction pour ajouter un input d'expérience professionnelle --*/
+		/*-----------------------------------------------------------------*/
+		function add_input_experiences() {
+			/*-- On augmente le nombre d'experiences --*/
+			nb_experiences++;
+
+			/*-- On met à jour l'input contenant le nombre d'expériences --*/
+			document.getElementById('nb_input_experiences').value = nb_experiences;
+
+			/*-- On ajoute le nouvel input d'expériences professionnelles --*/
+			$("#form-experiences").append('<div class="row" id="panel-exp-'+nb_experiences+'" style="padding-top: 20px;"><div class="form-floating col"><div class="panel"><div class="panel-heading custom-header-panel" style="height: 45px;"><h3 class="panel-title">expérience '+nb_experiences+' <a class="btn" id="'+nb_experiences+'" onclick="suppr_input_experiences(this.id)">Supprimer</a></h3></div><div class="panel-body"><div class="form-group row justify-content-center" style="padding-bottom: 20px;"><div class="row"><div class="form-floating col"><input type="text" name="exp_ent_'+nb_experiences+'" class="form-control" id="exp_ent_'+nb_experiences+'" placeholder="Entreprise"><label class="col-md-3" for="exp_ent_'+nb_experiences+'">Entreprise</label></div><div class="form-floating col"><input type="text" name="exp_ville_'+nb_experiences+'" class="form-control" id="exp_ville_'+nb_experiences+'" placeholder="Ville"><label class="col-md-3" for="exp_ville_'+nb_experiences+'">Ville</label></div><div class="form-floating col"><input type="text" name="exp_poste_'+nb_experiences+'" class="form-control" id="exp_poste_'+nb_experiences+'" placeholder="Poste"><label class="col-md-3" for="exp_poste_'+nb_experiences+'">Poste</label></div></div><div class="row" style="width: 90%;"><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_deb_'+nb_experiences+'" class="form-control" id="exp_date_deb_'+nb_experiences+'" placeholder="Date de début"><label class="col-md-3" for="exp_date_deb_'+nb_experiences+'">Date début</label></div><div class="form-floating col" style="padding-top: 10px;"><input type="date" name="exp_date_fin_'+nb_experiences+'" class="form-control" id="exp_date_fin_'+nb_experiences+'" placeholder="Date de fin"><label class="col-md-3" for="exp_date_fin_'+nb_experiences+'">Date fin</label></div></div><div class="row" style="width: 90%;"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><input type="text" name="exp_titre_'+nb_experiences+'" class="form-control" id="exp_titre_'+nb_experiences+'" placeholder="Titre de la mission"><label class="col-md-3" for="exp_titre_'+nb_experiences+'">Titre mission</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_desc_'+nb_experiences+'" class="form-control" id="exp_desc_'+nb_experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_desc_'+nb_experiences+'">Descriptif mission</label></div></div><div class="row"><div class="form-floating col" style="padding-top: 10px;"><div class="row"><div class="form-floating col" style="padding-top: 10px;"><textarea name="exp_env_'+nb_experiences+'" class="form-control" id="exp_env_'+nb_experiences+'" style="height: 200px;"></textarea><label class="col-md-3" for="exp_env_'+nb_experiences+'">Environnement mission</label></div></div></div></div></div></div></div></div>');
+		}
+		/*-----------------------------------------------------------------*/
+
+
+		/*-- Fonction pour supprimer un input d'expérience professionnelle --*/
+		/*-------------------------------------------------------------------*/
+		function suppr_input_experiences(element) {
+			/*-- On réduit le nombre d'expériences --*/
+			nb_experiences--;
+
+			/*-- On met à jour l'input contenant le nombre d'expériences --*/
+			document.getElementById('nb_input_experiences').value = nb_experiences;
+
+			/*-- On supprime l'input d'expérience professionnelle --*/
+			var div = document.getElementById("panel-exp-" + element);
+			div.remove();
+		}
+		/*-------------------------------------------------------------------*/
+	</script>
+	<!-- Script pour gérer le formulaire d'ajout de nouveaux candidat -->  
+    <!-- Contenu de la page -->
+	<div class="body">
+		<!-- Titre -->
+		<h3 class="page-title"><strong>Modifie ton profil candidat</strong></h3>
+		<!-- Titre -->
+
+		<!-- Formulaire pour ajouter un candidat -->
+		<form id="formEditProfil" method="post" class="was-validated">
+			<!-- Saisie informations du candidat -->
+			<div class="panel">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Informations candidat</h3>
+				</div>
+				<div class="panel-body">
+					<!-- Profil -->
+					<div class="form-group row justify-content-center">
+						<div class="row" style="width: 70%;">
+							<div class="form-floating col">
+								<input readonly type="text" name="profil" class="form-control required" id="profil" placeholder="profil" minlength="3" maxlength="3" required value ="{{ candidat.profil }}">
+								<label class="col-md-3" for="profil">Profil</label>
+							</div>
+
+							<div class="form-floating col">
+								<select readonly name="site" class="form-select form-select-sm form-control required" id="site" placeholder="site" required>
+									<option selected disabled>Sites</option>
+									{% for site in sites %}
+										<option value="{{ site.id }}" {% if site.id == candidat.site %} selected {% endif %}>
+										{{ site.localisation }}
+										</option>
+									{% endfor %}
+								</select>
+								<label class="col-md-3" for="site">Sites</label>
+							</div>
+
+							<div class="form-floating col">
+								<select readonly name="marque" class="form-select form-select-sm form-control required" id="marque" placeholder="marque" required>
+									<option selected disabled>Marque</option>
+									<option value="1" {% if 1 == candidat.marque %} selected {% endif %}>Consortia</option>
+									<option value="2" {% if 2 == candidat.marque %} selected {% endif %}>Consortis</option>
+									<option value="3" {% if 3 == candidat.marque %} selected {% endif %}>Consort Group</option>
+								</select>
+								<label class="col-md-3" for="site">Marque</label>
+							</div>
+
+							<div id="divFamille" class="form-floating col">
+								<select readonly name="famille" class="form-select form-select-sm form-control required" id="famille" placeholder="famille" required>
+									<option selected disabled>Famille</option>
+									{% for famille in familles %}
+										<option  value="{{ famille.id }}" data-marque="{{ famille.parent }}"  {% if famille.id == candidat.famille %} selected {% endif %}>
+										{{ famille.famille }}
+										</option>
+									{% endfor %}
+								</select>
+								<label class="col-md-3" for="site">Famille</label>
+							</div>
+						</div>
+					</div>
+					<!-- Profil -->
+
+					<div id="messageProfilExistant" class="hidden text-danger row justify-content-center"></div>
+					<!-- Prénom et Nom -->
+					<div class="form-group row justify-content-center">
+						<div class="row" style="width: 70%; padding-top: 10px;">
+							<div class="form-floating col">
+								<input readonly type="text" name="prenom" class="form-control required" id="prenom" placeholder="prenom" required value="{{ candidat.prenom }}">
+								<label class="col-md-3" for="prenom">Prénom</label>
+							</div>
+
+							<div class="form-floating col">
+								<input readonly type="text" name="nom" class="form-control required" id="nom" placeholder="nom" required value="{{ candidat.nom }}">
+								<label class="col-md-3" for="nom">Nom</label>
+							</div>
+
+							<div class="form-floating col">
+								<input readonly type="text" name="localisation" class="form-control" id="localisation" placeholder="localisation" required value="{{ candidat.localisation }}">
+								<label class="col-md-3" for="localisation">Localisation</label>
+							</div>
+
+							<div class="form-floating col">
+								<select readonly name="statut" class="form-select form-select-sm form-control required" id="statut" placeholder="Statut" required>
+									<option selected disabled>Statut</option>
+									{% for statut in statuts %}
+										<option  value="{{ statut.id }}" {% if statut.id == candidat.statut %} selected {% endif %}>
+										{{ statut.statut }}
+										</option>
+									{% endfor %}
+								</select>
+								<label class="col-md-3" for="statut">Statut</label>
+							</div>
+						</div>
+					</div>
+					<!-- Prénom et Nom-->
+
+
+					<!-- Email et Téléphone -->
+					<div class="form-group row justify-content-center">
+						<div class="row" style="width: 70%; padding-top: 10px;">
+							<div class="form-floating col">
+								<input readonly type="email" name="email" class="form-control required" id="email" placeholder="adresse email" value="{{ candidat.email }}">
+								<label class="col-md-3" for="email">Email</label>
+							</div>
+
+							<div class="form-floating col">
+								<input readonly type="text" name="telephone" class="form-control required" id="telephone" placeholder="téléphone" value="{{ candidat.telephone }}" maxlength="10">
+								<label class="col-md-3" for="telephone">Téléphone</label>
+							</div>
+						</div>
+					</div>
+					<!-- Email et Téléphone -->
+
+
+					<!-- Poste et Années d'expérience -->
+					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%; padding-top: 10px;">
+							<div class="form-floating col">
+								<input readonly type="text" name="poste" class="form-control required" id="poste" placeholder="poste" required value="{{ candidat.poste }}">
+								<label class="col-md-3" for="poste">Poste</label>
+							</div>
+
+							<div class="form-floating col">
+								<input readonly type="number" name="annees_exp" class="form-control required" id="annees_exp" placeholder="années d'expérience" min="0" required value="{{ candidat.AnneesExperience }}">
+								<label class="col-md-3" for="annees_exp">Expérience</label>
+							</div>
+
+							<div class="form-floating col">
+								<input readonly type="date" name="date_entree" class="form-control required" id="date_entree" placeholder="date" value="{{ candidat.dateEntree|date('Y-m-d') }}">
+								<label class="col-md-6" for="date_entree">Date entrée</label>
+							</div>
+
+						</div>
+					</div>
+					<!-- Poste et Années d'expérience -->
+				</div>
+			</div>
+			<!-- Saisie informations du candidat -->
+
+
+			<!-- Saisie compétences clés du candidat -->
+			<div class="panel" style="margin-top: 10px;">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Compétences clés</h3>
+				</div>
+
+				<div class="panel-body">
+					<!-- Compétences clés -->
+					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div class="form-floating col">
+								<textarea name="comp_cle" class="form-control textarea" id="comp_cle" style="height: 200px;">{% if candidatCompetencesCles is not null %} {{ candidatCompetencesCles.competence|replace({';': ''})  }} {% endif %} </textarea>
+								<label class="col-md-3" for="comp_cle">Compétences clés</label>
+							</div>
+						</div>
+					</div>
+					<!-- Compétences clés -->
+				</div>
+			</div>
+			<!-- Saisie compétences clés du candidat -->
+
+			<!-- Saisie points marquants du candidat -->
+				<div class="panel" style="margin-top: 10px;">
+					<div class="panel-heading custom-header-panel">
+						<h3 class="panel-title">Points marquants</h3>
+					</div>
+
+					<div class="panel-body">
+						<!-- Compétences clés -->
+						<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+							<div class="row" style="width: 70%;">
+								<div class="form-floating col">
+									<textarea name="pointmarquants" class="form-control textarea" id="pointmarquants" style="height: 200px;">{% if candidatPointsMarquants is not null %} {{ candidatPointsMarquants.pointsMarquants|replace({';': ''})  }} {% endif %} </textarea>
+									<label class="col-md-3" for="pointmarquants">Points marquants</label>
+								</div>
+							</div>
+						</div>
+						<!-- Compétences clés -->
+					</div>
+				</div>
+				<!-- Saisie points marquants du candidat -->
+
+			<!-- Saisie connaissances techniques du candidat -->
+			<div class="panel" style="margin-top: 10px;">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Connaissances techniques</h3>
+				</div>
+				<div class="panel-body">
+					<!-- Connaissances techniques et Domaines -->
+					<div class="form-group row justify-content-center" id="form-connaissances" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div style="margin-bottom: 20px;">
+								<button class="btn" type="button" onclick="add_input_connaissances()" style="background-color: rgb(215, 215, 215); margin-left: 36.5%;">Ajouter une connaissance</button>
+							</div>
+						</div>
+						{% set indexConnaissance = 1 %}
+						{% for c in candidatConnaissances %}
+							<div class="row" style="width: 70%;padding-top:10px">
+								<div class="form-floating col">
+									<select name="domaine_{{indexConnaissance}}" class="form-floating form-select-sm form-control" id="domaine_{{indexConnaissance}}" placeholder="domaine">								
+										{% for domaine in domaines %}
+											<option value="{{ domaine.id }}:{{ domaine.domaine }}"{% if domaine.id == c.idDomaine %} selected {% endif %}>
+												{{ domaine.domaine }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="domaine_{{indexConnaissance}}">Domaine</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="connaissance_{{indexConnaissance}}" class="form-control" id="connaissance_{{indexConnaissance}}" placeholder="connaissance" value="{{ c.connaissance }}">
+									<label class="col-md-3" for="connaissance_{{indexConnaissance}}">Connaissance</label>
+								</div>
+							</div>
+							{% set indexConnaissance = indexConnaissance + 1 %}
+						{% endfor %}
+					</div>
+					<!-- Connaissances techniques et Domaines -->
+				</div>
+			</div>
+			<!-- Saisie connaissances techniques du candidat -->
+
+
+			<!-- Saisie certifications du candidat -->
+			<div class="panel" style="margin-top: 10px;">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Certifications</h3>
+				</div>
+
+				<div class="panel-body">
+					<!-- Certifications et Date -->
+					<div class="form-group row justify-content-center" id="form-certifications" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div style="margin-bottom: 20px;">
+								<button type="button" class="btn" onclick="add_input_certifications()" style="background-color: rgb(215, 215, 215); margin-left: 37.5%;">Ajouter une certification</button>
+							</div>
+						</div>
+						{% set indexCertification = 1 %}
+						{% for c in candidatCertifications %}
+							<div class="row" style="width: 70%;padding-top:10px">
+								<div class="form-floating col">
+									<input type="date" name="date_cert_{{indexCertification}}" class="form-control" id="date_cert_{{indexCertification}}" placeholder="date" value="{{ c.date|date('Y-m-d') }}">
+									<label class="col-md-3" for="date_cert_{{indexCertification}}">Date</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="certification_{{indexCertification}}" class="form-control" id="certification_{{indexCertification}}" placeholder="certification" value="{{ c.certification }}">
+									<label class="col-md-3" for="certification_{{indexCertification}}">Certification</label>
+								</div>
+							</div>
+							{% set indexCertification = indexCertification + 1 %}
+						{% endfor %}
+					</div>
+					<!-- Certifications et Date -->
+				</div>
+			</div>
+			<!-- Saisie certifications du candidat -->
+
+
+			<!-- Saisie formations du candidat -->
+			<div class="panel" style="margin-top: 10px;">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Formations</h3>
+				</div>
+
+				<div class="panel-body">
+					<!-- Formations et Date -->
+					<div class="form-group row justify-content-center" id="form-formations" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div style="margin-bottom: 20px;">
+								<button type="button" class="btn" onclick="add_input_formations()" style="background-color: rgb(215, 215, 215); margin-left: 38.5%;">Ajouter une formation</button>
+							</div>
+						</div>
+						{% set indexFormation = 1 %}
+						{% for c in candidatFormations %}
+							<div class="row" style="width: 70%;padding-top:10px">
+								<div class="form-floating col">
+									<input type="date" name="date_form_{{indexFormation}}" class="form-control" id="date_form_{{indexFormation}}" placeholder="date" value="{{ c.date|date('Y-m-d') }}">
+									<label class="col-md-3" for="date_form_{{indexFormation}}">Date</label>
+								</div>
+
+								<div class="form-floating col">
+									<input type="text" name="formation_{{indexFormation}}" class="form-control" id="formation_{{indexFormation}}" placeholder="formation" value="{{ c.formation }}">
+									<label class="col-md-3" for="formation_{{indexFormation}}">Formation</label>
+								</div>
+							</div>
+							{% set indexFormation = indexFormation + 1 %}
+						{% endfor %}
+					</div>
+					<!-- Formations et Date -->
+				</div>
+			</div>
+			<!-- Saisie formations du candidat -->
+
+
+			<!-- Saisie langues pratiquées par le candidat -->
+			<div class="panel" style="margin-top: 10px">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Langues pratiquées</h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="form-group row justify-content-center" id="form-langues" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div style="margin-bottom: 20px;">
+								<button type="button" class="btn" onclick="add_input_langues()" style="background-color: rgb(215, 215, 215); margin-left: 40%;">Ajouter une langue</button>
+							</div>
+						</div>
+						{% set indexLangue = 1 %}
+						{% for c in candidatLangues %}
+							<div class="row" style="width: 70%;padding-top:10px">
+								<div class="form-floating col">
+									<select name="langue_{{indexLangue}}" class="form-select form-select-sm form-control" id="langue_{{indexLangue}}" placeholder="langue">
+										{% for langue in langues %}
+											<option value="{{ langue.id }}:{{ langue.langue }}"{% if langue.id == c.idLangue %} selected {% endif %}>
+												{{ langue.langue }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="langue_{{indexLangue}}">Langue</label>
+								</div>
+
+								<div class="form-floating col">
+									<select name="niveau_{{indexLangue}}" class="form-select form-select-sm form-control" id="niveau_{{indexLangue}}" placeholder="niveau">
+										{% for niveau in niveaux %}
+											<option value="{{ niveau.id }}:{{ niveau.niveau }}"{% if niveau.id == c.niveau %} selected {% endif %}>
+												{{ niveau.niveau }}
+											</option>
+										{% endfor %}
+									</select>
+									<label class="col-md-3" for="niveau_{{indexLangue}}">Niveau</label>
+								</div>
+							</div>
+							{% set indexLangue = indexLangue + 1 %}
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<!-- Saisie langues pratiquées par le candidat -->
+
+
+			<!-- Saisie savoir-être par le candidat -->
+			<div class="panel" style="margin-top: 10px">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Savoir-être</h3>
+				</div>
+
+				<div class="panel-body">
+					<!-- Savoir etre -->
+					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+						<div class="row" style="width: 70%;">
+							<div class="form-floating col">
+								<textarea name="savoir" class="form-control textarea" id="savoir" style="height: 200px;">{% if candidatSavoirEtre is not null %} {{ candidatSavoirEtre.savoiretre|replace({';': ''})  }} {% endif %}</textarea>
+								<label class="col-md-3" for="savoir">Savoir-être</label>
+							</div>
+						</div>
+					</div>
+					<!-- Savoir etre  -->
+				</div>
+			</div>
+			<!-- Saisie savoir-être par le candidat -->
+
+
+			<!-- Saisie expériences professionnelles du candidat -->
+			<div class="panel" style="margin-top: 10px;">
+				<div class="panel-heading custom-header-panel">
+					<h3 class="panel-title">Expériences professionnelles</h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="form-group row justify-content-center" id="form-experiences" style="padding-bottom: 20px;">	
+						
+					{% set indexExperience = 1 %}
+					{% for exp in candidatExperiences %}
+						<div class="row" id="panel-exp-{{indexExperience}}" style="padding-top:20px">
+							<div class="form-floating col">
+								<div class="panel">
+									<div class="panel-heading custom-header-panel" style="height: 45px;">
+										<h3 class="panel-title">Expérience {{indexExperience}} <a class="btn" id="{{indexExperience}}" onclick="suppr_input_experiences(this.id)">Supprimer</a></h3>
+									</div>
+
+									<div class="panel-body">
+										<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
+											<div class="row">
+												<div class="form-floating col">
+													<input type="text" name="exp_ent_{{indexExperience}}" class="form-control" id="exp_ent_{{indexExperience}}" placeholder="Entreprise" value="{{ exp.entreprise }}">
+													<label class="col-md-3" for="exp_ent_{{indexExperience}}">Entreprise</label>
+												</div>
+
+												<div class="form-floating col">
+													<input type="text" name="exp_ville_{{indexExperience}}" class="form-control" id="exp_ville_{{indexExperience}}" placeholder="Ville" value="{{ exp.lieu }}">
+													<label class="col-md-3" for="exp_ville_{{indexExperience}}">Ville</label>
+												</div>
+
+												<div class="form-floating col">
+													<input type="text" name="exp_poste_{{indexExperience}}" class="form-control" id="exp_poste_{{indexExperience}}" placeholder="Poste" value="{{ exp.poste }}">
+													<label class="col-md-3" for="exp_poste_{{indexExperience}}">Poste</label>
+												</div>
+											</div>
+
+											<div class="row" style="width: 90%;">
+												<div class="form-floating col" style="padding-top: 10px;">
+													<input type="date" name="exp_date_deb_{{indexExperience}}" class="form-control" id="exp_date_deb_{{indexExperience}}" placeholder="Date de début" value="{{ exp.dateDebut|date('Y-m-d') }}">
+													<label class="col-md-3" for="exp_date_deb_{{indexExperience}}">Date début</label>
+												</div>
+
+												<div class="form-floating col" style="padding-top: 10px;">
+													<input type="date" name="exp_date_fin_{{indexExperience}}" class="form-control" id="exp_date_fin_{{indexExperience}}" placeholder="Date de fin" value="{{ exp.dateFin|date('Y-m-d') }}">
+													<label class="col-md-3" for="exp_date_fin_{{indexExperience}}">Date fin</label>
+												</div>
+											</div>
+											<div class="row" style="width: 90%;">
+												<div class="form-floating col" style="padding-top: 10px;">
+													<input type="text" name="exp_titre_{{indexExperience}}" class="form-control" id="exp_titre_{{indexExperience}}" placeholder="Titre de la mission" value="{{ exp.titreMission }}">
+													<label class="col-md-3" for="exp_titre_{{indexExperience}}">Titre mission</label>
+												</div>
+											</div>
+											<div class="row" style="width: 90%;">
+												<div class="form-floating col" style="padding-top: 10px;">
+													<textarea name="exp_desc_{{indexExperience}}" class="form-control" id="exp_desc_{{indexExperience}}" style="height: 200px;">{{ exp.description|replace({';': ''}) }}</textarea>
+													<label class="col-md-3" for="exp_desc_{{indexExperience}}">Descriptif mission</label>
+												</div>
+											</div>
+
+											<div class="row" style="width: 90%;">
+												<div class="form-floating col" style="padding-top: 10px;">
+													<textarea name="exp_env_{{indexExperience}}" class="form-control" id="exp_env_{{indexExperience}}" style="height: 200px;">{{ exp.environnement }}</textarea>
+													<label class="col-md-3" for="exp_env_{{indexExperience}}">Environnement mission</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% set indexExperience = indexExperience + 1 %}
+					{% endfor %}
+					</div>
+				</div>
+
+				<div class="row">
+					<div style="margin-bottom: 20px;">
+						<button type="button" class="btn cta dark" onclick="add_input_experiences()" style="margin-left: 41%;">Ajouter une expérience</button>
+					</div>
+				</div>
+			</div>
+			<!-- Saisie expériences professionnelles du candidat -->
+
+
+			<!-- Inputs nombre de champs -->
+			<input type="hidden" name="nb_input_connaissances" id="nb_input_connaissances" value="{{indexConnaissance - 1}}">
+			<input type="hidden" name="nb_input_certifications" id="nb_input_certifications" value="{{indexCertification - 1}}">
+			<input type="hidden" name="nb_input_formations" id="nb_input_formations" value="{{indexFormation - 1}}">
+			<input type="hidden" name="nb_input_langues" id="nb_input_langues" value="{{indexLangue - 1}}">
+			<input type="hidden" name="nb_input_experiences" id="nb_input_experiences" value="{{indexExperience - 1}}">
+			<input type="hidden" name="candidatId" id="candidatId" value="{{ candidatId }}">
+			<!-- Inputs nombre de champs -->
+
+			<div style="display:flex;justify-content:center">
+				<!-- Bouton de validation du formulaire -->
+				<input type="button" id="inputSubmitBtn" data-bs-toggle="modal" data-bs-target="#confirm-submit" class="form_create_profil_button cta dark" value="Modifier le profil">
+				<!-- Bouton de validation du formulaire -->
+				<input type="button" name="inputSubmitFormApercuPdfEdit" id="inputSubmitFormApercuPdfEdit" class="form_create_profil_button cta dark" value="Voir le pdf">
+			</div>
+		</form>
+		<!-- Formulaire pour ajouter un candidat -->
+
+
+		<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="confirm-submit" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						Confirmation du profil
+					</div>
+					<div class="modal-body">
+						Voulez-vous modifier ce profil ?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-bs-dismiss="modal">Annuler</button>
+						<a href="#" id="inputSubmitFormEditProfil" class="btn btn-success success">Modifier</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+	</div>
+	<!-- Contenu de la page -->
+	<script>
+		const marqueSelect = document.getElementById('marque');
+		const familleSelect = document.getElementById('famille');
+
+	
+		marqueSelect.addEventListener('change', (event) => {
+			$('#divFamille').removeClass('d-none');
+			$('#divFamille').show();
+			
+			Array.from(familleSelect.options).forEach((option) => {
+				if (option.dataset.marque === event.target.value) {
+					option.disabled = false;
+				} else {
+					option.disabled = true;
+				}
+			});
+
+			// Recherche de la première option non désactivée
+			const optionNonDesactivee = Array.from(familleSelect.options).find(option => !option.disabled);
+
+			// Sélection de la première option non désactivée
+			familleSelect.value = optionNonDesactivee.value;
+
+		});
+	</script>
+{% endblock %}

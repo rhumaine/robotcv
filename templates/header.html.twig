@@ -14,17 +14,26 @@
 				<div class="header_nav">
 					<nav class="main-navigation">
 						<div class="menu-wrap">
-							<ul>
-								<li>
-									<a href="{{ path("home_page") }}">Consulter les profils</a>
-								</li>
-								<li >
-									<a href="{{ path("app_profil_create") }}">Créer un profil</a>
-								</li>
+						{% if app.user %}
+							<ul> 
+							{% for role in app.user.roles %}
+								{% if(role == "ROLE_ADMIN") %}
+									<li>
+										<a href="{{ path("home_page") }}">Consulter les profils</a>
+									</li>
+									<li >
+										<a href="{{ path("app_profil_create") }}">Créer un profil</a>
+									</li>
+									<li >
+										<a href="{{ path("app_profil_create_user") }}">Créer un utilisateur</a>
+									</li>
+								{% endif %}
+							{% endfor %}	
 							</ul>
+						{% endif %}
 						</div>                            
 					</nav>
-					<div class="menu-wrap">
+					<div class="menu-wrap">					
 								{% if app.user %}
 									<a class="cta dark" href="{{ path("security_logout") }}" role="button">Déconnexion</a>
 								{% else %}

@@ -23,12 +23,14 @@ use App\Service\PDF;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\PseudoTypes\LowercaseString;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class ProfilController extends AbstractController
 {
@@ -57,7 +59,7 @@ class ProfilController extends AbstractController
 
     // Fonction losqu'on clique sur créer le profil
     #[Route('/createprofil', name: 'app_profil_create_profil')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_ADMIN')]
     public function creerProfil(ManagerRegistry $doctrine,Request $request): Response
     {
         $profil = $request->get('profil');
@@ -161,17 +163,7 @@ class ProfilController extends AbstractController
                 } else {
                     $ANNEES_EXP = NULL;
                 }
-            
-
-            /*-- Récupération de la date d'entrée du candidat --*/
-            
-                if (isset($date_entree) && $date_entree != NULL) {
-                    $DATE_ENTREE = $date_entree;
-                } else {
-                    $DATE_ENTREE = NULL;
-                }
-
-
+        
             /*-- Récupération des compétences clés --*/
                 if (isset($comp_cle) && $comp_cle != NULL) {
                     $COMP = str_replace("’", "'", $comp_cle);
@@ -552,14 +544,11 @@ class ProfilController extends AbstractController
 
     // Fonction losqu'on clique sur créer le profil
     #[Route('/editprofil', name: 'app_profil_edit_profil')]
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_USER')]
     public function editProfil(EntityManagerInterface $entityManager,ManagerRegistry $doctrine,Request $request): Response
     {
-
         $candidatId = $request->get('candidatId');
-
-        $candidat = $entityManager->getRepository(Candidat::class)->find($candidatId);
-        
+        $candidat = $entityManager->getRepository(Candidat::class)->find($candidatId); 
 
         if($candidat){
             $candidatCompetencesCles = $entityManager->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $candidatId));
@@ -1425,75 +1414,238 @@ class ProfilController extends AbstractController
         ]); 
         return $response;
     }
-
-
-
-
-
-    /* TEST */
-
-     // Page de création de profil par un utilisateur externe
-     #[Route('/create/{username}/{token}', name: 'app_profil_create_by_candidat')]
-     //#[IsGranted('ROLE_USER','ROLE_ADMIN')]
-    public function createprofilByCandidat(string $username, string $token, ManagerRegistry $doctrine): Response
-    {  
-        $utilisateurExterne = $doctrine->getRepository(Utilisateur::class)->findOneBy(array('username' => $username));
-
-        if($utilisateurExterne){
-            $tokenUser = $utilisateurExterne->getToken();
-            
-            if($token === $tokenUser){
-
-                // Création du token d'authentification
-                $token = new UsernamePasswordToken($utilisateurExterne, null, 'main', $utilisateurExterne->getRoles());
-
-                // Authentification de l'utilisateur
-                $this->get('security.token_storage')->setToken($token);
-                
-                $sites = $doctrine->getRepository(Site::class)->findAll();
-                $familles = $doctrine->getRepository(Famille::class)->findAll();
-                $domaines = $doctrine->getRepository(Domaine::class)->findAll();
-                $langues = $doctrine->getRepository(Langue::class)->findAll();
-                $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
-                $statuts = $doctrine->getRepository(Statut::class)->findAll();
-        
-                return $this->render('profil/create.html.twig', [
-                    'controller_name' => 'ProfilController',
-                    'sites' => $sites,
-                    'domaines' => $domaines,
-                    'langues' => $langues,
-                    'niveaux' => $niveaux,
-                    'familles' => $familles,
-                    'candidat' => $utilisateurExterne,
-                    'statuts' => $statuts
-                ]); 
-            }else{
-                return $this->redirectToRoute('home_page');
-            }
-        }
-    }
-
- //
+ 
     #[Route('/createUser', name: 'app_profil_create_user')]
     #[IsGranted('ROLE_ADMIN')]
-    public function createUserAndEmail(Request $request, ServiceMailer $mailer): Response
+    public function createUserAndEmail(Request $request, ServiceMailer $mailer, ManagerRegistry $doctrine): Response
     {  
-        
-
-        if ($_POST) {
-            $data = $request->get('username');
-
-            // Send email
-            $mailer->sendEmail('romain.demay56@gmail.com', 'New contact form submission', $data);
-
-            
-            // Redirect to thank you page
-            return $this->redirectToRoute('home_page');
-        }
+        $sites = $doctrine->getRepository(Site::class)->findAll();
+        $statuts = $doctrine->getRepository(Statut::class)->findAll();
+        $familles = $doctrine->getRepository(Famille::class)->findAll();
 
         return $this->render('login/create.html.twig', [
+            'controller_name' => 'ProfilController',
+            'sites' => $sites,
+            'familles' => $familles,
+            'statuts' => $statuts
             
         ]);
+        
     }
 
+    #[Route('/createUserValidation', name: 'app_profil_create_user_validation')]
+    public function createUserAndEmailTest(Request $request, ServiceMailer $mailer, ManagerRegistry $doctrine): Response
+    {  
+
+        $profil = $request->get('profil');
+        $site = $request->get('site');
+        $marque = $request->get('marque');
+        $famille = $request->get('famille');
+        $poste = $request->get('poste');
+        $nom = $request->get('nom');
+        $prenom = $request->get('prenom');
+        $localisation = $request->get('localisation');
+        $statut = $request->get('statut');
+        $email = $request->get('email');
+        $telephone = $request->get('telephone');
+        $annees_exp = $request->get('annees_exp');
+        $date_entree = $request->get('date_entree');
+
+        /*-- Récupération du profil --*/
+                
+            if (isset($profil) && $profil  != NULL) {
+                $PROFIL = htmlspecialchars($profil);
+            } else {
+                $PROFIL = NULL;
+            }
+
+        /*-- Récupération du nom --*/
+            
+            if (isset($nom) && $nom != NULL) {
+                $NOM = htmlspecialchars($nom);
+            } else {
+                $NOM = NULL;
+            }
+        
+
+        /*-- Récupération du prénom --*/
+        
+            if (isset($prenom) && $prenom != NULL) {
+                $PRENOM = htmlspecialchars($prenom);
+            } else {
+                $PRENOM = NULL;
+            }
+        
+        /*-- Récupération du prénom --*/
+        
+            if (isset($localisation) && $localisation != NULL) {
+                $LOCALISATION = htmlspecialchars($localisation);
+            } else {
+                $LOCALISATION = NULL;
+            }
+            
+
+        /*-- Récupération du email --*/
+        
+            if (isset($email) && $email != NULL) {
+                $EMAIL = htmlspecialchars($email);
+            } else {
+                $EMAIL = NULL;
+            }
+            
+
+        /*-- Récupération du téléphone --*/
+            
+            if (isset($telephone) && $telephone != NULL) {
+                $TELEPHONE = htmlspecialchars($telephone);
+            } else {
+                $TELEPHONE = NULL;
+            }
+
+
+        /*-- Récupération du poste --*/
+        
+            if (isset($poste) && $poste != NULL) {
+                $POSTE = htmlspecialchars(str_replace("’", "'", $poste));
+            } else {
+                $POSTE = NULL;
+            }
+            
+
+
+        /*-- Récupération du nombre d'années d'expérience --*/
+        
+            if (isset($annees_exp) && $annees_exp != NULL) {
+                $ANNEES_EXP = htmlspecialchars($annees_exp);
+            } else {
+                $ANNEES_EXP = NULL;
+            }
+
+
+        /*--------------  Candidat   --------------------*/
+            $candidat = new Candidat();
+            $candidat->setPrenom($PRENOM);
+            $candidat->setNom($NOM);
+            $candidat->setEmail($EMAIL);
+            $candidat->setTelephone($TELEPHONE);
+            $candidat->setPoste($POSTE);
+            $candidat->setAnneesExperience($ANNEES_EXP);
+            $candidat->setProfil($PROFIL);
+            $candidat->setSite($site);
+            $candidat->setMarque($marque);
+            $candidat->setFamille($famille);
+            $candidat->setLocalisation($LOCALISATION);
+            $candidat->setStatut($statut);
+
+            $date_entree = strtotime($date_entree);
+            $newformat = date('Y-m-d',$date_entree);
+            $date_entree = new DateTime($newformat);
+
+            $candidat->setDateEntree($date_entree);
+
+            $doct = $doctrine->getManager();
+
+            $doct->persist($candidat);
+            $doct->flush();
+        
+            $utilisateur = new Utilisateur();
+            $utilisateur->setEmail($EMAIL);
+
+            $mot_de_passe_aleatoire = $this->generer_mot_de_passe(12);
+            $password_hash = password_hash($mot_de_passe_aleatoire, PASSWORD_BCRYPT);
+
+            $utilisateur->setPassword($password_hash);
+            $utilisateur->setUserName(strtolower($PRENOM.$NOM));
+            $utilisateur->setRoles(['ROLE_USER']);
+
+            $doct->persist($utilisateur);
+            $doct->flush();
+            var_dump($mot_de_passe_aleatoire);
+            exit;
+        /*---------------------------*/
+
+        // On envoi un mail avec l'username
+        // On envoi un mail avec le mot de passe générer automatiquement
+            //$data = ;
+            // Send email
+            //$mailer->sendEmail('romain.demay56@gmail.com', 'New contact form submission', $data);
+           
+        // Redirect to thank you page
+        return $this->redirectToRoute('home_page');
+        
+    }
+
+    #[Route('/editionProfil', name: 'candidat_edit_profil')]
+    #[IsGranted('ROLE_USER')]
+    public function editProfilByCandidat(ManagerRegistry $doctrine, AuthenticationUtils $authenticationUtils): Response
+    { 
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $utilisateur = $doctrine->getRepository(Utilisateur::class)->findOneBy(array('username' => $lastUsername));
+       
+        $profil = $doctrine->getRepository(Candidat::class)->findOneBy(array('Email' => $utilisateur->getEmail()));
+       
+        if($profil){ 
+            $candidatCompetencesCles = $doctrine->getRepository(CompetenceCle::class)->findOneBy(array('id_candidat' => $profil->getId()));
+            $candidatPointsMarquants = $doctrine->getRepository(CandidatPointsMarquants::class)->findOneBy(array('id_candidat' => $profil->getId()));
+            $candidatConnaissance = $doctrine->getRepository(CandidatConnaissance::class)->findBy(array('id_candidat' => $profil->getId()));
+            $candidatCertification = $doctrine->getRepository(CandidatCertification::class)->findBy(array('id_candidat' => $profil->getId()));
+            $candidatFormation = $doctrine->getRepository(CandidatFormation::class)->findBy(array('id_candidat' => $profil->getId()));
+            $candidatLangue = $doctrine->getRepository(CandidatLangue::class)->findBy(array('id_candidat' => $profil->getId()));
+            $candidatSavoirEtre = $doctrine->getRepository(CandidatSavoirEtre::class)->findOneBy(array('id_candidat' => $profil->getId()));
+            $candidatExperience = $doctrine->getRepository(CandidatExperience::class)->findBy(array('id_candidat' => $profil->getId()));
+            
+            //Données des listes déroulantes
+            $sites = $doctrine->getRepository(Site::class)->findAll();
+            $familles = $doctrine->getRepository(Famille::class)->findAll();
+            $domaines = $doctrine->getRepository(Domaine::class)->findAll();
+            $langues = $doctrine->getRepository(Langue::class)->findAll();
+            $niveaux = $doctrine->getRepository(Niveau::class)->findAll();
+            $statuts = $doctrine->getRepository(Statut::class)->findAll();
+   
+            return $this->render('profil/editByCandidat.html.twig', [
+                'controller_name' => 'ProfilController',
+                'sites' => $sites,
+                'domaines' => $domaines,
+                'langues' => $langues,
+                'niveaux' => $niveaux,
+                'statuts' => $statuts,
+                'candidat' => $profil,
+                'candidatId' => $profil->getId(),
+                'candidatCompetencesCles' => $candidatCompetencesCles,
+                'candidatPointsMarquants' => $candidatPointsMarquants,
+                'candidatConnaissances' => $candidatConnaissance,
+                'candidatCertifications' => $candidatCertification,
+                'candidatFormations' => $candidatFormation,
+                'candidatLangues' => $candidatLangue,
+                'candidatSavoirEtre' => $candidatSavoirEtre,
+                'candidatExperiences' => $candidatExperience,
+                'familles' => $familles
+            ]); 
+        }else{
+             // retrouver une erreur d'authentification s'il y en a une
+            $error = $authenticationUtils->getLastAuthenticationError();
+            // retrouver le dernier identifiant de connexion utilisé
+            $lastUsername = $authenticationUtils->getLastUsername();
+            return $this->render('login/index.html.twig', [
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]); 
+        }
+    }
+
+    
+    public function generer_mot_de_passe($longueur = 12) {
+        // Liste de caractères à utiliser pour générer le mot de passe
+        $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    
+        // Mélanger les caractères pour les rendre aléatoires
+        $caracteres_melanges = str_shuffle($caracteres);
+    
+        // Extraire un sous-ensemble de caractères de la chaîne mélangée
+        $mot_de_passe = substr($caracteres_melanges, 0, $longueur);
+    
+        // Retourner le mot de passe généré
+        return $mot_de_passe;
+    }
+ 
 }
