@@ -249,17 +249,24 @@
 					<h3 class="panel-title">Compétences clés</h3>
 				</div>
 
-				<div class="panel-body">
-					<!-- Compétences clés -->
-					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
-						<div class="row" style="width: 70%;">
+				<div class="panel-body" style="display: flex;justify-content: center;">
+					<div class="form-group" style="padding-bottom: 20px;width: 70%;">
+						<div style="width: 100%;">
 							<div class="form-floating col">
 								<textarea name="comp_cle" class="form-control textarea" id="comp_cle" style="height: 200px;">{% if candidatCompetencesCles is not null %} {{ candidatCompetencesCles.competence|replace({';': ''})  }} {% endif %} </textarea>
 								<label class="col-md-3" for="comp_cle">Compétences clés</label>
 							</div>
 						</div>
 					</div>
-					<!-- Compétences clés -->
+
+					<div style="background-color: #f7f7f7;padding: 10px;width: 25%;margin: 0 0 0 10px;height: 200px;">
+						<p>Conseils de saisie:</p>
+						<ul>
+							<li>Entrez les compétences clés qui correspondent le mieux au poste</li>
+							<li>Énumérez les compétences les plus importantes en premier</li>
+							<li>Retour à la ligne pour insérer une autre compétence</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 			<!-- Saisie compétences clés du candidat -->
@@ -270,17 +277,23 @@
 						<h3 class="panel-title">Points marquants</h3>
 					</div>
 
-					<div class="panel-body">
-						<!-- Compétences clés -->
-						<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
-							<div class="row" style="width: 70%;">
+					<div class="panel-body" style="display: flex;justify-content: center;">
+						<div class="form-group" style="padding-bottom: 20px;width: 70%;">
+							<div style="width: 100%;">
 								<div class="form-floating col">
 									<textarea name="pointmarquants" class="form-control textarea" id="pointmarquants" style="height: 200px;">{% if candidatPointsMarquants is not null %} {{ candidatPointsMarquants.pointsMarquants|replace({';': ''})  }} {% endif %} </textarea>
 									<label class="col-md-3" for="pointmarquants">Points marquants</label>
 								</div>
 							</div>
 						</div>
-						<!-- Compétences clés -->
+						<div style="background-color: #f7f7f7;padding: 10px;width: 25%;margin: 0 0 0 10px;height: 200px;">
+							<p>Conseils de saisie:</p>
+							<ul>
+								<li>Entrez les points marquants qui correspondent le mieux au poste</li>
+								<li>Énumérez les points marquants les plus importantes en premier</li>
+								<li>Retour à la ligne pour insérer un autre point marquant</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<!-- Saisie points marquants du candidat -->
@@ -450,10 +463,9 @@
 					<h3 class="panel-title">Savoir-être</h3>
 				</div>
 
-				<div class="panel-body">
-					<!-- Savoir etre -->
-					<div class="form-group row justify-content-center" style="padding-bottom: 20px;">
-						<div class="row" style="width: 70%;">
+				<div class="panel-body" style="display: flex;justify-content: center;">
+						<div class="form-group" style="padding-bottom: 20px;width: 70%;">
+							<div style="width: 100%;">
 							<div class="form-floating col">
 								<textarea name="savoir" class="form-control textarea" id="savoir" style="height: 200px;">{% if candidatSavoirEtre is not null %} {{ candidatSavoirEtre.savoiretre|replace({';': ''})  }} {% endif %}</textarea>
 								<label class="col-md-3" for="savoir">Savoir-être</label>
@@ -461,6 +473,15 @@
 						</div>
 					</div>
 					<!-- Savoir etre  -->
+
+					<div style="background-color: #f7f7f7;padding: 10px;width: 25%;margin: 0 0 0 10px;height: 200px;">
+							<p>Conseils de saisie:</p>
+							<ul>
+								<li>Entrez les savoir-être qui correspondent le mieux au poste</li>
+								<li>Énumérez les compétences les plus importantes en premier</li>
+								<li>Retour à la ligne pour insérer un autre savoir-être</li>
+							</ul>
+						</div>
 				</div>
 			</div>
 			<!-- Saisie savoir-être par le candidat -->
