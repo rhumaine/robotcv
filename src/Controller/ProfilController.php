@@ -1417,7 +1417,7 @@ class ProfilController extends AbstractController
  
     #[Route('/createUser', name: 'app_profil_create_user')]
     #[IsGranted('ROLE_ADMIN')]
-    public function createUserAndEmail(Request $request, ServiceMailer $mailer, ManagerRegistry $doctrine): Response
+    public function createUserAndEmail(ManagerRegistry $doctrine): Response
     {  
         $sites = $doctrine->getRepository(Site::class)->findAll();
         $statuts = $doctrine->getRepository(Statut::class)->findAll();
@@ -1647,5 +1647,13 @@ class ProfilController extends AbstractController
         // Retourner le mot de passe généré
         return $mot_de_passe;
     }
- 
+
+    #[Route('/access-denied', name: 'access_denied')]
+    public function accessDenied()
+    {
+        return new Response(
+            $this->renderView('error403.html.twig'),
+            Response::HTTP_FORBIDDEN
+        );
+    }
 }
