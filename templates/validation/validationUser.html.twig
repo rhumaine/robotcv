@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="body">
+        <!-- Titre -->
+        <h3 class="page-title"><strong>Utilisateur créé</strong></h3>
+        <div class="container center">
+       
+            <p class="text-center">Vois les identifiants de l'utilisateur créé :</p>
+            <p class="text-center">Nom d'utilisateur : {{ username }}</p>
+            <p class="text-center">Mot de passe : {{ password }}</p>
+            <p class="text-center">Veuillez contacter l'administrateur du site si vous pensez que cela est unel'utilisateur et lui transmettre les identifiants afin de compléter son profil.</p>
+        </div>
+</div>
+{% endblock %}

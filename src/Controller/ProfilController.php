@@ -1417,7 +1417,7 @@ class ProfilController extends AbstractController
  
     #[Route('/createUser', name: 'app_profil_create_user')]
     #[IsGranted('ROLE_ADMIN')]
-    public function createUserAndEmail(ManagerRegistry $doctrine): Response
+    public function createUser(ManagerRegistry $doctrine): Response
     {  
         $sites = $doctrine->getRepository(Site::class)->findAll();
         $statuts = $doctrine->getRepository(Statut::class)->findAll();
@@ -1434,7 +1434,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/createUserValidation', name: 'app_profil_create_user_validation')]
-    public function createUserAndEmailTest(Request $request, ServiceMailer $mailer, ManagerRegistry $doctrine): Response
+    public function createUserValidation(Request $request, ServiceMailer $mailer, ManagerRegistry $doctrine): Response
     {  
 
         $profil = $request->get('profil');
@@ -1560,8 +1560,6 @@ class ProfilController extends AbstractController
 
             $doct->persist($utilisateur);
             $doct->flush();
-            var_dump($mot_de_passe_aleatoire);
-            exit;
         /*---------------------------*/
 
         // On envoi un mail avec l'username
@@ -1571,7 +1569,12 @@ class ProfilController extends AbstractController
             //$mailer->sendEmail('romain.demay56@gmail.com', 'New contact form submission', $data);
            
         // Redirect to thank you page
-        return $this->redirectToRoute('home_page');
+        //return $this->redirectToRoute('home_page');
+        return $this->render('validation/validationUser.html.twig', [
+            'controller_name' => 'ProfilController',
+            'username' => strtolower($PRENOM.$NOM),
+            'password' => $mot_de_passe_aleatoire,
+        ]); 
         
     }
 
@@ -1646,14 +1649,5 @@ class ProfilController extends AbstractController
     
         // Retourner le mot de passe généré
         return $mot_de_passe;
-    }
-
-    #[Route('/access-denied', name: 'access_denied')]
-    public function accessDenied()
-    {
-        return new Response(
-            $this->renderView('error403.html.twig'),
-            Response::HTTP_FORBIDDEN
-        );
     }
 }
